@@ -5,6 +5,9 @@ on:
     branches: [main]
   workflow_dispatch:
 
+env:
+  NODE_VERSION: 22.13.0
+
 permissions:
   contents: read
   pages: write
@@ -17,15 +20,19 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 22.13.0
+          node-version: ${{ env.NODE_VERSION }}
           cache: npm
 
       - name: Checkout UI kit
@@ -41,7 +48,7 @@ jobs:
           git clone "https://x-access-token:${INT_UI_KIT_TOKEN}@github.com/JetBrains/int-ui-kit-for-web-copy.git" int-ui-kit-for-web
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Build
         run: npm run build
@@ -54,6 +61,7 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     environment:
       name: github-pages

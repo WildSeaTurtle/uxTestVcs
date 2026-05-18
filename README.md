@@ -1,16 +1,25 @@
-# React + Vite
+# VCS prototypes
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React + Vite prototype app deployed to GitHub Pages.
 
-Currently, two official plugins are available:
+## Local development
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Use Node 22.13.0. The project has `.nvmrc` and `.node-version` for version managers.
 
-## React Compiler
+```sh
+npm ci
+npm run dev
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+If the active shell still points to Node 16, run commands with the bundled local Node first in `PATH`:
 
-## Expanding the ESLint configuration
+```sh
+PATH=.tools/node-v22.13.0-darwin-arm64/bin:$PATH npm run build
+PATH=.tools/node-v22.13.0-darwin-arm64/bin:$PATH npm run lint
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## GitHub Pages
+
+Pushing to `main` deploys automatically through `.github/workflows/deploy.yml`.
+
+The workflow clones `JetBrains/int-ui-kit-for-web-copy` into `../int-ui-kit-for-web`, so the repository must have an `INT_UI_KIT_TOKEN` secret with read access to that repository.
