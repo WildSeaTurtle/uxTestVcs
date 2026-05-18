@@ -5,15 +5,35 @@ import conflictDialogNothingResolvedImage from '../img/Conflict dialog nothing r
 import conflictDialogImage from '../img/Conflict dialog.png';
 import checkmarkDarkIcon from '@jetbrains/int-ui-kit-icons/actions/checked_dark.svg';
 import magicResolveToolbarIcon from '@jetbrains/int-ui-kit-icons/diff/magicResolveToolbar_dark.svg';
+import ResolveConflictsProgressDialog from './ResolveConflictsProgressDialog.jsx';
 import './App.css';
 
 const NOTHING_RESOLVED_DELAY_MS = 600;
 const SCREENS = [
-  { id: 'resolve-conflicts-1', label: 'Screen 1' },
-  { id: 'resolve-conflicts-2', label: 'Screen 2' },
+  { id: 'quick-resolution', label: 'Quick Resolution' },
+  { id: 'long-running-resolution', label: 'Long-Running Resolution' },
+  { id: 'progress-bar', label: 'Progress Bar' },
 ];
 
-function ResolveConflictsScreen() {
+function ProjectMainWindow({ children }) {
+  return (
+    <div className="main-window-layer">
+      <MainWindow
+        projectName="commons-math"
+        projectIcon="CM"
+        projectColor="grass"
+        branchName="feature/resolve-conflicts"
+        runConfig="IDEA Community"
+        height="100%"
+        defaultOpenToolWindows={['project']}
+      />
+
+      {children}
+    </div>
+  );
+}
+
+function ResolveConflictsDialog() {
   const [isResolveButtonDisabled, setIsResolveButtonDisabled] = useState(false);
   const [conflictDialogState, setConflictDialogState] = useState('default');
 
@@ -36,40 +56,48 @@ function ResolveConflictsScreen() {
   };
 
   return (
-    <section className="dialog-demo-screen" aria-label="Resolve conflicts prototype">
-      <div className="main-window-layer">
-        <MainWindow
-          projectName="commons-math"
-          projectIcon="CM"
-          projectColor="grass"
-          branchName="feature/resolve-conflicts"
-          runConfig="IDEA Community"
-          height="100%"
-          defaultOpenToolWindows={['project']}
+    <div className="conflict-dialog-image-layer">
+      <div className="conflict-dialog-image-frame">
+        <img
+          className="conflict-dialog-image"
+          src={conflictDialogImageByState[conflictDialogState]}
+          alt=""
         />
-
-        <div className="conflict-dialog-image-layer">
-          <div className="conflict-dialog-image-frame">
-            <img
-              className="conflict-dialog-image"
-              src={conflictDialogImageByState[conflictDialogState]}
-              alt=""
-            />
-            <Button
-              className="conflict-dialog-button"
-              disabled={isResolveButtonDisabled}
-              onClick={handleResolveButtonClick}
-            >
-              <img
-                className={`conflict-dialog-button-icon${isResolveButtonDisabled ? ' conflict-dialog-button-icon-disabled' : ''}`}
-                src={resolveButtonIcon}
-                alt=""
-              />
-              <span>{resolveButtonText}</span>
-            </Button>
-          </div>
-        </div>
+        <Button
+          className="conflict-dialog-button"
+          disabled={isResolveButtonDisabled}
+          onClick={handleResolveButtonClick}
+        >
+          <img
+            className={`conflict-dialog-button-icon${isResolveButtonDisabled ? ' conflict-dialog-button-icon-disabled' : ''}`}
+            src={resolveButtonIcon}
+            alt=""
+          />
+          <span>{resolveButtonText}</span>
+        </Button>
       </div>
+    </div>
+  );
+}
+
+function ResolveConflictsScreen() {
+  return (
+    <section className="dialog-demo-screen" aria-label="Resolve conflicts prototype">
+      <ProjectMainWindow>
+        <ResolveConflictsDialog />
+      </ProjectMainWindow>
+    </section>
+  );
+}
+
+function ProgressBarScreen() {
+  return (
+    <section className="dialog-demo-screen" aria-label="Progress bar prototype">
+      <ProjectMainWindow>
+        <div className="progress-dialog-layer">
+          <ResolveConflictsProgressDialog />
+        </div>
+      </ProjectMainWindow>
     </section>
   );
 }
@@ -95,7 +123,11 @@ export default function App() {
           ))}
         </div>
 
-        <ResolveConflictsScreen key={activeScreenId} />
+        {activeScreenId === 'progress-bar' ? (
+          <ProgressBarScreen key={activeScreenId} />
+        ) : (
+          <ResolveConflictsScreen key={activeScreenId} />
+        )}
       </main>
     </ThemeProvider>
   );
