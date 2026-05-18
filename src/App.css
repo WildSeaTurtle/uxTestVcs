@@ -15,6 +15,8 @@
   inset: 0;
   z-index: 0;
   display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100vw;
   height: 100vh;
   height: 100dvh;
@@ -23,21 +25,27 @@
   overflow: hidden;
 }
 
-.ide-window-image {
-  flex: 1 1 auto;
-  width: 100%;
-  height: 100%;
+.ide-window-frame {
+  position: relative;
+  width: min(1848px, 100%);
+  max-height: 100%;
+  aspect-ratio: 1848 / 1196;
   min-width: 0;
   min-height: 0;
   border-radius: 10px;
-  object-fit: cover;
-  object-position: center;
+  overflow: hidden;
+}
+
+.ide-window-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
   display: block;
 }
 
 .conflict-dialog-image-layer {
   position: absolute;
-  inset: var(--main-window-inset);
+  inset: 0;
   z-index: 2;
   display: flex;
   align-items: center;

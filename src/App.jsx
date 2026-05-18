@@ -36,27 +36,29 @@ export default function App() {
     <ThemeProvider defaultTheme="dark">
       <main className="dialog-demo-screen">
         <div className="main-window-layer">
-          <img className="ide-window-image" src={ideImage} alt="" />
+          <div className="ide-window-frame">
+            <img className="ide-window-image" src={ideImage} alt="" />
 
-          <div className="conflict-dialog-image-layer">
-            <div className="conflict-dialog-image-frame">
-              <img
-                className="conflict-dialog-image"
-                src={conflictDialogImageByState[conflictDialogState]}
-                alt=""
-              />
-              <Button
-                className="conflict-dialog-button"
-                disabled={isResolveButtonDisabled}
-                onClick={handleResolveButtonClick}
-              >
+            <div className="conflict-dialog-image-layer">
+              <div className="conflict-dialog-image-frame">
                 <img
-                  className={`conflict-dialog-button-icon${isResolveButtonDisabled ? ' conflict-dialog-button-icon-disabled' : ''}`}
-                  src={resolveButtonIcon}
+                  className="conflict-dialog-image"
+                  src={conflictDialogImageByState[conflictDialogState]}
                   alt=""
                 />
-                <span>{resolveButtonText}</span>
-              </Button>
+                <Button
+                  className="conflict-dialog-button"
+                  disabled={isResolveButtonDisabled}
+                  onClick={handleResolveButtonClick}
+                >
+                  <img
+                    className={`conflict-dialog-button-icon${isResolveButtonDisabled ? ' conflict-dialog-button-icon-disabled' : ''}`}
+                    src={resolveButtonIcon}
+                    alt=""
+                  />
+                  <span>{resolveButtonText}</span>
+                </Button>
+              </div>
             </div>
           </div>
         </div>
