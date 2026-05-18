@@ -32,12 +32,13 @@ jobs:
         env:
           INT_UI_KIT_TOKEN: ${{ secrets.INT_UI_KIT_TOKEN }}
         run: |
-          cd ..
-          if [ -n "$INT_UI_KIT_TOKEN" ]; then
-            git clone "https://x-access-token:${INT_UI_KIT_TOKEN}@github.com/JetBrains/int-ui-kit-for-web.git"
-          else
-            git clone "https://github.com/JetBrains/int-ui-kit-for-web.git"
+          if [ -z "$INT_UI_KIT_TOKEN" ]; then
+            echo "::error title=Missing INT_UI_KIT_TOKEN::Add a repository secret named INT_UI_KIT_TOKEN with read access to JetBrains/int-ui-kit-for-web."
+            exit 1
           fi
+
+          cd ..
+          git clone "https://x-access-token:${INT_UI_KIT_TOKEN}@github.com/JetBrains/int-ui-kit-for-web.git"
 
       - name: Install dependencies
         run: npm install
