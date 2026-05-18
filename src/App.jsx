@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { Button, MainWindow, ThemeProvider } from '@jetbrains/int-ui-kit';
+import { Button, ThemeProvider } from '@jetbrains/int-ui-kit';
 import conflictDialogDisabledImage from '../img/Conflict dialog disabled.png';
 import conflictDialogNothingResolvedImage from '../img/Conflict dialog nothing resolved.png';
 import conflictDialogImage from '../img/Conflict dialog.png';
+import ideImage from '../img/IDE.png';
 import checkmarkDarkIcon from '@jetbrains/int-ui-kit-icons/actions/checked_dark.svg';
 import magicResolveToolbarIcon from '@jetbrains/int-ui-kit-icons/diff/magicResolveToolbar_dark.svg';
 import './App.css';
@@ -35,15 +36,7 @@ export default function App() {
     <ThemeProvider defaultTheme="dark">
       <main className="dialog-demo-screen">
         <div className="main-window-layer">
-          <MainWindow
-            projectName="commons-math"
-            projectIcon="CM"
-            projectColor="grass"
-            branchName="feature/resolve-conflicts"
-            runConfig="IDEA Community"
-            height="100%"
-            defaultOpenToolWindows={['project']}
-          />
+          <img className="ide-window-image" src={ideImage} alt="" />
 
           <div className="conflict-dialog-image-layer">
             <div className="conflict-dialog-image-frame">
