@@ -26,6 +26,13 @@ const SCREEN_GROUPS = [
       { id: 'long-running-resolution-button-loader', label: 'Long-Running Resolution', resolutionMode: 'long-running', buttonMode: 'button-loader' },
     ],
   },
+  {
+    title: 'Status next to button',
+    screens: [
+      { id: 'quick-resolution-status-next-to-button', label: 'Quick Resolution', resolutionMode: 'quick', buttonMode: 'status-next-to-button' },
+      { id: 'long-running-resolution-status-next-to-button', label: 'Long-Running Resolution', resolutionMode: 'long-running', buttonMode: 'status-next-to-button' },
+    ],
+  },
 ];
 const SCREENS = SCREEN_GROUPS.flatMap((group) => group.screens);
 const ACTIVE_SCREEN_STORAGE_KEY = 'vcs-prototypes-active-screen';
@@ -72,6 +79,7 @@ function ResolveConflictsDialog({ buttonMode, resolutionMode }) {
   };
   const isResolved = conflictDialogState === 'nothingResolved' || conflictDialogState === 'someResolved';
   const isButtonLoaderVisible = buttonMode === 'button-loader' && isResolveButtonDisabled && !isResolved;
+  const isStatusVisible = buttonMode === 'status-next-to-button' && isResolveButtonDisabled && !isResolved;
   const resolveButtonIcon = isResolved ? checkmarkDarkIcon : magicResolveToolbarIcon;
   const resolveButtonText = isResolved
     ? 'All simple conflicts resolved'
@@ -167,6 +175,10 @@ function ResolveConflictsDialog({ buttonMode, resolutionMode }) {
               )}
               <span>{resolveButtonText}</span>
             </Button>
+
+            {isStatusVisible && (
+              <span className="conflict-dialog-button-status">Resolving simple conflicts...</span>
+            )}
 
             {resolveButtonTooltip && tooltipPosition && (
               <div
