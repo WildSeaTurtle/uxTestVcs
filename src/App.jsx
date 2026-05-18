@@ -45,6 +45,7 @@ function ResolveConflictsDialog({ resolutionMode }) {
   const [isResolveButtonDisabled, setIsResolveButtonDisabled] = useState(false);
   const [conflictDialogState, setConflictDialogState] = useState('default');
   const [isProgressDialogVisible, setIsProgressDialogVisible] = useState(false);
+  const [tooltipPosition, setTooltipPosition] = useState(null);
   const isLongRunningResolution = resolutionMode === 'long-running';
 
   const conflictDialogImageByState = {
@@ -60,9 +61,25 @@ function ResolveConflictsDialog({ resolutionMode }) {
     : isResolved ? 'All simple conflicts resolved' : 'Resolve All Simple Conflicts';
   const resolveButtonTooltip = isResolved ? 'There are no simple conflicts to resolve' : undefined;
 
+  const updateTooltipPosition = (event) => {
+    if (!isResolved) {
+      return;
+    }
+
+    setTooltipPosition({
+      left: event.clientX + 12,
+      top: event.clientY + 12,
+    });
+  };
+
+  const hideTooltip = () => {
+    setTooltipPosition(null);
+  };
+
   const handleResolveButtonClick = () => {
     setIsResolveButtonDisabled(true);
     setConflictDialogState('disabled');
+    hideTooltip();
 
     window.setTimeout(() => {
       if (isLongRunningResolution) {
@@ -89,8 +106,10 @@ function ResolveConflictsDialog({ resolutionMode }) {
             alt=""
           />
           <div
-            className={`conflict-dialog-button-wrapper${isResolved ? ' conflict-dialog-button-wrapper-tooltip' : ''}`}
-            data-tooltip={resolveButtonTooltip}
+            className="conflict-dialog-button-wrapper"
+            onMouseEnter={updateTooltipPosition}
+            onMouseMove={updateTooltipPosition}
+            onMouseLeave={hideTooltip}
           >
             <Button
               className="conflict-dialog-button"
@@ -104,6 +123,18 @@ function ResolveConflictsDialog({ resolutionMode }) {
               />
               <span>{resolveButtonText}</span>
             </Button>
+
+            {resolveButtonTooltip && tooltipPosition && (
+              <div
+                className="tooltip text-ui-default conflict-dialog-tooltip"
+                style={{
+                  left: tooltipPosition.left,
+                  top: tooltipPosition.top,
+                }}
+              >
+                <span className="tooltip-text">{resolveButtonTooltip}</span>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -153,30 +153,9 @@
   cursor: default;
 }
 
-.conflict-dialog-button-wrapper-tooltip::after {
-  content: attr(data-tooltip);
-  position: absolute;
-  left: 50%;
-  bottom: calc(100% + 8px);
-  z-index: 4;
+.conflict-dialog-tooltip {
   width: max-content;
   max-width: 260px;
-  padding: 6px 8px;
-  border-radius: 4px;
-  background: #2b2d30;
-  box-shadow: 0 8px 24px rgb(0 0 0 / 36%);
-  color: #ced0d6;
-  font-size: 12px;
-  line-height: 1.35;
-  opacity: 0;
-  pointer-events: none;
-  transform: translateX(-50%) translateY(2px);
-  transition: opacity 120ms ease, transform 120ms ease;
-}
-
-.conflict-dialog-button-wrapper-tooltip:hover::after {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
 }
 
 .conflict-dialog-button-icon {
