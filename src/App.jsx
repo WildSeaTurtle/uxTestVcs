@@ -1,11 +1,31 @@
 import { useState } from 'react';
 import { Button, MainWindow, ThemeProvider } from '@jetbrains/int-ui-kit';
+import conflictDialogDisabledImage from '../img/Conflict dialog disabled.png';
+import conflictDialogNothingResolvedImage from '../img/Conflict dialog nothing resolved.png';
 import conflictDialogImage from '../img/Conflict dialog.png';
 import magicResolveToolbarIcon from '../../int-ui-kit-for-web/src/icons/diff/magicResolveToolbar_dark.svg';
 import './App.css';
 
+const NOTHING_RESOLVED_DELAY_MS = 600;
+
 export default function App() {
   const [isResolveButtonDisabled, setIsResolveButtonDisabled] = useState(false);
+  const [conflictDialogState, setConflictDialogState] = useState('default');
+
+  const conflictDialogImageByState = {
+    default: conflictDialogImage,
+    disabled: conflictDialogDisabledImage,
+    nothingResolved: conflictDialogNothingResolvedImage,
+  };
+
+  const handleResolveButtonClick = () => {
+    setIsResolveButtonDisabled(true);
+    setConflictDialogState('disabled');
+
+    window.setTimeout(() => {
+      setConflictDialogState('nothingResolved');
+    }, NOTHING_RESOLVED_DELAY_MS);
+  };
 
   return (
     <ThemeProvider defaultTheme="light">
@@ -25,13 +45,13 @@ export default function App() {
             <div className="conflict-dialog-image-frame">
               <img
                 className="conflict-dialog-image"
-                src={conflictDialogImage}
+                src={conflictDialogImageByState[conflictDialogState]}
                 alt=""
               />
               <Button
                 className="conflict-dialog-button"
                 disabled={isResolveButtonDisabled}
-                onClick={() => setIsResolveButtonDisabled(true)}
+                onClick={handleResolveButtonClick}
               >
                 <img
                   className={`conflict-dialog-button-icon${isResolveButtonDisabled ? ' conflict-dialog-button-icon-disabled' : ''}`}
