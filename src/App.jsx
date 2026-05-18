@@ -72,7 +72,7 @@ function ConflictsTable() {
 
 function ResizableDialog() {
   const [size, setSize] = useState({ width: DEFAULT_WIDTH, height: DEFAULT_HEIGHT });
-  const [position, setPosition] = useState(() => {
+  const [position] = useState(() => {
     const left = Math.max(32, Math.round((window.innerWidth - DEFAULT_WIDTH) / 2));
     const top = Math.max(32, Math.round((window.innerHeight - DEFAULT_HEIGHT) / 2));
 

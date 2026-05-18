@@ -4,13 +4,15 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "dev": "PATH=\"$PWD/.tools/node-v22.13.0-darwin-arm64/bin:$PATH\" vite",
+    "build": "PATH=\"$PWD/.tools/node-v22.13.0-darwin-arm64/bin:$PATH\" vite build",
+    "lint": "PATH=\"$PWD/.tools/node-v22.13.0-darwin-arm64/bin:$PATH\" eslint .",
+    "preview": "PATH=\"$PWD/.tools/node-v22.13.0-darwin-arm64/bin:$PATH\" vite preview"
   },
   "dependencies": {
     "@jetbrains/int-ui-kit": "file:../int-ui-kit-for-web",
+    "prism-react-editor": "^3.1.0",
+    "prop-types": "^15.8.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
