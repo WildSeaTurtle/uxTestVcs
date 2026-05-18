@@ -200,17 +200,7 @@
   height: 16px;
   flex: 0 0 auto;
   display: block;
-  border: 2px solid rgb(255 255 255 / 24%);
-  border-top-color: #ced0d6;
-  border-radius: 50%;
-  box-sizing: border-box;
-  animation: conflict-dialog-button-loader-spin 900ms linear infinite;
-}
-
-@keyframes conflict-dialog-button-loader-spin {
-  to {
-    transform: rotate(360deg);
-  }
+  color: #ced0d6;
 }
 
 .progress-dialog {

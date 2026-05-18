@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { Button, MainWindow, ThemeProvider } from '@jetbrains/int-ui-kit';
+import { Button, Loader, MainWindow, ThemeProvider } from '@jetbrains/int-ui-kit';
 import conflictDialogDisabledImage from '../img/Conflict dialog disabled.png';
 import conflictDialogNothingResolvedImage from '../img/Conflict dialog nothing resolved.png';
 import conflictDialogSomeResolvedImage from '../img/Conflict dialog some conflicts resolved.png';
@@ -157,7 +157,7 @@ function ResolveConflictsDialog({ buttonMode, resolutionMode }) {
               onClick={handleResolveButtonClick}
             >
               {isButtonLoaderVisible ? (
-                <span className="conflict-dialog-button-loader" aria-hidden="true" />
+                <Loader size={16} className="conflict-dialog-button-loader" aria-hidden="true" />
               ) : (
                 <img
                   className={`conflict-dialog-button-icon${isResolveButtonDisabled ? ' conflict-dialog-button-icon-disabled' : ''}`}
