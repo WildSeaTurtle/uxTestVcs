@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import { Button, ThemeProvider } from '@jetbrains/int-ui-kit';
+import { Button, MainWindow, ThemeProvider } from '@jetbrains/int-ui-kit';
 import conflictDialogDisabledImage from '../img/Conflict dialog disabled.png';
 import conflictDialogNothingResolvedImage from '../img/Conflict dialog nothing resolved.png';
 import conflictDialogImage from '../img/Conflict dialog.png';
-import ideImage from '../img/IDE.png';
 import checkmarkDarkIcon from '@jetbrains/int-ui-kit-icons/actions/checked_dark.svg';
 import magicResolveToolbarIcon from '@jetbrains/int-ui-kit-icons/diff/magicResolveToolbar_dark.svg';
 import './App.css';
@@ -36,29 +35,35 @@ export default function App() {
     <ThemeProvider defaultTheme="dark">
       <main className="dialog-demo-screen">
         <div className="main-window-layer">
-          <div className="ide-window-frame">
-            <img className="ide-window-image" src={ideImage} alt="" />
+          <MainWindow
+            projectName="commons-math"
+            projectIcon="CM"
+            projectColor="grass"
+            branchName="feature/resolve-conflicts"
+            runConfig="IDEA Community"
+            height="100%"
+            defaultOpenToolWindows={['project']}
+          />
 
-            <div className="conflict-dialog-image-layer">
-              <div className="conflict-dialog-image-frame">
+          <div className="conflict-dialog-image-layer">
+            <div className="conflict-dialog-image-frame">
+              <img
+                className="conflict-dialog-image"
+                src={conflictDialogImageByState[conflictDialogState]}
+                alt=""
+              />
+              <Button
+                className="conflict-dialog-button"
+                disabled={isResolveButtonDisabled}
+                onClick={handleResolveButtonClick}
+              >
                 <img
-                  className="conflict-dialog-image"
-                  src={conflictDialogImageByState[conflictDialogState]}
+                  className={`conflict-dialog-button-icon${isResolveButtonDisabled ? ' conflict-dialog-button-icon-disabled' : ''}`}
+                  src={resolveButtonIcon}
                   alt=""
                 />
-                <Button
-                  className="conflict-dialog-button"
-                  disabled={isResolveButtonDisabled}
-                  onClick={handleResolveButtonClick}
-                >
-                  <img
-                    className={`conflict-dialog-button-icon${isResolveButtonDisabled ? ' conflict-dialog-button-icon-disabled' : ''}`}
-                    src={resolveButtonIcon}
-                    alt=""
-                  />
-                  <span>{resolveButtonText}</span>
-                </Button>
-              </div>
+                <span>{resolveButtonText}</span>
+              </Button>
             </div>
           </div>
         </div>
