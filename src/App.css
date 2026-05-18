@@ -35,10 +35,23 @@
   box-sizing: border-box;
 }
 
+.screen-switcher-group-title {
+  min-width: 0;
+  padding: 0 0 4px;
+  color: #ced0d6;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .screen-switcher-tab {
-  width: 100%;
+  width: calc(100% - 16px);
   min-width: 0;
   height: 32px;
+  margin-left: 16px;
   padding: 0 12px;
   border: 0;
   border-radius: 5px;

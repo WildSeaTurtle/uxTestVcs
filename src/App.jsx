@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Button, MainWindow, ThemeProvider } from '@jetbrains/int-ui-kit';
 import conflictDialogDisabledImage from '../img/Conflict dialog disabled.png';
 import conflictDialogNothingResolvedImage from '../img/Conflict dialog nothing resolved.png';
@@ -10,6 +10,7 @@ import ResolveConflictsProgressDialog from './ResolveConflictsProgressDialog.jsx
 import './App.css';
 
 const NOTHING_RESOLVED_DELAY_MS = 600;
+const TOOLTIP_DELAY_MS = 300;
 const SCREENS = [
   { id: 'quick-resolution', label: 'Quick Resolution' },
   { id: 'long-running-resolution', label: 'Long-Running Resolution' },
@@ -46,6 +47,8 @@ function ResolveConflictsDialog({ resolutionMode }) {
   const [conflictDialogState, setConflictDialogState] = useState('default');
   const [isProgressDialogVisible, setIsProgressDialogVisible] = useState(false);
   const [tooltipPosition, setTooltipPosition] = useState(null);
+  const tooltipTimerRef = useRef(null);
+  const latestTooltipPositionRef = useRef(null);
   const isLongRunningResolution = resolutionMode === 'long-running';
 
   const conflictDialogImageByState = {
@@ -61,18 +64,41 @@ function ResolveConflictsDialog({ resolutionMode }) {
     : isResolved ? 'All simple conflicts resolved' : 'Resolve All Simple Conflicts';
   const resolveButtonTooltip = isResolved ? 'There are no simple conflicts to resolve' : undefined;
 
+  const getTooltipPosition = (event) => ({
+    left: event.clientX + 12,
+    top: event.clientY + 12,
+  });
+
+  const showTooltip = (event) => {
+    if (!isResolved) {
+      return;
+    }
+
+    latestTooltipPositionRef.current = getTooltipPosition(event);
+
+    window.clearTimeout(tooltipTimerRef.current);
+    tooltipTimerRef.current = window.setTimeout(() => {
+      setTooltipPosition(latestTooltipPositionRef.current);
+    }, TOOLTIP_DELAY_MS);
+  };
+
   const updateTooltipPosition = (event) => {
     if (!isResolved) {
       return;
     }
 
-    setTooltipPosition({
-      left: event.clientX + 12,
-      top: event.clientY + 12,
-    });
+    const nextTooltipPosition = getTooltipPosition(event);
+    latestTooltipPositionRef.current = nextTooltipPosition;
+
+    if (tooltipPosition) {
+      setTooltipPosition(nextTooltipPosition);
+    }
   };
 
   const hideTooltip = () => {
+    window.clearTimeout(tooltipTimerRef.current);
+    tooltipTimerRef.current = null;
+    latestTooltipPositionRef.current = null;
     setTooltipPosition(null);
   };
 
@@ -107,7 +133,7 @@ function ResolveConflictsDialog({ resolutionMode }) {
           />
           <div
             className="conflict-dialog-button-wrapper"
-            onMouseEnter={updateTooltipPosition}
+            onMouseEnter={showTooltip}
             onMouseMove={updateTooltipPosition}
             onMouseLeave={hideTooltip}
           >
@@ -171,6 +197,7 @@ export default function App() {
     <ThemeProvider defaultTheme="dark">
       <main className="prototype-shell">
         <div className="screen-switcher" role="tablist" aria-label="Prototype screens" aria-orientation="vertical">
+          <div className="screen-switcher-group-title">Без лоадера, задержка 600ms</div>
           {SCREENS.map((screen) => (
             <button
               key={screen.id}
