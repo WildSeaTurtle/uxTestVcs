@@ -38,7 +38,7 @@ jobs:
           fi
 
           cd ..
-          git clone "https://x-access-token:${INT_UI_KIT_TOKEN}@github.com/WildSeaTurtle/int-ui-kit-for-web-copy.git" int-ui-kit-for-web
+          git clone "https://x-access-token:${INT_UI_KIT_TOKEN}@github.com/JetBrains/int-ui-kit-for-web-copy.git" int-ui-kit-for-web
 
       - name: Install dependencies
         run: npm install
