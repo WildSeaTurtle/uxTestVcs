@@ -4,6 +4,7 @@ import conflictDialogDisabledImage from '../img/Conflict dialog disabled.png';
 import conflictDialogNothingResolvedImage from '../img/Conflict dialog nothing resolved.png';
 import conflictDialogSomeResolvedImage from '../img/Conflict dialog some conflicts resolved.png';
 import conflictDialogImage from '../img/Conflict dialog.png';
+import checkmarkIcon from '@jetbrains/int-ui-kit-icons/actions/checked.svg';
 import checkmarkDarkIcon from '@jetbrains/int-ui-kit-icons/actions/checked_dark.svg';
 import magicResolveToolbarIcon from '@jetbrains/int-ui-kit-icons/diff/magicResolveToolbar_dark.svg';
 import ResolveConflictsProgressDialog from './ResolveConflictsProgressDialog.jsx';
@@ -182,7 +183,7 @@ function ResolveConflictsDialog({ buttonMode, resolutionMode }) {
               <span className="conflict-dialog-button-status">
                 <img
                   className="conflict-dialog-button-status-icon"
-                  src={checkmarkDarkIcon}
+                  src={checkmarkIcon}
                   alt=""
                 />
                 <span>All simple conflicts resolved</span>

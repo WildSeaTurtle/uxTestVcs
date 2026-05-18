@@ -165,7 +165,6 @@
   top: 113px;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
   pointer-events: auto;
 }
 
@@ -209,6 +208,7 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  margin-left: 16px;
   color: var(--text-secondary);
   font-size: 13px;
   line-height: 28px;
