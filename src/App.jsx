@@ -1,9 +1,12 @@
+import { useState } from 'react';
 import { Button, MainWindow, ThemeProvider } from '@jetbrains/int-ui-kit';
 import conflictDialogImage from '../img/Conflict dialog.png';
 import magicResolveToolbarIcon from '../../int-ui-kit-for-web/src/icons/diff/magicResolveToolbar_dark.svg';
 import './App.css';
 
 export default function App() {
+  const [isResolveButtonDisabled, setIsResolveButtonDisabled] = useState(false);
+
   return (
     <ThemeProvider defaultTheme="light">
       <main className="dialog-demo-screen">
@@ -25,9 +28,13 @@ export default function App() {
                 src={conflictDialogImage}
                 alt=""
               />
-              <Button className="conflict-dialog-button">
+              <Button
+                className="conflict-dialog-button"
+                disabled={isResolveButtonDisabled}
+                onClick={() => setIsResolveButtonDisabled(true)}
+              >
                 <img
-                  className="conflict-dialog-button-icon"
+                  className={`conflict-dialog-button-icon${isResolveButtonDisabled ? ' conflict-dialog-button-icon-disabled' : ''}`}
                   src={magicResolveToolbarIcon}
                   alt=""
                 />
