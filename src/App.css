@@ -1,157 +1,85 @@
 .dialog-demo-screen {
   min-height: 100svh;
-  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 32px;
   box-sizing: border-box;
   background: #1e1f22;
-  overflow: hidden;
 }
 
-.dialog-resize-shell {
-  position: relative;
-  overflow: hidden;
+.progress-dialog {
   max-width: calc(100vw - 32px);
-  max-height: calc(100svh - 32px);
 }
 
-.dialog-resize-handle {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  width: 18px;
-  height: 18px;
-  cursor: nwse-resize;
-  background: transparent;
-}
-
-.empty-dialog {
-  width: 100%;
-  height: 100%;
-}
-
-.empty-dialog .dialog-content {
-  padding: 20px;
-  min-height: 0;
-  background: var(--dialog-content-bg);
-  overflow: hidden;
-}
-
-.empty-dialog-content {
-  width: 100%;
-  height: 100%;
-  min-height: 100%;
-}
-
-.conflicts-table {
-  display: grid;
-  grid-template-rows: auto 1fr;
-  width: 100%;
-  height: 100%;
-  border: 1px solid var(--dialog-border);
+.progress-dialog .dialog-content {
+  padding: 20px 24px 18px;
   background: var(--dialog-content-bg);
 }
 
-.conflicts-table-header,
-.conflicts-group-row,
-.conflicts-file-row {
-  display: grid;
-  grid-template-columns: minmax(240px, 1fr) minmax(180px, 0.72fr) minmax(220px, 0.9fr);
-}
-
-.conflicts-table-header {
-  border-bottom: 1px solid var(--dialog-border);
-  background: var(--dialog-bg);
-}
-
-.conflicts-table-header-cell {
-  min-height: 36px;
-  padding: 0 16px;
+.progress-dialog-content {
   display: flex;
-  align-items: center;
-  color: var(--text-secondary);
-  font-size: 13px;
-  line-height: 1.3;
-  white-space: nowrap;
-}
-
-.conflicts-table-body {
-  overflow: hidden;
-}
-
-.conflicts-group-row,
-.conflicts-file-row {
-  min-height: 24px;
-}
-
-.conflicts-group-row {
-  border-bottom: 0;
-}
-
-.conflicts-tree-cell,
-.conflicts-status-cell {
-  padding: 0 16px;
-  display: flex;
-  align-items: center;
+  flex-direction: column;
+  gap: 12px;
   min-width: 0;
 }
 
-.conflicts-disclosure {
-  width: 16px;
-  height: 16px;
-  padding: 0;
-  margin-right: 6px;
-  border: 0;
-  background: transparent;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: default;
+.progress-dialog-header,
+.progress-dialog-details {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
 }
 
-.conflicts-disclosure .icon {
-  display: block;
-}
-
-.conflicts-group-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 14px;
-  height: 14px;
-  margin-right: 6px;
-}
-
-.conflicts-group-name {
+.progress-dialog-title {
+  min-width: 0;
+  color: var(--text-default);
   font-size: 13px;
   font-weight: 600;
-  color: var(--text-default);
-}
-
-.conflicts-tree-cell-file {
-  gap: 0;
-}
-
-.conflicts-tree-indent {
-  width: 22px;
-  flex: 0 0 22px;
-}
-
-.conflicts-file-name,
-.conflicts-status-cell {
-  font-size: 13px;
-  color: var(--text-default);
-  white-space: nowrap;
+  line-height: 1.35;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-@media (max-width: 768px) {
+.progress-dialog-percent {
+  flex: 0 0 auto;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.35;
+  tab-size: 4;
+}
+
+.project-progress {
+  gap: 6px;
+}
+
+.project-progress .progress-bar-track {
+  height: 6px;
+  border-radius: 3px;
+}
+
+.project-progress .progress-bar-fill {
+  border-radius: 3px;
+  transition: width 240ms ease;
+}
+
+.progress-dialog-details {
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+@media (max-width: 520px) {
   .dialog-demo-screen {
     padding: 12px;
   }
 
-  .dialog-resize-shell {
-    max-width: calc(100vw - 24px);
-    max-height: calc(100svh - 24px);
+  .progress-dialog-header,
+  .progress-dialog-details {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
   }
 }
