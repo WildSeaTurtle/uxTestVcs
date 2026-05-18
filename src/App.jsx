@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button, MainWindow, ThemeProvider } from '@jetbrains/int-ui-kit';
 import conflictDialogDisabledImage from '../img/Conflict dialog disabled.png';
 import conflictDialogNothingResolvedImage from '../img/Conflict dialog nothing resolved.png';
+import conflictDialogSomeResolvedImage from '../img/Conflict dialog some conflicts resolved.png';
 import conflictDialogImage from '../img/Conflict dialog.png';
 import checkmarkDarkIcon from '@jetbrains/int-ui-kit-icons/actions/checked_dark.svg';
 import magicResolveToolbarIcon from '@jetbrains/int-ui-kit-icons/diff/magicResolveToolbar_dark.svg';
@@ -50,10 +51,13 @@ function ResolveConflictsDialog({ resolutionMode }) {
     default: conflictDialogImage,
     disabled: conflictDialogDisabledImage,
     nothingResolved: conflictDialogNothingResolvedImage,
+    someResolved: conflictDialogSomeResolvedImage,
   };
-  const isNothingResolved = conflictDialogState === 'nothingResolved';
-  const resolveButtonIcon = isNothingResolved ? checkmarkDarkIcon : magicResolveToolbarIcon;
-  const resolveButtonText = isNothingResolved ? 'All simple conflicts resolved' : 'Resolve All Simple Conflicts';
+  const isResolved = conflictDialogState === 'nothingResolved' || conflictDialogState === 'someResolved';
+  const resolveButtonIcon = isResolved ? checkmarkDarkIcon : magicResolveToolbarIcon;
+  const resolveButtonText = conflictDialogState === 'someResolved'
+    ? 'Some simple conflicts resolved'
+    : isResolved ? 'All simple conflicts resolved' : 'Resolve All Simple Conflicts';
 
   const handleResolveButtonClick = () => {
     setIsResolveButtonDisabled(true);
@@ -71,7 +75,7 @@ function ResolveConflictsDialog({ resolutionMode }) {
 
   const handleProgressComplete = () => {
     setIsProgressDialogVisible(false);
-    setConflictDialogState('nothingResolved');
+    setConflictDialogState('someResolved');
   };
 
   return (
