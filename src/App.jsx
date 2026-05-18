@@ -73,9 +73,9 @@ function ResolveConflictsDialog({ buttonMode, resolutionMode }) {
   const isResolved = conflictDialogState === 'nothingResolved' || conflictDialogState === 'someResolved';
   const isButtonLoaderVisible = buttonMode === 'button-loader' && isResolveButtonDisabled && !isResolved;
   const resolveButtonIcon = isResolved ? checkmarkDarkIcon : magicResolveToolbarIcon;
-  const resolveButtonText = conflictDialogState === 'someResolved'
-    ? 'Some simple conflicts resolved'
-    : isResolved ? 'All simple conflicts resolved' : 'Resolve All Simple Conflicts';
+  const resolveButtonText = isResolved
+    ? 'All simple conflicts resolved'
+    : 'Resolve All Simple Conflicts';
   const resolveButtonTooltip = isResolved ? 'There are no simple conflicts to resolve' : undefined;
 
   const getTooltipPosition = (event) => ({
