@@ -29,24 +29,14 @@ jobs:
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
+        with:
+          enablement: true
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
-
-      - name: Checkout UI kit
-        env:
-          INT_UI_KIT_TOKEN: ${{ secrets.INT_UI_KIT_TOKEN }}
-        run: |
-          if [ -z "$INT_UI_KIT_TOKEN" ]; then
-            echo "::error title=Missing INT_UI_KIT_TOKEN::Add a repository secret named INT_UI_KIT_TOKEN with read access to JetBrains/int-ui-kit-for-web."
-            exit 1
-          fi
-
-          cd ..
-          git clone "https://x-access-token:${INT_UI_KIT_TOKEN}@github.com/JetBrains/int-ui-kit-for-web-copy.git" int-ui-kit-for-web
 
       - name: Install dependencies
         run: npm ci
