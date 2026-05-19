@@ -12,7 +12,7 @@ export default defineConfig({
     fs: {
       allow: [
         dirname,
-        path.resolve(dirname, '../int-ui-kit-for-web'),
+        path.resolve(dirname, 'vendor/int-ui-kit'),
         path.resolve(dirname, 'node_modules/@jetbrains/int-ui-kit'),
       ],
     },
@@ -21,15 +21,15 @@ export default defineConfig({
     alias: [
       {
         find: '@jetbrains/int-ui-kit/styles.css',
-        replacement: path.resolve(dirname, '../int-ui-kit-for-web/src/lib/styles.js'),
+        replacement: path.resolve(dirname, 'vendor/int-ui-kit/dist/esm/styles.css'),
       },
       {
         find: '@jetbrains/int-ui-kit',
-        replacement: path.resolve(dirname, '../int-ui-kit-for-web/src/lib/index.js'),
+        replacement: path.resolve(dirname, 'vendor/int-ui-kit/dist/esm/index.js'),
       },
       {
         find: '@jetbrains/int-ui-kit-icons',
-        replacement: path.resolve(dirname, '../int-ui-kit-for-web/src/icons'),
+        replacement: path.resolve(dirname, 'vendor/int-ui-kit/src/icons'),
       },
       {
         find: 'react',
