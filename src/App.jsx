@@ -44,9 +44,9 @@ const SCREEN_GROUPS = [
   {
     title: 'Status next to button',
     screens: [
-      { id: 'quick-resolution-status-next-to-button', label: 'Quick Resolution Nothing Resolved', resolutionMode: 'quick', buttonMode: 'status-next-to-button' },
+      { id: 'quick-resolution-status-next-to-button', label: 'Quick Resolution Nothing Resolved, 300 ms', resolutionMode: 'quick', buttonMode: 'status-next-to-button', delay: 300 },
       { id: 'long-running-resolution-status-next-to-button', label: 'Resolution with Progress Bar, 300 ms delay', resolutionMode: 'long-running', buttonMode: 'status-next-to-button' },
-      { id: 'quick-some-resolved-status-next-to-button', label: 'Quick Resolution Some Resolved', resolutionMode: 'quick-some-resolved', buttonMode: 'status-next-to-button' },
+      { id: 'quick-some-resolved-status-next-to-button', label: 'Quick Resolution Some Resolved, 300 ms', resolutionMode: 'quick-some-resolved', buttonMode: 'status-next-to-button', delay: 300 },
     ],
   },
 ];
@@ -210,7 +210,7 @@ function ResolveConflictsDialog({ buttonMode, resolutionMode, delay = NOTHING_RE
                   src={checkmarkDarkIcon}
                   alt=""
                 />
-                <span>All simple conflicts resolved</span>
+                <span>Automatically resolved 31 conflicts. 29 conflicts in 7 files still require attention.</span>
               </span>
             )}
 
