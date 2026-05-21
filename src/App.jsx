@@ -208,7 +208,7 @@ function ResolveConflictsDialog({ buttonMode, resolutionMode, delay = NOTHING_RE
                 <span>
                   {conflictDialogState === 'nothingResolved'
                     ? 'No conflicts were resolved automatically'
-                    : 'Automatically resolved 31 conflicts. 29 conflicts in 7 files still require attention'}
+                    : '31 conflicts resolved. 29 conflicts in 7 files still require attention'}
                 </span>
               </span>
             )}
