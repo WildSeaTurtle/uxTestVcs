@@ -87,6 +87,7 @@ function ResolveConflictsDialog({ buttonMode, resolutionMode, delay = NOTHING_RE
   const latestTooltipPositionRef = useRef(null);
   const isLongRunningResolution = resolutionMode === 'long-running';
   const isQuickSomeResolved = resolutionMode === 'quick-some-resolved';
+  const isQuickNothing = !isLongRunningResolution && !isQuickSomeResolved;
 
   const conflictDialogImageByState = {
     default: conflictDialogImage,
@@ -145,7 +146,9 @@ function ResolveConflictsDialog({ buttonMode, resolutionMode, delay = NOTHING_RE
 
   const handleResolveButtonClick = () => {
     setIsResolveButtonDisabled(true);
-    setConflictDialogState('disabled');
+    if (!isQuickNothing) {
+      setConflictDialogState('disabled');
+    }
     hideTooltip();
 
     if (isLongRunningResolution && (buttonMode === 'no-loader' || buttonMode === 'status-next-to-button')) {
