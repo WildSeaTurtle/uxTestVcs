@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { Button, Loader, MainWindow, ThemeProvider } from '@jetbrains/int-ui-kit';
-import conflictDialogDisabledImage from '../img/Conflict dialog disabled.png';
+
 import conflictDialogNothingResolvedImage from '../img/Conflict dialog nothing resolved.png';
 import conflictDialogSomeResolvedImage from '../img/Conflict dialog some conflicts resolved.png';
 import conflictDialogImage from '../img/Conflict dialog.png';
@@ -87,11 +87,9 @@ function ResolveConflictsDialog({ buttonMode, resolutionMode, delay = NOTHING_RE
   const latestTooltipPositionRef = useRef(null);
   const isLongRunningResolution = resolutionMode === 'long-running';
   const isQuickSomeResolved = resolutionMode === 'quick-some-resolved';
-  const isQuickNothing = !isLongRunningResolution && !isQuickSomeResolved;
 
   const conflictDialogImageByState = {
     default: conflictDialogImage,
-    disabled: conflictDialogDisabledImage,
     nothingResolved: conflictDialogNothingResolvedImage,
     someResolved: conflictDialogSomeResolvedImage,
   };
@@ -146,9 +144,6 @@ function ResolveConflictsDialog({ buttonMode, resolutionMode, delay = NOTHING_RE
 
   const handleResolveButtonClick = () => {
     setIsResolveButtonDisabled(true);
-    if (!isQuickNothing) {
-      setConflictDialogState('disabled');
-    }
     hideTooltip();
 
     if (isLongRunningResolution && (buttonMode === 'no-loader' || buttonMode === 'status-next-to-button')) {
