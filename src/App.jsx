@@ -15,7 +15,16 @@ const PROGRESS_DIALOG_DELAY_MS = 300;
 const TOOLTIP_DELAY_MS = 300;
 const SCREEN_GROUPS = [
   {
+    title: 'Status next to button',
+    screens: [
+      { id: 'quick-resolution-status-next-to-button', label: 'Quick Resolution Nothing Resolved, 300 ms', resolutionMode: 'quick', buttonMode: 'status-next-to-button', delay: 300 },
+      { id: 'long-running-resolution-status-next-to-button', label: 'Resolution with Progress Bar, 300 ms delay', resolutionMode: 'long-running', buttonMode: 'status-next-to-button' },
+      { id: 'quick-some-resolved-status-next-to-button', label: 'Quick Resolution Some Resolved, 300 ms', resolutionMode: 'quick-some-resolved', buttonMode: 'status-next-to-button', delay: 300 },
+    ],
+  },
+  {
     title: 'Result feedback on the button',
+    collapsible: true,
     screens: [
       { id: 'quick-resolution-no-delay-100', label: 'Quick Resolution Nothing Resolved, 100 ms', resolutionMode: 'quick', buttonMode: 'no-loader', delay: 100 },
       { id: 'quick-some-resolved-no-delay-100', label: 'Quick Resolution Some Resolved, 100 ms', resolutionMode: 'quick-some-resolved', buttonMode: 'no-loader', delay: 100 },
@@ -39,14 +48,6 @@ const SCREEN_GROUPS = [
       { id: 'quick-resolution-button-loader', label: 'Quick Resolution Nothing Resolved', resolutionMode: 'quick', buttonMode: 'button-loader' },
       { id: 'long-running-resolution-button-loader', label: 'Long-Running Resolution', resolutionMode: 'long-running', buttonMode: 'button-loader' },
       { id: 'quick-some-resolved-button-loader', label: 'Quick Resolution Some Resolved', resolutionMode: 'quick-some-resolved', buttonMode: 'button-loader' },
-    ],
-  },
-  {
-    title: 'Status next to button',
-    screens: [
-      { id: 'quick-resolution-status-next-to-button', label: 'Quick Resolution Nothing Resolved, 300 ms', resolutionMode: 'quick', buttonMode: 'status-next-to-button', delay: 300 },
-      { id: 'long-running-resolution-status-next-to-button', label: 'Resolution with Progress Bar, 300 ms delay', resolutionMode: 'long-running', buttonMode: 'status-next-to-button' },
-      { id: 'quick-some-resolved-status-next-to-button', label: 'Quick Resolution Some Resolved, 300 ms', resolutionMode: 'quick-some-resolved', buttonMode: 'status-next-to-button', delay: 300 },
     ],
   },
 ];
@@ -251,6 +252,9 @@ function ResolveConflictsScreen({ buttonMode, resolutionMode, delay }) {
 
 export default function App() {
   const [activeScreenId, setActiveScreenId] = useState(getInitialActiveScreenId);
+  const [collapsedGroups, setCollapsedGroups] = useState(() => new Set(
+    SCREEN_GROUPS.filter((g) => g.collapsible).map((g) => g.title)
+  ));
   const activeScreen = SCREENS.find((screen) => screen.id === activeScreenId) ?? SCREENS[0];
 
   const handleScreenChange = (screenId) => {
@@ -258,14 +262,39 @@ export default function App() {
     setActiveScreenId(screenId);
   };
 
+  const toggleGroup = (title) => {
+    setCollapsedGroups((prev) => {
+      const next = new Set(prev);
+      if (next.has(title)) {
+        next.delete(title);
+      } else {
+        next.add(title);
+      }
+      return next;
+    });
+  };
+
   return (
     <ThemeProvider defaultTheme="dark">
       <main className="prototype-shell">
         <div className="screen-switcher" role="tablist" aria-label="Prototype screens" aria-orientation="vertical">
-          {SCREEN_GROUPS.filter((group) => !group.hidden).map((group) => (
+          {SCREEN_GROUPS.filter((group) => !group.hidden).map((group) => {
+            const isCollapsed = collapsedGroups.has(group.title);
+            return (
             <div className="screen-switcher-group" key={group.title}>
-              <div className="screen-switcher-group-title">{group.title}</div>
-              {group.screens.map((screen) => (
+              {group.collapsible ? (
+                <button
+                  type="button"
+                  className="screen-switcher-group-title screen-switcher-group-title-collapsible"
+                  onClick={() => toggleGroup(group.title)}
+                >
+                  <span className={`screen-switcher-group-arrow${isCollapsed ? '' : ' screen-switcher-group-arrow-expanded'}`}>▶</span>
+                  {group.title}
+                </button>
+              ) : (
+                <div className="screen-switcher-group-title">{group.title}</div>
+              )}
+              {!isCollapsed && group.screens.map((screen) => (
                 <button
                   key={screen.id}
                   type="button"
@@ -278,7 +307,8 @@ export default function App() {
                 </button>
               ))}
             </div>
-          ))}
+            );
+          })}
         </div>
 
         <ResolveConflictsScreen

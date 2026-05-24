@@ -58,6 +58,34 @@
   white-space: nowrap;
 }
 
+.screen-switcher-group-title-collapsible {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: #ced0d6;
+  font: inherit;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.screen-switcher-group-title-collapsible:hover {
+  color: #ffffff;
+}
+
+.screen-switcher-group-arrow {
+  font-size: 9px;
+  flex: 0 0 auto;
+  transition: transform 150ms ease;
+}
+
+.screen-switcher-group-arrow-expanded {
+  transform: rotate(90deg);
+}
+
 .screen-switcher-tab {
   width: calc(100% - 16px);
   min-width: 0;
