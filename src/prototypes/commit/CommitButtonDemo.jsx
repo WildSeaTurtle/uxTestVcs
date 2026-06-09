@@ -3,7 +3,7 @@ import checkmarkIcon from '@jetbrains/int-ui-kit-icons/actions/checked_dark.svg'
 import './CommitButtonDemo.css';
 
 const LOADING_DURATION_MS = 3000;
-const COMMITED_DURATION_MS = 600;
+const COMMITED_DURATION_MS = 1000;
 
 export default function CommitButtonDemo() {
   const [state, setState] = useState('idle'); // 'idle' | 'loading' | 'commited'
