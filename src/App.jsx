@@ -144,6 +144,7 @@ export default function App() {
         <div className="prototype-content">
           <PrototypeComponent
             key={`${activePrototypeId}::${activeScreenId}`}
+            screenId={activeScreenId}
             buttonMode={activeScreen?.buttonMode}
             resolutionMode={activeScreen?.resolutionMode}
             delay={activeScreen?.delay}
