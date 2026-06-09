@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { MainWindow, CommitWindow } from '@jetbrains/int-ui-kit';
 import CommitButtonDemo from './CommitButtonDemo.jsx';
+import AnimatedCommitButton from './AnimatedCommitButton.jsx';
 import './styles.css';
 
 const COMMIT_FILES = [
@@ -49,15 +50,25 @@ function CommitPanelContent({ context }) {
     );
   };
 
+  const handleAnimatedCommit = () => {
+    const allIds = new Set(files.flatMap((g) => g.children.map((f) => f.id)));
+    handleCommit('', false, allIds);
+  };
+
   return (
-    <CommitWindow
-      files={files}
-      commitMessage="Update conflict resolution dialog message for clearer state distinction"
-      layoutMode={context.toolWindowLayoutMode}
-      focused={context.focusedPanel === 'left'}
-      onFocus={() => context.setFocusedPanel('left')}
-      onCommit={handleCommit}
-    />
+    <div className="commit-panel-wrapper commit-window-custom">
+      <CommitWindow
+        files={files}
+        commitMessage="Update conflict resolution dialog message for clearer state distinction"
+        layoutMode={context.toolWindowLayoutMode}
+        focused={context.focusedPanel === 'left'}
+        onFocus={() => context.setFocusedPanel('left')}
+        onCommit={handleCommit}
+      />
+      <div className="commit-animated-btn-wrapper">
+        <AnimatedCommitButton onCommitComplete={handleAnimatedCommit} />
+      </div>
+    </div>
   );
 }
 

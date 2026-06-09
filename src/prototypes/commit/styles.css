@@ -64,3 +64,23 @@
 .commit-screen .main-window-layer > .main-window .main-window-gradient {
   border-radius: 10px 10px 0 0;
 }
+
+.commit-panel-wrapper {
+  position: relative;
+  height: 100%;
+}
+
+.commit-window-custom .commit-buttons .button-primary {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.commit-window-custom .commit-buttons {
+  gap: 12px;
+}
+
+.commit-animated-btn-wrapper {
+  position: absolute;
+  bottom: 6px;
+  left: 12px;
+}
