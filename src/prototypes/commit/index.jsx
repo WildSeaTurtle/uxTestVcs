@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { MainWindow, CommitWindow } from '@jetbrains/int-ui-kit';
 import CommitButtonDemo from './CommitButtonDemo.jsx';
 import AnimatedCommitButton from './AnimatedCommitButton.jsx';
@@ -33,10 +34,35 @@ const COMMIT_FILES = [
 
 function CommitPanelContent({ context }) {
   const [files, setFiles] = useState([]);
+  const panelRef = useRef(null);
+  const [commitBtnsEl, setCommitBtnsEl] = useState(null);
+  const [noFilesChecked, setNoFilesChecked] = useState(true);
 
   useEffect(() => {
     context.setFocusedPanel('left');
     setFiles(COMMIT_FILES);
+  }, []);
+
+  useEffect(() => {
+    const btns = panelRef.current?.querySelector('.commit-buttons');
+    if (!btns) return;
+    const container = document.createElement('div');
+    container.style.display = 'contents';
+    btns.prepend(container);
+    setCommitBtnsEl(container);
+
+    const panel = panelRef.current;
+    const handleChange = () => {
+      const checked = [...panel.querySelectorAll('input[type=checkbox]:checked')]
+        .filter(el => !el.closest('.commit-amend-toolbar'));
+      setNoFilesChecked(checked.length === 0);
+    };
+    panel.addEventListener('change', handleChange);
+
+    return () => {
+      panel.removeEventListener('change', handleChange);
+      container.remove();
+    };
   }, []);
 
   const handleCommit = (message, amend, checkedIds) => {
@@ -51,12 +77,14 @@ function CommitPanelContent({ context }) {
   };
 
   const handleAnimatedCommit = () => {
-    const allIds = new Set(files.flatMap((g) => g.children.map((f) => f.id)));
-    handleCommit('', false, allIds);
+    // Trigger the hidden CommitWindow button — it calls onCommit(message, amend, checkedIds)
+    const primaryBtn = panelRef.current?.querySelector('.button-primary');
+    primaryBtn?.click();
+    setNoFilesChecked(true);
   };
 
   return (
-    <div className="commit-panel-wrapper commit-window-custom">
+    <div ref={panelRef} className="commit-panel-wrapper commit-window-custom">
       <CommitWindow
         files={files}
         commitMessage="Update conflict resolution dialog message for clearer state distinction"
@@ -65,9 +93,10 @@ function CommitPanelContent({ context }) {
         onFocus={() => context.setFocusedPanel('left')}
         onCommit={handleCommit}
       />
-      <div className="commit-animated-btn-wrapper">
-        <AnimatedCommitButton onCommitComplete={handleAnimatedCommit} />
-      </div>
+      {commitBtnsEl && createPortal(
+        <AnimatedCommitButton onCommitComplete={handleAnimatedCommit} disabled={noFilesChecked} />,
+        commitBtnsEl
+      )}
     </div>
   );
 }

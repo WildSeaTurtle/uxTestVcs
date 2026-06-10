@@ -71,16 +71,18 @@
 }
 
 .commit-window-custom .commit-buttons .button-primary {
-  visibility: hidden;
-  pointer-events: none;
+  display: none;
 }
 
 .commit-window-custom .commit-buttons {
-  gap: 12px;
+  gap: 6px;
 }
 
-.commit-animated-btn-wrapper {
-  position: absolute;
-  bottom: 6px;
-  left: 12px;
+.commit-actions {
+  align-items: center;
+  display: flex;
+  flex-shrink: 0;
+  justify-content: space-between;
+  padding: 6px 12px;
 }
+

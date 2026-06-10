@@ -39,6 +39,18 @@
   background-color: #2b5fc4;
 }
 
+/* Default (no files checked) state */
+.commit-btn-animated--default {
+  background-color: var(--button-secondary-bg);
+  border: 1px solid var(--button-secondary-border);
+  color: var(--text-default);
+  cursor: default;
+}
+
+.commit-btn-animated--default:hover {
+  background-color: var(--button-secondary-bg);
+}
+
 /* Loading state */
 .commit-btn-animated--loading {
   cursor: default;
