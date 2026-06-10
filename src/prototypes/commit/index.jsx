@@ -53,9 +53,11 @@ function CommitPanelContent({ context }) {
 
     const panel = panelRef.current;
     const handleChange = () => {
-      const checked = [...panel.querySelectorAll('input[type=checkbox]:checked')]
-        .filter(el => !el.closest('.commit-amend-toolbar'));
-      setNoFilesChecked(checked.length === 0);
+      setTimeout(() => {
+        const checked = [...panel.querySelectorAll('input[type=checkbox]:checked')]
+          .filter(el => !el.closest('.commit-amend-toolbar'));
+        setNoFilesChecked(checked.length === 0);
+      }, 0);
     };
     panel.addEventListener('change', handleChange);
 
