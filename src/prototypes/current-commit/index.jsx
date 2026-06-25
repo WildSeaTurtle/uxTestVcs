@@ -1,8 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { MainWindow, CommitWindow } from '@jetbrains/int-ui-kit';
-import CommitButtonDemo from './CommitButtonDemo.jsx';
-import AnimatedCommitButton, { CommitedButton } from './AnimatedCommitButton.jsx';
+import { MainWindow, CommitWindow, Loader } from '@jetbrains/int-ui-kit';
 import './styles.css';
 
 const COMMIT_FILES = [
@@ -34,13 +32,39 @@ const COMMIT_FILES = [
 
 const LOADING_DURATION_MS = 3000;
 
-function CommitPanelContent({ context, onLoadingChange }) {
+function CurrentCommitButton({ onCommitStart, onCommitComplete, disabled }) {
+  const [loading, setLoading] = useState(false);
+  const timerRef = useRef(null);
+
+  const handleClick = () => {
+    if (loading || disabled) return;
+    setLoading(true);
+    onCommitStart?.();
+    timerRef.current = setTimeout(() => {
+      setLoading(false);
+      onCommitComplete?.();
+    }, LOADING_DURATION_MS);
+  };
+
+  useEffect(() => () => clearTimeout(timerRef.current), []);
+
+  return (
+    <button
+      className={`commit-btn commit-btn${loading ? '--loading' : disabled ? '--secondary' : '--primary'}`}
+      onClick={handleClick}
+      disabled={loading}
+    >
+      {loading && <Loader size="small" className="commit-btn__spinner" />}
+      <span className="commit-btn__label">{loading ? 'Commiting...' : 'Commit'}</span>
+    </button>
+  );
+}
+
+function CurrentCommitPanelContent({ context, onLoadingChange }) {
   const [files, setFiles] = useState([]);
   const panelRef = useRef(null);
   const [commitBtnsEl, setCommitBtnsEl] = useState(null);
   const [noFilesChecked, setNoFilesChecked] = useState(true);
-  const [commited, setCommited] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     context.setFocusedPanel('left');
@@ -83,29 +107,21 @@ function CommitPanelContent({ context, onLoadingChange }) {
   };
 
   const handleCommitStart = () => {
-    setLoading(true);
     onLoadingChange?.(true);
   };
 
-  const handleAnimatedCommit = () => {
+  const handleCommitComplete = () => {
     const primaryBtn = panelRef.current?.querySelector('.button-primary');
     primaryBtn?.click();
     setNoFilesChecked(true);
-    setLoading(false);
     onLoadingChange?.(false);
-    setCommited(true);
   };
 
-  useEffect(() => {
-    if (!commited) return;
-    const panel = panelRef.current;
-    const handlePanelClick = () => setCommited(false);
-    panel?.addEventListener('click', handlePanelClick);
-    return () => panel?.removeEventListener('click', handlePanelClick);
-  }, [commited]);
-
   return (
-    <div ref={panelRef} className={`commit-panel-wrapper commit-window-custom${loading ? ' is-loading' : ''}${commited ? ' is-commited' : ''}${noFilesChecked ? '' : ' has-checked-files'}`}>
+    <div
+      ref={panelRef}
+      className={`current-commit-panel-wrapper commit-window-custom${noFilesChecked ? '' : ' has-checked-files'}`}
+    >
       <CommitWindow
         files={files}
         commitMessage="Update conflict resolution dialog message for clearer state distinction"
@@ -115,9 +131,11 @@ function CommitPanelContent({ context, onLoadingChange }) {
         onCommit={handleCommit}
       />
       {commitBtnsEl && createPortal(
-        commited
-          ? <CommitedButton />
-          : <AnimatedCommitButton onCommitStart={handleCommitStart} onCommitComplete={handleAnimatedCommit} disabled={noFilesChecked} />,
+        <CurrentCommitButton
+          onCommitStart={handleCommitStart}
+          onCommitComplete={handleCommitComplete}
+          disabled={noFilesChecked}
+        />,
         commitBtnsEl
       )}
     </div>
@@ -126,15 +144,14 @@ function CommitPanelContent({ context, onLoadingChange }) {
 
 export const SCREEN_GROUPS = [
   {
-    title: 'Commit tool window',
+    title: 'Current Commit',
     screens: [
-      { id: 'commit-default', label: 'Default' },
-      { id: 'commit-button-animation', label: 'Commit button animation' },
+      { id: 'current-commit-default', label: 'Default' },
     ],
   },
 ];
 
-export default function CommitScreen({ screenId }) {
+export default function CurrentCommitScreen({ screenId }) {
   const [loading, setLoading] = useState(false);
   const [progressValue, setProgressValue] = useState(0);
   const progressTimerRef = useRef(null);
@@ -160,21 +177,13 @@ export default function CommitScreen({ screenId }) {
 
   const renderLeftPanel = (stripeId, context) => {
     if (stripeId === 'commit') {
-      return <CommitPanelContent context={context} onLoadingChange={handleLoadingChange} />;
+      return <CurrentCommitPanelContent context={context} onLoadingChange={handleLoadingChange} />;
     }
     return null;
   };
 
-  if (screenId === 'commit-button-animation') {
-    return (
-      <section className="commit-screen" aria-label="Commit button animation">
-        <CommitButtonDemo />
-      </section>
-    );
-  }
-
   return (
-    <section className="commit-screen" aria-label="Commit prototype">
+    <section className="current-commit-screen" aria-label="Current Commit prototype">
       <div className="main-window-layer">
         <MainWindow
           projectName="commons-math"

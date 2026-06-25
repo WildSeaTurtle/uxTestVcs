@@ -3,6 +3,7 @@ import { ThemeProvider } from '@jetbrains/int-ui-kit';
 
 import ResolveConflictsScreen, { SCREEN_GROUPS as RESOLVE_CONFLICTS_GROUPS } from './prototypes/resolve-conflicts/index.jsx';
 import CommitScreen, { SCREEN_GROUPS as COMMIT_GROUPS } from './prototypes/commit/index.jsx';
+import CurrentCommitScreen, { SCREEN_GROUPS as CURRENT_COMMIT_GROUPS } from './prototypes/current-commit/index.jsx';
 import './App.css';
 
 const PROTOTYPES = [
@@ -17,6 +18,12 @@ const PROTOTYPES = [
     label: 'Commit',
     screenGroups: COMMIT_GROUPS,
     component: CommitScreen,
+  },
+  {
+    id: 'current-commit',
+    label: 'Current Commit',
+    screenGroups: CURRENT_COMMIT_GROUPS,
+    component: CurrentCommitScreen,
   },
 ];
 

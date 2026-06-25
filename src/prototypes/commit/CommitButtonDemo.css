@@ -31,7 +31,7 @@
   transition: background-color 150ms ease, width 200ms ease;
 }
 
-.commit-btn-animated.button-secondary {
+.commit-btn-animated.button-secondary:not(.commit-btn-animated--loading) {
   background-color: var(--button-secondary-bg) !important;
   border-color: var(--button-secondary-border) !important;
   color: var(--text-default) !important;
