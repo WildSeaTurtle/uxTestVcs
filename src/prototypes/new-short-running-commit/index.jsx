@@ -32,27 +32,16 @@ const COMMIT_FILES = [
 
 const LOADING_DURATION_MS = 3000;
 
-function CurrentCommitButton({ onCommitStart, onCommitComplete, disabled }) {
-  const [loading, setLoading] = useState(false);
-  const timerRef = useRef(null);
-
+function CurrentCommitButton({ onCommit, disabled }) {
   const handleClick = () => {
-    if (loading || disabled) return;
-    setLoading(true);
-    onCommitStart?.();
-    timerRef.current = setTimeout(() => {
-      setLoading(false);
-      onCommitComplete?.();
-    }, LOADING_DURATION_MS);
+    if (disabled) return;
+    onCommit?.();
   };
-
-  useEffect(() => () => clearTimeout(timerRef.current), []);
 
   return (
     <button
-      className={`commit-btn commit-btn${loading || disabled ? '--secondary commit-btn--disabled' : '--primary'}`}
+      className={`commit-btn commit-btn${disabled ? '--secondary' : '--primary'}`}
       onClick={handleClick}
-      disabled={loading}
     >
       <span className="commit-btn__label">Commit</span>
     </button>
@@ -105,20 +94,16 @@ function CurrentCommitPanelContent({ context, onLoadingChange }) {
     );
   };
 
-  const handleCommitStart = () => {
+  const handleCommitClick = () => {
     const panel = panelRef.current;
     const checked = [...panel.querySelectorAll('input[type=checkbox]:checked')]
       .filter(el => !el.closest('.commit-amend-toolbar'));
     const textarea = panel.querySelector('.commit-message-textarea');
     const message = textarea?.value || '';
-    onLoadingChange?.(true, checked.length, message);
-  };
-
-  const handleCommitComplete = () => {
-    const primaryBtn = panelRef.current?.querySelector('.button-primary');
+    const primaryBtn = panel.querySelector('.button-primary');
     primaryBtn?.click();
     setNoFilesChecked(true);
-    onLoadingChange?.(false);
+    setTimeout(() => onLoadingChange?.(checked.length, message), 0);
   };
 
   return (
@@ -136,8 +121,7 @@ function CurrentCommitPanelContent({ context, onLoadingChange }) {
       />
       {commitBtnsEl && createPortal(
         <CurrentCommitButton
-          onCommitStart={handleCommitStart}
-          onCommitComplete={handleCommitComplete}
+          onCommit={handleCommitClick}
           disabled={noFilesChecked}
         />,
         commitBtnsEl
@@ -156,41 +140,15 @@ export const SCREEN_GROUPS = [
 ];
 
 export default function CurrentCommitScreen({ screenId }) {
-  const [loading, setLoading] = useState(false);
-  const [progressValue, setProgressValue] = useState(0);
   const [notification, setNotification] = useState(null);
-  const progressTimerRef = useRef(null);
-  const commitInfoRef = useRef(null);
 
-  const handleLoadingChange = (isLoading, filesCount, message) => {
-    if (isLoading) {
-      commitInfoRef.current = { filesCount, message };
-      setLoading(true);
-      setNotification(null);
-      setProgressValue(0);
-      const start = Date.now();
-      progressTimerRef.current = setInterval(() => {
-        const elapsed = Date.now() - start;
-        const value = Math.min(Math.round((elapsed / LOADING_DURATION_MS) * 100), 100);
-        setProgressValue(value);
-        if (value >= 100) clearInterval(progressTimerRef.current);
-      }, 50);
-    } else {
-      clearInterval(progressTimerRef.current);
-      setLoading(false);
-      setProgressValue(0);
-      if (commitInfoRef.current) {
-        setNotification(commitInfoRef.current);
-        commitInfoRef.current = null;
-      }
-    }
+  const handleCommit = (filesCount, message) => {
+    setNotification({ filesCount, message });
   };
-
-  useEffect(() => () => clearInterval(progressTimerRef.current), []);
 
   const renderLeftPanel = (stripeId, context) => {
     if (stripeId === 'commit') {
-      return <CurrentCommitPanelContent context={context} onLoadingChange={handleLoadingChange} />;
+      return <CurrentCommitPanelContent context={context} onLoadingChange={handleCommit} />;
     }
     return null;
   };
@@ -208,7 +166,6 @@ export default function CurrentCommitScreen({ screenId }) {
           defaultOpenToolWindows={['commit']}
           initialLeftPanelWidth={400}
           leftPanelContent={renderLeftPanel}
-          statusBarProps={loading ? { progress: true, progressLabel: 'Commiting', progressValue } : undefined}
         />
       </div>
       {notification && (
