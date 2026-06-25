@@ -78,6 +78,14 @@
   gap: 6px;
 }
 
+/* Disable native commit-buttons during loading */
+.is-loading .commit-buttons button:not(.commit-btn-animated) {
+  pointer-events: none;
+  cursor: not-allowed;
+  color: var(--text-disabled) !important;
+  border-color: var(--control-border-disabled) !important;
+}
+
 .commit-actions {
   align-items: center;
   display: flex;

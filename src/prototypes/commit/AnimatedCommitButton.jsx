@@ -4,41 +4,46 @@ import checkmarkIcon from '@jetbrains/int-ui-kit-icons/actions/checked_dark.svg'
 import './CommitButtonDemo.css';
 
 const LOADING_DURATION_MS = 3000;
-const COMMITED_DURATION_MS = 1000;
 
-export default function AnimatedCommitButton({ onCommitComplete, disabled }) {
-  const [state, setState] = useState('idle');
+export function CommitedButton() {
+  return (
+    <button className="commit-btn-animated commit-btn-animated--commited" disabled>
+      <img className="commit-btn-animated__icon" src={checkmarkIcon} alt="" />
+      <span className="commit-btn-animated__label">Commited</span>
+    </button>
+  );
+}
+
+export default function AnimatedCommitButton({ onCommitStart, onCommitComplete, disabled }) {
+  const [loading, setLoading] = useState(false);
   const timerRef = useRef(null);
 
   const handleClick = () => {
-    if (state !== 'idle' || disabled) return;
+    if (loading || disabled) return;
 
-    setState('loading');
+    setLoading(true);
+    onCommitStart?.();
     timerRef.current = setTimeout(() => {
-      setState('commited');
-      timerRef.current = setTimeout(() => {
-        setState('idle');
-        onCommitComplete?.();
-      }, COMMITED_DURATION_MS);
+      setLoading(false);
+      onCommitComplete?.();
     }, LOADING_DURATION_MS);
   };
 
   useEffect(() => () => clearTimeout(timerRef.current), []);
 
+  const isDisabled = loading || (disabled && !loading);
+
   return (
     <button
-      className={`commit-btn-animated commit-btn-animated--${state}${disabled && state === 'idle' || state === 'loading' ? ' button button-secondary button-default text-ui-default button-disabled' : ''}`}
+      className={`commit-btn-animated${loading ? ' commit-btn-animated--loading' : ''}${isDisabled ? ' button button-secondary button-default text-ui-default button-disabled' : ''}`}
       onClick={handleClick}
-      disabled={state === 'loading' || (disabled && state === 'idle')}
+      disabled={isDisabled}
     >
-      {state === 'loading' && (
+      {loading && (
         <Loader size="small" className="commit-btn-animated__spinner" />
       )}
-      {state === 'commited' && (
-        <img className="commit-btn-animated__icon" src={checkmarkIcon} alt="" />
-      )}
       <span className="commit-btn-animated__label">
-        {state === 'loading' ? 'Commiting...' : state === 'commited' ? 'Commited' : 'Commit'}
+        {loading ? 'Commiting...' : 'Commit'}
       </span>
     </button>
   );

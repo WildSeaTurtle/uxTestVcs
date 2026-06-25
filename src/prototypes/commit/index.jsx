@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { MainWindow, CommitWindow } from '@jetbrains/int-ui-kit';
 import CommitButtonDemo from './CommitButtonDemo.jsx';
-import AnimatedCommitButton from './AnimatedCommitButton.jsx';
+import AnimatedCommitButton, { CommitedButton } from './AnimatedCommitButton.jsx';
 import './styles.css';
 
 const COMMIT_FILES = [
@@ -37,6 +37,8 @@ function CommitPanelContent({ context }) {
   const panelRef = useRef(null);
   const [commitBtnsEl, setCommitBtnsEl] = useState(null);
   const [noFilesChecked, setNoFilesChecked] = useState(true);
+  const [commited, setCommited] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     context.setFocusedPanel('left');
@@ -78,15 +80,29 @@ function CommitPanelContent({ context }) {
     );
   };
 
+  const handleCommitStart = () => {
+    setLoading(true);
+  };
+
   const handleAnimatedCommit = () => {
-    // Trigger the hidden CommitWindow button — it calls onCommit(message, amend, checkedIds)
     const primaryBtn = panelRef.current?.querySelector('.button-primary');
     primaryBtn?.click();
     setNoFilesChecked(true);
+    setLoading(false);
+    setCommited(true);
   };
 
+
+  useEffect(() => {
+    if (!commited) return;
+    const panel = panelRef.current;
+    const handlePanelClick = () => setCommited(false);
+    panel?.addEventListener('click', handlePanelClick);
+    return () => panel?.removeEventListener('click', handlePanelClick);
+  }, [commited]);
+
   return (
-    <div ref={panelRef} className="commit-panel-wrapper commit-window-custom">
+    <div ref={panelRef} className={`commit-panel-wrapper commit-window-custom${loading ? ' is-loading' : ''}${commited ? ' is-commited' : ''}`}>
       <CommitWindow
         files={files}
         commitMessage="Update conflict resolution dialog message for clearer state distinction"
@@ -96,7 +112,9 @@ function CommitPanelContent({ context }) {
         onCommit={handleCommit}
       />
       {commitBtnsEl && createPortal(
-        <AnimatedCommitButton onCommitComplete={handleAnimatedCommit} disabled={noFilesChecked} />,
+        commited
+          ? <CommitedButton />
+          : <AnimatedCommitButton onCommitStart={handleCommitStart} onCommitComplete={handleAnimatedCommit} disabled={noFilesChecked} />,
         commitBtnsEl
       )}
     </div>
