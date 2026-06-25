@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { Loader } from '@jetbrains/int-ui-kit';
 import checkmarkIcon from '@jetbrains/int-ui-kit-icons/actions/checked_dark.svg';
 import './CommitButtonDemo.css';
 
@@ -26,10 +27,13 @@ export default function AnimatedCommitButton({ onCommitComplete, disabled }) {
 
   return (
     <button
-      className={`commit-btn-animated commit-btn-animated--${state}${disabled && state === 'idle' ? ' commit-btn-animated--default' : ''}`}
+      className={`commit-btn-animated commit-btn-animated--${state}${disabled && state === 'idle' || state === 'loading' ? ' button button-secondary button-default text-ui-default button-disabled' : ''}`}
       onClick={handleClick}
+      disabled={state === 'loading' || (disabled && state === 'idle')}
     >
-      {state === 'loading' && <span className="commit-btn-animated__wave" />}
+      {state === 'loading' && (
+        <Loader size="small" className="commit-btn-animated__spinner" />
+      )}
       {state === 'commited' && (
         <img className="commit-btn-animated__icon" src={checkmarkIcon} alt="" />
       )}

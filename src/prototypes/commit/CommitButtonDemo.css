@@ -39,22 +39,20 @@
   background-color: #2b5fc4;
 }
 
-/* Default (no files checked) state */
-.commit-btn-animated--default {
-  background-color: var(--button-secondary-bg);
-  border: 1px solid var(--button-secondary-border);
-  color: var(--text-default);
-  cursor: default;
-}
-
-.commit-btn-animated--default:hover {
-  background-color: var(--button-secondary-bg);
-}
 
 /* Loading state */
 .commit-btn-animated--loading {
-  cursor: default;
-  background-color: #3574f0;
+  cursor: not-allowed;
+  gap: 6px;
+  background-color: transparent !important;
+  border: 1px solid var(--control-border-disabled) !important;
+  color: var(--text-disabled) !important;
+}
+
+/* Spinner */
+.commit-btn-animated__spinner {
+  flex: 0 0 auto;
+  filter: opacity(0.5);
 }
 
 /* Commited state */
@@ -65,35 +63,6 @@
   gap: 4px;
 }
 
-/* Wave overlay */
-.commit-btn-animated__wave {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 60%;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.10) 25%,
-    rgba(255, 255, 255, 0.26) 50%,
-    rgba(255, 255, 255, 0.10) 75%,
-    transparent 100%
-  );
-  opacity: 0;
-  pointer-events: none;
-  border-radius: inherit;
-}
-
-.commit-btn-animated--loading .commit-btn-animated__wave {
-  opacity: 1;
-  animation: commit-btn-wave 1.5s linear infinite;
-}
-
-@keyframes commit-btn-wave {
-  0%   { transform: translateX(-105%); }
-  100% { transform: translateX(170%);  }
-}
 
 /* Icon */
 .commit-btn-animated__icon {
