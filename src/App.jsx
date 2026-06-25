@@ -4,6 +4,8 @@ import { ThemeProvider } from '@jetbrains/int-ui-kit';
 import ResolveConflictsScreen, { SCREEN_GROUPS as RESOLVE_CONFLICTS_GROUPS } from './prototypes/resolve-conflicts/index.jsx';
 import CommitScreen, { SCREEN_GROUPS as COMMIT_GROUPS } from './prototypes/commit/index.jsx';
 import CurrentCommitScreen, { SCREEN_GROUPS as CURRENT_COMMIT_GROUPS } from './prototypes/current-commit/index.jsx';
+import ShortRunningCommitScreen, { SCREEN_GROUPS as SHORT_RUNNING_COMMIT_GROUPS } from './prototypes/short-running-commit/index.jsx';
+import NewShortRunningCommitScreen, { SCREEN_GROUPS as NEW_SHORT_RUNNING_COMMIT_GROUPS } from './prototypes/new-short-running-commit/index.jsx';
 import './App.css';
 
 const PROTOTYPES = [
@@ -24,6 +26,18 @@ const PROTOTYPES = [
     label: 'Current Commit',
     screenGroups: CURRENT_COMMIT_GROUPS,
     component: CurrentCommitScreen,
+  },
+  {
+    id: 'short-running-commit',
+    label: 'New Short-running Commit',
+    screenGroups: SHORT_RUNNING_COMMIT_GROUPS,
+    component: ShortRunningCommitScreen,
+  },
+  {
+    id: 'new-short-running-commit',
+    label: 'Current Short-running Commit',
+    screenGroups: NEW_SHORT_RUNNING_COMMIT_GROUPS,
+    component: NewShortRunningCommitScreen,
   },
 ];
 

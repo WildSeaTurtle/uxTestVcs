@@ -1,0 +1,137 @@
+.current-commit-screen {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.current-commit-screen {
+  --main-window-inset: 100px;
+}
+
+.current-commit-screen .main-window-layer {
+
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  padding: var(--main-window-inset);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.current-commit-screen .main-window-layer > .main-window {
+  flex: 1 1 auto;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  border-radius: 10px;
+}
+
+.current-commit-screen .main-window-layer > .main-window .main-window-content,
+.current-commit-screen .main-window-layer > .main-window .main-window-center,
+.current-commit-screen .main-window-layer > .main-window .main-window-top-row,
+.current-commit-screen .main-window-layer > .main-window .main-window-editor-area {
+  min-width: 0;
+}
+
+.current-commit-screen .main-window-layer > .main-window .main-window-gradient {
+  border-radius: 10px 10px 0 0;
+}
+
+.current-commit-panel-wrapper {
+  position: relative;
+  height: 100%;
+}
+
+/* Hide the native primary commit button */
+.commit-window-custom .commit-buttons .button-primary {
+  display: none;
+}
+
+.commit-window-custom .commit-buttons {
+  gap: 6px;
+}
+
+/* Textarea color */
+.current-commit-panel-wrapper .commit-message-textarea {
+  color: var(--text-secondary, #6c6f75) !important;
+}
+
+.has-checked-files .commit-message-textarea {
+  color: var(--text-default, #dfe1e5) !important;
+}
+
+/* Commit button */
+.commit-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  padding: 0 12px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  transition: background-color 150ms ease;
+}
+
+.commit-btn--primary {
+  background-color: #3574f0;
+  color: #ffffff;
+}
+
+.commit-btn--primary:hover {
+  background-color: #4a85f6;
+}
+
+.commit-btn--primary:active {
+  background-color: #2b5fc4;
+}
+
+.commit-btn--secondary {
+  background-color: var(--button-secondary-bg);
+  border-color: var(--button-secondary-border);
+  color: var(--text-default);
+  cursor: default;
+}
+
+.commit-btn--secondary.commit-btn--disabled {
+  background-color: transparent;
+  border-color: var(--control-border-disabled);
+  color: var(--text-disabled);
+  cursor: not-allowed;
+}
+
+/* Disable Commit and Push during loading */
+.current-commit-panel-wrapper:has(.commit-btn--disabled) .commit-buttons button:not(.commit-btn) {
+  pointer-events: none;
+  cursor: not-allowed;
+  color: var(--text-disabled) !important;
+  border-color: var(--control-border-disabled) !important;
+}
+
+/* Label */
+.commit-btn__label {
+  position: relative;
+  z-index: 1;
+}
+
+/* Notification overlay */
+.current-commit-notification-overlay {
+  position: absolute;
+  bottom: calc(var(--main-window-inset, 100px) + 40px);
+  right: calc(var(--main-window-inset, 100px) + 50px);
+  z-index: 100;
+  width: 350px;
+}
