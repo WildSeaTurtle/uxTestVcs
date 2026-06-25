@@ -31,11 +31,17 @@
   transition: background-color 150ms ease, width 200ms ease;
 }
 
-.commit-btn-animated:hover:not(.commit-btn-animated--loading) {
+.commit-btn-animated.button-secondary {
+  background-color: var(--button-secondary-bg) !important;
+  border-color: var(--button-secondary-border) !important;
+  color: var(--text-default) !important;
+}
+
+.commit-btn-animated:hover:not(.commit-btn-animated--loading):not(.button-secondary) {
   background-color: #4a85f6;
 }
 
-.commit-btn-animated:active:not(.commit-btn-animated--loading) {
+.commit-btn-animated:active:not(.commit-btn-animated--loading):not(.button-secondary) {
   background-color: #2b5fc4;
 }
 
