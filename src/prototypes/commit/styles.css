@@ -19,7 +19,8 @@
   color: var(--text-secondary, #6c6f75) !important;
 }
 
-.commit-bottom-panel .commit-message-textarea:focus {
+.commit-bottom-panel .commit-message-textarea:focus,
+.has-checked-files .commit-bottom-panel .commit-message-textarea {
   color: var(--text-default, #dfe1e5) !important;
 }
 

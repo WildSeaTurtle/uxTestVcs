@@ -102,7 +102,7 @@ function CommitPanelContent({ context }) {
   }, [commited]);
 
   return (
-    <div ref={panelRef} className={`commit-panel-wrapper commit-window-custom${loading ? ' is-loading' : ''}${commited ? ' is-commited' : ''}`}>
+    <div ref={panelRef} className={`commit-panel-wrapper commit-window-custom${loading ? ' is-loading' : ''}${commited ? ' is-commited' : ''}${noFilesChecked ? '' : ' has-checked-files'}`}>
       <CommitWindow
         files={files}
         commitMessage="Update conflict resolution dialog message for clearer state distinction"

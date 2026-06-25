@@ -31,13 +31,11 @@ export default function AnimatedCommitButton({ onCommitStart, onCommitComplete, 
 
   useEffect(() => () => clearTimeout(timerRef.current), []);
 
-  const isDisabled = loading || (disabled && !loading);
-
   return (
     <button
-      className={`commit-btn-animated${loading ? ' commit-btn-animated--loading' : ''}${isDisabled ? ' button button-secondary button-default text-ui-default button-disabled' : ''}`}
+      className={`commit-btn-animated${loading ? ' commit-btn-animated--loading button button-secondary button-default text-ui-default button-disabled' : disabled ? ' button button-secondary button-default text-ui-default' : ''}`}
       onClick={handleClick}
-      disabled={isDisabled}
+      disabled={loading}
     >
       {loading && (
         <Loader size="small" className="commit-btn-animated__spinner" />
