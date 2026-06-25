@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { MainWindow, CommitWindow, Loader } from '@jetbrains/int-ui-kit';
+import { MainWindow, CommitWindow } from '@jetbrains/int-ui-kit';
 import './styles.css';
 
 const COMMIT_FILES = [
@@ -50,12 +50,11 @@ function CurrentCommitButton({ onCommitStart, onCommitComplete, disabled }) {
 
   return (
     <button
-      className={`commit-btn commit-btn${loading ? '--loading' : disabled ? '--secondary' : '--primary'}`}
+      className={`commit-btn commit-btn${loading || disabled ? '--secondary commit-btn--disabled' : '--primary'}`}
       onClick={handleClick}
       disabled={loading}
     >
-      {loading && <Loader size="small" className="commit-btn__spinner" />}
-      <span className="commit-btn__label">{loading ? 'Commiting...' : 'Commit'}</span>
+      <span className="commit-btn__label">Commit</span>
     </button>
   );
 }

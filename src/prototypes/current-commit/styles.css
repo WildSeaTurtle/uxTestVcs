@@ -103,26 +103,19 @@
   cursor: default;
 }
 
-.commit-btn--loading {
+.commit-btn--secondary.commit-btn--disabled {
   background-color: transparent;
   border-color: var(--control-border-disabled);
   color: var(--text-disabled);
   cursor: not-allowed;
-  gap: 6px;
 }
 
 /* Disable Commit and Push during loading */
-.current-commit-panel-wrapper:has(.commit-btn--loading) .commit-buttons button:not(.commit-btn) {
+.current-commit-panel-wrapper:has(.commit-btn--disabled) .commit-buttons button:not(.commit-btn) {
   pointer-events: none;
   cursor: not-allowed;
   color: var(--text-disabled) !important;
   border-color: var(--control-border-disabled) !important;
-}
-
-/* Spinner */
-.commit-btn__spinner {
-  flex: 0 0 auto;
-  filter: opacity(0.5);
 }
 
 /* Label */
