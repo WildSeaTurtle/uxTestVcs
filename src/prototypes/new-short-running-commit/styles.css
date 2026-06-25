@@ -129,7 +129,7 @@
 
 /* Notification overlay */
 .current-commit-notification-overlay {
-  position: absolute;
+  position: fixed;
   bottom: calc(var(--main-window-inset, 100px) + 40px);
   right: calc(var(--main-window-inset, 100px) + 50px);
   z-index: 100;
@@ -138,7 +138,7 @@
 
 /* Notification overlay */
 .current-commit-notification-overlay {
-  position: absolute;
+  position: fixed;
   bottom: calc(var(--main-window-inset, 100px) + 40px);
   right: calc(var(--main-window-inset, 100px) + 50px);
   z-index: 100;
