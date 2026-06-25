@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { MainWindow, CommitWindow } from '@jetbrains/int-ui-kit';
+import { MainWindow, CommitWindow, Notification } from '@jetbrains/int-ui-kit';
 import './styles.css';
 
 const COMMIT_FILES = [
@@ -106,7 +106,12 @@ function CurrentCommitPanelContent({ context, onLoadingChange }) {
   };
 
   const handleCommitStart = () => {
-    onLoadingChange?.(true);
+    const panel = panelRef.current;
+    const checked = [...panel.querySelectorAll('input[type=checkbox]:checked')]
+      .filter(el => !el.closest('.commit-amend-toolbar'));
+    const textarea = panel.querySelector('.commit-message-textarea');
+    const message = textarea?.value || '';
+    onLoadingChange?.(true, checked.length, message);
   };
 
   const handleCommitComplete = () => {
@@ -153,11 +158,13 @@ export const SCREEN_GROUPS = [
 export default function CurrentCommitScreen({ screenId }) {
   const [loading, setLoading] = useState(false);
   const [progressValue, setProgressValue] = useState(0);
+  const [notification, setNotification] = useState(null);
   const progressTimerRef = useRef(null);
 
-  const handleLoadingChange = (isLoading) => {
-    setLoading(isLoading);
+  const handleLoadingChange = (isLoading, filesCount, message) => {
     if (isLoading) {
+      setLoading(true);
+      setNotification(null);
       setProgressValue(0);
       const start = Date.now();
       progressTimerRef.current = setInterval(() => {
@@ -168,7 +175,11 @@ export default function CurrentCommitScreen({ screenId }) {
       }, 50);
     } else {
       clearInterval(progressTimerRef.current);
+      setLoading(false);
       setProgressValue(0);
+      if (filesCount !== undefined) {
+        setNotification({ filesCount, message });
+      }
     }
   };
 
@@ -197,6 +208,18 @@ export default function CurrentCommitScreen({ screenId }) {
           statusBarProps={loading ? { progress: true, progressLabel: 'Commiting', progressValue } : undefined}
         />
       </div>
+      {notification && (
+        <div className="current-commit-notification-overlay">
+          <Notification
+            type="info"
+            title={`${notification.filesCount} file${notification.filesCount !== 1 ? 's' : ''} committed`}
+            actions={[{ label: 'Edit commit message...', onClick: () => setNotification(null) }]}
+            onClose={() => setNotification(null)}
+          >
+            {notification.message}
+          </Notification>
+        </div>
+      )}
     </section>
   );
 }
