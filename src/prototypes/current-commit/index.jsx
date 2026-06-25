@@ -160,9 +160,11 @@ export default function CurrentCommitScreen({ screenId }) {
   const [progressValue, setProgressValue] = useState(0);
   const [notification, setNotification] = useState(null);
   const progressTimerRef = useRef(null);
+  const commitInfoRef = useRef(null);
 
   const handleLoadingChange = (isLoading, filesCount, message) => {
     if (isLoading) {
+      commitInfoRef.current = { filesCount, message };
       setLoading(true);
       setNotification(null);
       setProgressValue(0);
@@ -177,8 +179,9 @@ export default function CurrentCommitScreen({ screenId }) {
       clearInterval(progressTimerRef.current);
       setLoading(false);
       setProgressValue(0);
-      if (filesCount !== undefined) {
-        setNotification({ filesCount, message });
+      if (commitInfoRef.current) {
+        setNotification(commitInfoRef.current);
+        commitInfoRef.current = null;
       }
     }
   };
