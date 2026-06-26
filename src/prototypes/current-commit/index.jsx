@@ -170,7 +170,7 @@ export default function CurrentCommitScreen({ screenId }) {
       const island = layerRef.current?.querySelector('.main-window-island');
       if (!island) return;
       const rect = island.getBoundingClientRect();
-      setNotificationPos({ bottom: window.innerHeight - rect.bottom + 32, right: window.innerWidth - rect.right + 40 });
+      setNotificationPos({ bottom: window.innerHeight - rect.bottom + 25, right: window.innerWidth - rect.right + 46 });
     };
     updatePos();
     window.addEventListener('resize', updatePos);
