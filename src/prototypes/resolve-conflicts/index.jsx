@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { Button, Loader, MainWindow } from '@jetbrains/int-ui-kit';
+import { Button, Loader, MainWindow, AIAssistantWindow } from '@jetbrains/int-ui-kit';
 
 import conflictDialogNothingResolvedImage from '../../../img/Conflict dialog nothing resolved.png';
 import conflictDialogSomeResolvedImage from '../../../img/Conflict dialog some conflicts resolved.png';
@@ -62,7 +62,8 @@ function ProjectMainWindow({ children }) {
         branchName="feature/resolve-conflicts"
         runConfig="IDEA Community"
         height="100%"
-        defaultOpenToolWindows={['project']}
+        defaultOpenToolWindows={['project', 'ai']}
+        rightPanelContent={(stripeId, ctx) => stripeId === 'ai' ? <AIAssistantWindow layoutMode={ctx.toolWindowLayoutMode} /> : null}
       />
 
       {children}

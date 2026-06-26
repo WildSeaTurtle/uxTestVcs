@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { MainWindow, CommitWindow } from '@jetbrains/int-ui-kit';
+import { MainWindow, CommitWindow, AIAssistantWindow } from '@jetbrains/int-ui-kit';
 import CommitButtonDemo from './CommitButtonDemo.jsx';
 import AnimatedCommitButton, { CommitedButton } from './AnimatedCommitButton.jsx';
 import './styles.css';
@@ -191,9 +191,10 @@ export default function CommitScreen({ screenId }) {
           branchName="feature/resolve-conflicts"
           runConfig="IDEA Community"
           height="100%"
-          defaultOpenToolWindows={['commit']}
+          defaultOpenToolWindows={['commit', 'ai']}
           initialLeftPanelWidth={400}
           leftPanelContent={renderLeftPanel}
+          rightPanelContent={(stripeId, ctx) => stripeId === 'ai' ? <AIAssistantWindow layoutMode={ctx.toolWindowLayoutMode} /> : null}
           statusBarProps={loading ? { progress: true, progressLabel: 'Commiting', progressValue, breadcrumbs: FIXED_BREADCRUMBS } : { breadcrumbs: FIXED_BREADCRUMBS }}
         />
       </div>
