@@ -141,6 +141,21 @@ export const SCREEN_GROUPS = [
 
 export default function CurrentCommitScreen({ screenId }) {
   const [notification, setNotification] = useState(null);
+  const [notificationPos, setNotificationPos] = useState(null);
+  const layerRef = useRef(null);
+
+  useEffect(() => {
+    if (!notification) { setNotificationPos(null); return; }
+    const updatePos = () => {
+      const island = layerRef.current?.querySelector('.main-window-island');
+      if (!island) return;
+      const rect = island.getBoundingClientRect();
+      setNotificationPos({ bottom: window.innerHeight - rect.bottom + 32, right: window.innerWidth - rect.right + 40 });
+    };
+    updatePos();
+    window.addEventListener('resize', updatePos);
+    return () => window.removeEventListener('resize', updatePos);
+  }, [notification]);
 
   const handleCommit = (filesCount, message) => {
     setNotification({ filesCount, message });
@@ -155,7 +170,7 @@ export default function CurrentCommitScreen({ screenId }) {
 
   return (
     <section className="current-commit-screen" aria-label="Current Commit prototype">
-      <div className="main-window-layer">
+      <div className="main-window-layer" ref={layerRef}>
         <MainWindow
           projectName="commons-math"
           projectIcon="CM"
@@ -168,8 +183,8 @@ export default function CurrentCommitScreen({ screenId }) {
           leftPanelContent={renderLeftPanel}
         />
       </div>
-      {notification && (
-        <div className="current-commit-notification-overlay">
+      {notification && notificationPos && (
+        <div className="current-commit-notification-overlay" style={{ bottom: notificationPos.bottom, right: notificationPos.right }}>
           <Notification
             type="info"
             title={`${notification.filesCount} file${notification.filesCount !== 1 ? 's' : ''} committed`}

@@ -159,8 +159,23 @@ export default function CurrentCommitScreen({ screenId }) {
   const [loading, setLoading] = useState(false);
   const [progressValue, setProgressValue] = useState(0);
   const [notification, setNotification] = useState(null);
+  const [notificationPos, setNotificationPos] = useState(null);
   const progressTimerRef = useRef(null);
   const commitInfoRef = useRef(null);
+  const layerRef = useRef(null);
+
+  useEffect(() => {
+    if (!notification) { setNotificationPos(null); return; }
+    const updatePos = () => {
+      const island = layerRef.current?.querySelector('.main-window-island');
+      if (!island) return;
+      const rect = island.getBoundingClientRect();
+      setNotificationPos({ bottom: window.innerHeight - rect.bottom + 32, right: window.innerWidth - rect.right + 40 });
+    };
+    updatePos();
+    window.addEventListener('resize', updatePos);
+    return () => window.removeEventListener('resize', updatePos);
+  }, [notification]);
 
   const handleLoadingChange = (isLoading, filesCount, message) => {
     if (isLoading) {
@@ -197,7 +212,7 @@ export default function CurrentCommitScreen({ screenId }) {
 
   return (
     <section className="current-commit-screen" aria-label="Current Commit prototype">
-      <div className="main-window-layer">
+      <div className="main-window-layer" ref={layerRef}>
         <MainWindow
           projectName="commons-math"
           projectIcon="CM"
@@ -211,8 +226,8 @@ export default function CurrentCommitScreen({ screenId }) {
           statusBarProps={loading ? { progress: true, progressLabel: 'Commiting', progressValue } : undefined}
         />
       </div>
-      {notification && (
-        <div className="current-commit-notification-overlay">
+      {notification && notificationPos && (
+        <div className="current-commit-notification-overlay" style={{ bottom: notificationPos.bottom, right: notificationPos.right }}>
           <Notification
             type="info"
             title={`${notification.filesCount} file${notification.filesCount !== 1 ? 's' : ''} committed`}
