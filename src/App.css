@@ -183,10 +183,11 @@
 
 .main-window-layer {
   justify-content: center;
+  padding: 20px !important;
 }
 
 .commit-bottom-panel .commit-message-textarea {
-  font-weight: 400;
+  font-weight: 400 !important;
 }
 
 @media (max-width: 520px) {
