@@ -17,7 +17,7 @@ const COMMIT_FILES = [
       { id: 'bivariate',  label: 'BivariateFunction.java', path: '~/IdeaProjects/FastMath/src/main/java/com/example', icon: 'fileTypes/java', status: 'modified' },
       { id: 'multivariate', label: 'MultivariateFunction.java', path: '~/IdeaProjects/FastMath/src/main/java/com/example', icon: 'fileTypes/java', status: 'modified' },
       { id: 'trivariate', label: 'TrivariateFunction.java', path: '~/IdeaProjects/FastMath/src/main/java/com/example', icon: 'fileTypes/java', status: 'modified' },
-      { id: 'solver',     label: 'UnivariateSolver.java',  path: '~/IdeaProjects/FastMath/src/main/java/com/solver',  icon: 'fileTypes/java', status: 'modified' },
+      { id: 'solver',     label: 'UnivariateSolver.java',  path: '~/IdeaProjects/FastMath/src/main/java/com/example',  icon: 'fileTypes/java', status: 'modified' },
       { id: 'analysis',   label: 'AnalysisUtils.java',     path: '~/IdeaProjects/FastMath/src/main/java/com/example', icon: 'fileTypes/java', status: 'added'    },
     ],
   },
@@ -33,6 +33,14 @@ const COMMIT_FILES = [
 ];
 
 const LOADING_DURATION_MS = 3000;
+
+const FIXED_BREADCRUMBS = [
+  { label: 'commons-math' },
+  { label: 'src' },
+  { label: 'main' },
+  { label: 'java' },
+  { label: 'AdapterScript', iconName: 'fileTypes/java' },
+];
 
 function CommitPanelContent({ context, onLoadingChange }) {
   const [files, setFiles] = useState([]);
@@ -116,7 +124,7 @@ function CommitPanelContent({ context, onLoadingChange }) {
       />
       {commitBtnsEl && createPortal(
         commited
-          ? <CommitedButton />
+          ? <CommitedButton onClick={() => setCommited(false)} />
           : <AnimatedCommitButton onCommitStart={handleCommitStart} onCommitComplete={handleAnimatedCommit} disabled={noFilesChecked} />,
         commitBtnsEl
       )}
@@ -186,7 +194,7 @@ export default function CommitScreen({ screenId }) {
           defaultOpenToolWindows={['commit']}
           initialLeftPanelWidth={400}
           leftPanelContent={renderLeftPanel}
-          statusBarProps={loading ? { progress: true, progressLabel: 'Commiting', progressValue } : undefined}
+          statusBarProps={loading ? { progress: true, progressLabel: 'Commiting', progressValue, breadcrumbs: FIXED_BREADCRUMBS } : { breadcrumbs: FIXED_BREADCRUMBS }}
         />
       </div>
     </section>

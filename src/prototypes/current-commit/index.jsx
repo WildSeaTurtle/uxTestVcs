@@ -15,7 +15,7 @@ const COMMIT_FILES = [
       { id: 'bivariate',  label: 'BivariateFunction.java', path: '~/IdeaProjects/FastMath/src/main/java/com/example', icon: 'fileTypes/java', status: 'modified' },
       { id: 'multivariate', label: 'MultivariateFunction.java', path: '~/IdeaProjects/FastMath/src/main/java/com/example', icon: 'fileTypes/java', status: 'modified' },
       { id: 'trivariate', label: 'TrivariateFunction.java', path: '~/IdeaProjects/FastMath/src/main/java/com/example', icon: 'fileTypes/java', status: 'modified' },
-      { id: 'solver',     label: 'UnivariateSolver.java',  path: '~/IdeaProjects/FastMath/src/main/java/com/solver',  icon: 'fileTypes/java', status: 'modified' },
+      { id: 'solver',     label: 'UnivariateSolver.java',  path: '~/IdeaProjects/FastMath/src/main/java/com/example',  icon: 'fileTypes/java', status: 'modified' },
       { id: 'analysis',   label: 'AnalysisUtils.java',     path: '~/IdeaProjects/FastMath/src/main/java/com/example', icon: 'fileTypes/java', status: 'added'    },
     ],
   },
@@ -32,47 +32,37 @@ const COMMIT_FILES = [
 
 const LOADING_DURATION_MS = 3000;
 
-function CheckmarkIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" className="commit-btn__icon">
-      <path d="M4 8.5L7 11.5L12.5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
-  );
-}
+const FIXED_BREADCRUMBS = [
+  { label: 'commons-math' },
+  { label: 'src' },
+  { label: 'main' },
+  { label: 'java' },
+  { label: 'AdapterScript', iconName: 'fileTypes/java' },
+];
 
 function CurrentCommitButton({ onCommitStart, onCommitComplete, disabled }) {
   const [loading, setLoading] = useState(false);
-  const [committed, setCommitted] = useState(false);
   const timerRef = useRef(null);
-
-  useEffect(() => {
-    if (!disabled) setCommitted(false);
-  }, [disabled]);
 
   const handleClick = () => {
     if (loading || disabled) return;
     setLoading(true);
-    setCommitted(false);
     onCommitStart?.();
     timerRef.current = setTimeout(() => {
       setLoading(false);
-      setCommitted(true);
       onCommitComplete?.();
     }, LOADING_DURATION_MS);
   };
 
   useEffect(() => () => clearTimeout(timerRef.current), []);
 
-  const isCommitted = committed && disabled;
-
   return (
     <button
-      className={`commit-btn ${isCommitted ? 'commit-btn--committed' : loading || disabled ? 'commit-btn--secondary commit-btn--disabled' : 'commit-btn--primary'}`}
+      className={`commit-btn ${loading ? 'commit-btn--secondary commit-btn--disabled' : disabled ? 'commit-btn--secondary' : 'commit-btn--primary'}`}
       onClick={handleClick}
       disabled={loading}
     >
-      {isCommitted && <CheckmarkIcon />}
-      <span className="commit-btn__label">{isCommitted ? 'Committed' : 'Commit'}</span>
+      <span className="commit-btn__label">Commit</span>
     </button>
   );
 }
@@ -243,7 +233,7 @@ export default function CurrentCommitScreen({ screenId }) {
           defaultOpenToolWindows={['commit']}
           initialLeftPanelWidth={400}
           leftPanelContent={renderLeftPanel}
-          statusBarProps={loading ? { progress: true, progressLabel: 'Commiting', progressValue } : undefined}
+          statusBarProps={loading ? { progress: true, progressLabel: 'Commiting', progressValue, breadcrumbs: FIXED_BREADCRUMBS } : { breadcrumbs: FIXED_BREADCRUMBS }}
         />
       </div>
       {notificationPos && notifications.length > 0 && (

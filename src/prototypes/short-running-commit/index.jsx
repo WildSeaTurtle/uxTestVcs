@@ -17,7 +17,7 @@ const COMMIT_FILES = [
       { id: 'bivariate',  label: 'BivariateFunction.java', path: '~/IdeaProjects/FastMath/src/main/java/com/example', icon: 'fileTypes/java', status: 'modified' },
       { id: 'multivariate', label: 'MultivariateFunction.java', path: '~/IdeaProjects/FastMath/src/main/java/com/example', icon: 'fileTypes/java', status: 'modified' },
       { id: 'trivariate', label: 'TrivariateFunction.java', path: '~/IdeaProjects/FastMath/src/main/java/com/example', icon: 'fileTypes/java', status: 'modified' },
-      { id: 'solver',     label: 'UnivariateSolver.java',  path: '~/IdeaProjects/FastMath/src/main/java/com/solver',  icon: 'fileTypes/java', status: 'modified' },
+      { id: 'solver',     label: 'UnivariateSolver.java',  path: '~/IdeaProjects/FastMath/src/main/java/com/example',  icon: 'fileTypes/java', status: 'modified' },
       { id: 'analysis',   label: 'AnalysisUtils.java',     path: '~/IdeaProjects/FastMath/src/main/java/com/example', icon: 'fileTypes/java', status: 'added'    },
     ],
   },
@@ -106,7 +106,7 @@ function CommitPanelContent({ context }) {
       />
       {commitBtnsEl && createPortal(
         commited
-          ? <CommitedButton />
+          ? <CommitedButton onClick={() => setCommited(false)} />
           : <AnimatedCommitButton onCommitComplete={handleAnimatedCommit} disabled={noFilesChecked} />,
         commitBtnsEl
       )}

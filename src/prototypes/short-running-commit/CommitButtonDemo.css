@@ -37,11 +37,11 @@
   color: var(--text-default) !important;
 }
 
-.commit-btn-animated:hover:not(.commit-btn-animated--loading):not(.button-secondary) {
+.commit-btn-animated:hover:not(.commit-btn-animated--loading):not(.button-secondary):not(.commit-btn-animated--commited) {
   background-color: #4a85f6;
 }
 
-.commit-btn-animated:active:not(.commit-btn-animated--loading):not(.button-secondary) {
+.commit-btn-animated:active:not(.commit-btn-animated--loading):not(.button-secondary):not(.commit-btn-animated--commited) {
   background-color: #2b5fc4;
 }
 
@@ -64,7 +64,9 @@
 /* Commited state */
 .commit-btn-animated--commited {
   cursor: default;
-  background-color: #3574f0;
+  background-color: var(--button-secondary-bg);
+  border-color: var(--button-secondary-border);
+  color: var(--text-success);
   padding-left: 12px;
   gap: 4px;
 }
@@ -76,7 +78,7 @@
   height: 16px;
   flex: 0 0 auto;
   display: block;
-  filter: brightness(0) invert(1);
+  color: var(--icon-green-stroke);
 }
 
 /* Label */
