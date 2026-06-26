@@ -5,6 +5,9 @@ metadata:
 build:
   artifacts:
     - image: ghcr.io/jetbrains/vcs/ide-design-vcs
+manifests:
+  rawYaml:
+    - k8s/*.yaml
 profiles:
   - name: prod
     deploy:
@@ -19,6 +22,4 @@ profiles:
             setValueTemplates:
               image.repository: "{{.IMAGE_REPO_ghcr_io_jetbrains_vcs_ide_design_vcs}}"
               image.tag: "{{.IMAGE_TAG_ghcr_io_jetbrains_vcs_ide_design_vcs}}@{{.IMAGE_DIGEST_ghcr_io_jetbrains_vcs_ide_design_vcs}}"
-      kubectl:
-        manifests:
-          - k8s/*.yaml
+      kubectl: {}
