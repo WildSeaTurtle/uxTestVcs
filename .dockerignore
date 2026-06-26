@@ -1,6 +1,5 @@
 README.md
 Dockerfile
-nginx.conf
 skaffold.yaml
 values.yaml
 .github/
