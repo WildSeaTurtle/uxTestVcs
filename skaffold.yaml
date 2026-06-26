@@ -2,24 +2,35 @@ apiVersion: skaffold/v4beta11
 kind: Config
 metadata:
   name: ide-design-vcs
+
 build:
+  tagPolicy:
+    sha256: {}
   artifacts:
     - image: ghcr.io/jetbrains/vcs/ide-design-vcs
+      docker: {}
+  local:
+    useDockerCLI: false
+    useBuildkit: true
+
 manifests:
   rawYaml:
     - k8s/*.yaml
+
+deploy:
+  helm:
+    releases:
+      - name: ide-design-vcs
+        remoteChart: oci://ghcr.io/jetbrains/sre-helm-charts/simple-app
+        version: 0.3.4
+        namespace: ide-ux-designers
+        upgradeOnChange: true
+        setValueTemplates:
+          image: "{{.IMAGE_FULLY_QUALIFIED}}"
+        valuesFiles:
+          - values.yaml
+  kubectl:
+    defaultNamespace: ide-ux-designers
+
 profiles:
   - name: prod
-    deploy:
-      helm:
-        releases:
-          - name: ide-design-vcs
-            remoteChart: simple-app
-            version: 0.3.4
-            namespace: ide-ux-designers
-            valuesFiles:
-              - values.yaml
-            setValueTemplates:
-              image.repository: "{{.IMAGE_REPO_ghcr_io_jetbrains_vcs_ide_design_vcs}}"
-              image.tag: "{{.IMAGE_TAG_ghcr_io_jetbrains_vcs_ide_design_vcs}}@{{.IMAGE_DIGEST_ghcr_io_jetbrains_vcs_ide_design_vcs}}"
-      kubectl: {}
