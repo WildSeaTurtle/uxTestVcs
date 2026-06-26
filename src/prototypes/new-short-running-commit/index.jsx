@@ -140,12 +140,14 @@ export const SCREEN_GROUPS = [
 ];
 
 export default function CurrentCommitScreen({ screenId }) {
-  const [notification, setNotification] = useState(null);
+  const [notifications, setNotifications] = useState([]);
   const [notificationPos, setNotificationPos] = useState(null);
   const layerRef = useRef(null);
+  const notifIdRef = useRef(0);
 
+  const hasNotifications = notifications.length > 0;
   useEffect(() => {
-    if (!notification) { setNotificationPos(null); return; }
+    if (!hasNotifications) { setNotificationPos(null); return; }
     const updatePos = () => {
       const island = layerRef.current?.querySelector('.main-window-island');
       if (!island) return;
@@ -155,10 +157,10 @@ export default function CurrentCommitScreen({ screenId }) {
     updatePos();
     window.addEventListener('resize', updatePos);
     return () => window.removeEventListener('resize', updatePos);
-  }, [notification]);
+  }, [hasNotifications]);
 
   const handleCommit = (filesCount, message) => {
-    setNotification({ filesCount, message });
+    setNotifications(prev => [{ id: ++notifIdRef.current, filesCount, message }, ...prev]);
   };
 
   const renderLeftPanel = (stripeId, context) => {
@@ -183,16 +185,19 @@ export default function CurrentCommitScreen({ screenId }) {
           leftPanelContent={renderLeftPanel}
         />
       </div>
-      {notification && notificationPos && (
+      {notificationPos && notifications.length > 0 && (
         <div className="current-commit-notification-overlay" style={{ bottom: notificationPos.bottom, right: notificationPos.right }}>
-          <Notification
-            type="info"
-            title={`${notification.filesCount} file${notification.filesCount !== 1 ? 's' : ''} committed`}
-            actions={[{ label: 'Edit commit message...', onClick: () => setNotification(null) }]}
-            onClose={() => setNotification(null)}
-          >
-            {notification.message}
-          </Notification>
+          {notifications.map(n => (
+            <Notification
+              key={n.id}
+              type="info"
+              title={`${n.filesCount} file${n.filesCount !== 1 ? 's' : ''} committed`}
+              actions={[{ label: 'Edit commit message...', onClick: () => setNotifications(prev => prev.filter(x => x.id !== n.id)) }]}
+              onClose={() => setNotifications(prev => prev.filter(x => x.id !== n.id))}
+            >
+              {n.message}
+            </Notification>
+          ))}
         </div>
       )}
     </section>

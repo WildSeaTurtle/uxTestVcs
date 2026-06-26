@@ -158,14 +158,16 @@ export const SCREEN_GROUPS = [
 export default function CurrentCommitScreen({ screenId }) {
   const [loading, setLoading] = useState(false);
   const [progressValue, setProgressValue] = useState(0);
-  const [notification, setNotification] = useState(null);
+  const [notifications, setNotifications] = useState([]);
   const [notificationPos, setNotificationPos] = useState(null);
   const progressTimerRef = useRef(null);
   const commitInfoRef = useRef(null);
   const layerRef = useRef(null);
+  const notifIdRef = useRef(0);
 
+  const hasNotifications = notifications.length > 0;
   useEffect(() => {
-    if (!notification) { setNotificationPos(null); return; }
+    if (!hasNotifications) { setNotificationPos(null); return; }
     const updatePos = () => {
       const island = layerRef.current?.querySelector('.main-window-island');
       if (!island) return;
@@ -175,13 +177,12 @@ export default function CurrentCommitScreen({ screenId }) {
     updatePos();
     window.addEventListener('resize', updatePos);
     return () => window.removeEventListener('resize', updatePos);
-  }, [notification]);
+  }, [hasNotifications]);
 
   const handleLoadingChange = (isLoading, filesCount, message) => {
     if (isLoading) {
       commitInfoRef.current = { filesCount, message };
       setLoading(true);
-      setNotification(null);
       setProgressValue(0);
       const start = Date.now();
       progressTimerRef.current = setInterval(() => {
@@ -195,8 +196,9 @@ export default function CurrentCommitScreen({ screenId }) {
       setLoading(false);
       setProgressValue(0);
       if (commitInfoRef.current) {
-        setNotification(commitInfoRef.current);
+        const info = commitInfoRef.current;
         commitInfoRef.current = null;
+        setNotifications(prev => [{ id: ++notifIdRef.current, ...info }, ...prev]);
       }
     }
   };
@@ -226,16 +228,19 @@ export default function CurrentCommitScreen({ screenId }) {
           statusBarProps={loading ? { progress: true, progressLabel: 'Commiting', progressValue } : undefined}
         />
       </div>
-      {notification && notificationPos && (
+      {notificationPos && notifications.length > 0 && (
         <div className="current-commit-notification-overlay" style={{ bottom: notificationPos.bottom, right: notificationPos.right }}>
-          <Notification
-            type="info"
-            title={`${notification.filesCount} file${notification.filesCount !== 1 ? 's' : ''} committed`}
-            actions={[{ label: 'Edit commit message...', onClick: () => setNotification(null) }]}
-            onClose={() => setNotification(null)}
-          >
-            {notification.message}
-          </Notification>
+          {notifications.map(n => (
+            <Notification
+              key={n.id}
+              type="info"
+              title={`${n.filesCount} file${n.filesCount !== 1 ? 's' : ''} committed`}
+              actions={[{ label: 'Edit commit message...', onClick: () => setNotifications(prev => prev.filter(x => x.id !== n.id)) }]}
+              onClose={() => setNotifications(prev => prev.filter(x => x.id !== n.id))}
+            >
+              {n.message}
+            </Notification>
+          ))}
         </div>
       )}
     </section>

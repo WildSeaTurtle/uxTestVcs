@@ -132,4 +132,7 @@
   position: fixed;
   z-index: 100;
   width: 350px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
