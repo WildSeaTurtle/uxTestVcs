@@ -1,0 +1,24 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: ide-design-vcs
+build:
+  artifacts:
+    - image: ghcr.io/jetbrains/vcs/ide-design-vcs
+profiles:
+  - name: prod
+    deploy:
+      helm:
+        releases:
+          - name: ide-design-vcs
+            remoteChart: simple-app
+            version: 0.3.4
+            namespace: ide-ux-designers
+            valuesFiles:
+              - values.yaml
+            setValueTemplates:
+              image.repository: "{{.IMAGE_REPO_ghcr_io_jetbrains_vcs_ide_design_vcs}}"
+              image.tag: "{{.IMAGE_TAG_ghcr_io_jetbrains_vcs_ide_design_vcs}}@{{.IMAGE_DIGEST_ghcr_io_jetbrains_vcs_ide_design_vcs}}"
+      kubectl:
+        manifests:
+          - k8s/*.yaml

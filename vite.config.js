@@ -7,7 +7,7 @@ import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
 import { playwright } from '@vitest/browser-playwright';
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 export default defineConfig({
-  base: '/VCSprototypes/',
+  base: process.env.VITE_DEPLOY_BASE || '/VCSprototypes/',
   plugins: [react({
     include: /\.[jt]sx?$/
   })],

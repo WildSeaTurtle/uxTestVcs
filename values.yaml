@@ -1,0 +1,21 @@
+applicationName: ide-design-vcs
+domainName: labs.jb.gg
+containerPort: 8080
+
+podSecurityContext:
+  runAsUser: 101
+  runAsGroup: 101
+
+health:
+  path: /healthz
+
+ingress:
+  enabled: false
+
+oauth2:
+  enabled: false
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 5
