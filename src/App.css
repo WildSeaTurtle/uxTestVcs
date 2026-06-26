@@ -2,12 +2,14 @@
   --screen-switcher-panel-width: 260px;
 
   width: 100vw;
+  max-width: 1920px;
   height: 100vh;
   height: 100dvh;
   position: relative;
   box-sizing: border-box;
   background: #1e1f22;
   overflow: hidden;
+  margin: 0 auto;
 }
 
 .prototype-content {
@@ -25,7 +27,7 @@
 }
 
 .screen-switcher {
-  position: fixed;
+  position: absolute;
   inset: 0 auto 0 0;
   z-index: 5;
   display: flex;
