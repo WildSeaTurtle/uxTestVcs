@@ -32,18 +32,36 @@ const COMMIT_FILES = [
 
 const LOADING_DURATION_MS = 3000;
 
+function CheckmarkIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" className="commit-btn__icon">
+      <path d="M4 8.5L7 11.5L12.5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+}
+
 function CurrentCommitButton({ onCommit, disabled }) {
+  const [committed, setCommitted] = useState(false);
+
+  useEffect(() => {
+    if (!disabled) setCommitted(false);
+  }, [disabled]);
+
   const handleClick = () => {
     if (disabled) return;
+    setCommitted(true);
     onCommit?.();
   };
 
+  const isCommitted = committed && disabled;
+
   return (
     <button
-      className={`commit-btn commit-btn${disabled ? '--secondary' : '--primary'}`}
+      className={`commit-btn ${isCommitted ? 'commit-btn--committed' : disabled ? 'commit-btn--secondary' : 'commit-btn--primary'}`}
       onClick={handleClick}
     >
-      <span className="commit-btn__label">Commit</span>
+      {isCommitted && <CheckmarkIcon />}
+      <span className="commit-btn__label">{isCommitted ? 'Committed' : 'Commit'}</span>
     </button>
   );
 }
