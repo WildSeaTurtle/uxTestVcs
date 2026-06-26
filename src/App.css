@@ -185,6 +185,10 @@
   justify-content: center;
 }
 
+.commit-bottom-panel .commit-message-textarea {
+  font-weight: 400;
+}
+
 @media (max-width: 520px) {
   .prototype-shell {
     --screen-switcher-panel-width: 220px;
