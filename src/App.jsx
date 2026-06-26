@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ThemeProvider } from '@jetbrains/int-ui-kit';
 
 import ResolveConflictsScreen, { SCREEN_GROUPS as RESOLVE_CONFLICTS_GROUPS } from './prototypes/resolve-conflicts/index.jsx';
@@ -42,11 +42,10 @@ const PROTOTYPES = [
 ];
 
 const ACTIVE_SCREEN_STORAGE_KEY = 'vcs-prototypes-active-screen';
-const ACTIVE_PROTOTYPE_STORAGE_KEY = 'vcs-prototypes-active-prototype';
 
-function getInitialPrototypeId() {
-  const stored = window.localStorage.getItem(ACTIVE_PROTOTYPE_STORAGE_KEY);
-  return PROTOTYPES.some((p) => p.id === stored) ? stored : PROTOTYPES[0].id;
+function getPrototypeIdFromHash() {
+  const hash = window.location.hash.slice(1);
+  return PROTOTYPES.some((p) => p.id === hash) ? hash : PROTOTYPES[0].id;
 }
 
 function getInitialScreenId(prototypeId) {
@@ -57,7 +56,8 @@ function getInitialScreenId(prototypeId) {
 }
 
 export default function App() {
-  const [activePrototypeId, setActivePrototypeId] = useState(getInitialPrototypeId);
+  const [activePrototypeId, setActivePrototypeId] = useState(getPrototypeIdFromHash);
+  const [isPanelVisible, setIsPanelVisible] = useState(false);
   const [screenIds, setScreenIds] = useState(() => {
     const result = {};
     for (const p of PROTOTYPES) {
@@ -75,13 +75,32 @@ export default function App() {
     return collapsed;
   });
 
+  useEffect(() => {
+    const handleHashChange = () => {
+      setActivePrototypeId(getPrototypeIdFromHash());
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.ctrlKey && e.metaKey && e.key === 's') {
+        e.preventDefault();
+        setIsPanelVisible((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   const activePrototype = PROTOTYPES.find((p) => p.id === activePrototypeId);
   const activeScreenId = screenIds[activePrototypeId];
   const allScreens = activePrototype.screenGroups.flatMap((g) => g.screens);
   const activeScreen = allScreens.find((s) => s.id === activeScreenId) ?? allScreens[0];
 
   const handlePrototypeChange = (prototypeId) => {
-    window.localStorage.setItem(ACTIVE_PROTOTYPE_STORAGE_KEY, prototypeId);
+    window.location.hash = prototypeId;
     setActivePrototypeId(prototypeId);
   };
 
@@ -109,7 +128,7 @@ export default function App() {
 
   return (
     <ThemeProvider defaultTheme="dark">
-      <main className="prototype-shell">
+      <main className={`prototype-shell${isPanelVisible ? ' panel-visible' : ''}`}>
         <nav className="screen-switcher" aria-label="Prototype navigation">
           <div className="prototype-picker">
             {PROTOTYPES.map((prototype) => (

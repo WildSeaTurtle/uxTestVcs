@@ -12,9 +12,17 @@
 
 .prototype-content {
   position: absolute;
-  inset: 0 0 0 var(--screen-switcher-panel-width);
+  inset: 0;
   width: auto;
   height: 100%;
+}
+
+.prototype-shell.panel-visible .prototype-content {
+  left: var(--screen-switcher-panel-width);
+}
+
+.prototype-shell:not(.panel-visible) .screen-switcher {
+  display: none;
 }
 
 .dialog-demo-screen {
@@ -171,6 +179,10 @@
 
 .main-window-island {
   max-width: 2000px;
+}
+
+.main-window-layer {
+  justify-content: center;
 }
 
 @media (max-width: 520px) {
