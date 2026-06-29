@@ -1,0 +1,5684 @@
+/**
+ * Toolwindow / AIA Chat — adapted from Figma
+ * https://www.figma.com/design/owE17XebzjLRwiNqTLY048/agent---vibecode---export?node-id=1-2525
+ * Default terminal command rows (Ran / Run + approval): AIA Agents MCP tool states
+ * https://www.figma.com/design/bx8VPGGw49Ob9u0WhwoxWq/AIA-Agents?node-id=9551-23425
+ * Layout width follows IDE right stripe (~427px default), spacing scaled from 450px frame.
+ */
+
+@property --fa-snippet-spin {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.figma-ai-tw__agenticVcs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.figma-ai-tw__vcsResultCard {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--fa-card-border);
+  border-radius: 8px;
+  background: var(--fa-card-bg);
+  box-shadow: inset 2px 0 0 rgba(56, 113, 225, 0.45);
+  color: var(--fa-text);
+}
+
+.figma-ai-tw__vcsResultHeader {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  margin-bottom: 6px;
+}
+
+.figma-ai-tw__vcsResultTitle {
+  overflow: hidden;
+  color: #dfe1e5;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.figma-ai-tw__vcsResultStats {
+  display: grid;
+  grid-template-columns: repeat(2, max-content);
+  gap: 6px;
+  color: #9da0a8;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 12px;
+  line-height: 16px;
+  white-space: nowrap;
+}
+
+.figma-ai-tw__vcsResultStats .is-added {
+  color: #73d18d;
+}
+
+.figma-ai-tw__vcsResultStats .is-deleted {
+  color: #ff8a8a;
+}
+
+.figma-ai-tw__vcsResultGroups {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.figma-ai-tw__vcsResultGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.figma-ai-tw__vcsResultGroupHead,
+.figma-ai-tw__vcsResultFile {
+  display: grid;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: default;
+}
+
+.figma-ai-tw__vcsResultGroupHead {
+  grid-template-columns: 14px 16px minmax(0, 1fr) auto;
+  column-gap: 5px;
+  min-height: 24px;
+  padding: 2px 0;
+}
+
+.figma-ai-tw__vcsResultGroupHead strong {
+  min-width: 0;
+  overflow: hidden;
+  color: #d1d3d9;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.figma-ai-tw__vcsResultGroupHead em {
+  color: #73767c;
+  font-size: 11px;
+  font-style: normal;
+  line-height: 14px;
+  white-space: nowrap;
+}
+
+.figma-ai-tw__vcsResultFiles {
+  display: flex;
+  flex-direction: column;
+}
+
+.figma-ai-tw__vcsResultFile {
+  grid-template-columns: 16px minmax(0, 1fr) auto auto;
+  column-gap: 6px;
+  min-height: 23px;
+  padding: 2px 0 2px 20px;
+}
+
+.figma-ai-tw__vcsResultFile:hover,
+.figma-ai-tw__vcsResultGroupHead:hover {
+  color: #dfe1e5;
+}
+
+.figma-ai-tw__vcsResultFile > span {
+  min-width: 0;
+  overflow: hidden;
+  color: #a8abb3;
+  font-size: 12px;
+  line-height: 16px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.figma-ai-tw__vcsResultFile b,
+.figma-ai-tw__vcsResultFile i {
+  padding: 0 5px;
+  border-radius: 7px;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 14px;
+}
+
+.figma-ai-tw__vcsResultFile b {
+  background: #5f4bb0;
+  color: #fff;
+}
+
+.figma-ai-tw__vcsResultFile i {
+  background: #35383e;
+  color: #a8abb3;
+}
+
+.figma-ai-tw__vcsResultFile small {
+  display: inline-grid;
+  grid-template-columns: repeat(2, max-content);
+  gap: 4px;
+  color: #73d18d;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 11px;
+  line-height: 14px;
+  white-space: nowrap;
+}
+
+.figma-ai-tw__vcsResultFile small .is-deleted {
+  color: #ff8a8a;
+}
+
+@property --fa-aia-mcp-border-spin {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.figma-ai-tw {
+  container-type: inline-size;
+  container-name: figma-ai-tw;
+
+  /* Match theme-dark tool window / gray-140 (cool blue-gray), not flat #1a1a1a (reads warm). */
+  --fa-bg: var(--bg-primary, #191a1c);
+  --fa-bg-tool: var(--fa-bg);
+  --fa-border-subtle: #1e1f22;
+  --fa-text: #d1d3d9;
+  --fa-text-body: #d3d3d3;
+  --fa-text-muted: #9fa2a8;
+  --fa-text-secondary: #73767c;
+  --fa-card-bg: #26282c;
+  /* Figma AIA-Agents 9423:70184 — snippet / raised-background on command row hover */
+  --fa-snippet-raised-bg: #212326;
+  --fa-card-border: #33353b;
+  --fa-user-bubble: #393b40;
+  --fa-details-bg: var(--bg-primary, #191a1c);
+  --fa-select-bg: #182337;
+  --fa-select-border: #2e4d89;
+  --fa-brand: #3871e1;
+  --fa-expand-reveal-duration: 0.18s;
+  --fa-expand-reveal-ease: cubic-bezier(0.23, 1, 0.32, 1);
+  --fa-expand-reveal-fade: 0.84;
+  --fa-shortcut-bg: #40434a;
+  --fa-mono-orange: #cf8e6d;
+  --fa-mono-purple: #c77dbb;
+  --fa-mono-string: #6aab73;
+  --fa-mono-cyan: #2aacb8;
+  --fa-text-disabled: #4c4f56;
+  --fa-editor-mono-text: #bcbec4;
+  --fa-icon-stroke: #ced0d6;
+  /* THINKING-WG: one shared moving highlight for summary sync + pending rows (mono vs Inter bases differ). */
+  --fa-wg-sync-shimmer-highlight: linear-gradient(
+    94deg,
+    transparent 0%,
+    transparent 26%,
+    rgba(196, 204, 220, 0.4) 36%,
+    rgba(228, 233, 244, 0.82) 46%,
+    rgba(246, 248, 252, 0.86) 50%,
+    rgba(228, 233, 244, 0.82) 54%,
+    rgba(196, 204, 220, 0.4) 64%,
+    transparent 74%,
+    transparent 100%
+  );
+
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  width: 100%;
+  min-width: 0;
+  background: var(--fa-bg-tool);
+  border-radius: 10px;
+  overflow: hidden;
+  font-family: Inter, system-ui, sans-serif;
+}
+
+/* Drafts — `.figma-ai-tw__aiBlock` only: one scroll column, no header / user bubble / composer / footer. */
+.figma-ai-tw--isolateAiBlock .figma-ai-tw__scroll--isolateAiBlock {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.figma-ai-tw--isolateAiBlock .figma-ai-tw__feed--isolateAiBlock {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.figma-ai-tw__icon16 {
+  display: inline-flex;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  color: var(--fa-icon-stroke);
+  align-items: center;
+  justify-content: center;
+}
+
+.figma-ai-tw__icon16 svg {
+  display: block;
+}
+
+.figma-ai-tw__icon16--muted {
+  color: #dfe1e5;
+}
+
+.figma-ai-tw__icon16--compact {
+  width: 14px;
+  height: 14px;
+}
+
+.figma-ai-tw__icon16--compact svg {
+  width: 14px;
+  height: 14px;
+}
+
+.figma-ai-tw__iconImg {
+  display: block;
+  width: 16px;
+  height: 16px;
+  max-width: 16px;
+  max-height: 16px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.figma-ai-tw__snippetIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  color: var(--fa-icon-stroke);
+}
+
+@container figma-ai-tw (max-width: 300px) {
+  .figma-ai-tw__snippetCmd {
+    white-space: normal;
+  }
+
+  .figma-ai-tw__snippetCmd.figma-ai-tw__snippetCmd--thinkingWgTruncate {
+    white-space: nowrap;
+  }
+
+  .figma-ai-tw__aiaDefaultSnippets
+    .figma-ai-tw__snippet--aiaCmd
+    .figma-ai-tw__snippetCmd:not(.figma-ai-tw__snippetCmd--aiaMcpLine) {
+    white-space: nowrap;
+  }
+}
+
+.figma-ai-tw__header {
+  position: relative;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0;
+  /* Match `ToolWindowHeader` / `.tool-window-header-content` (Database, etc.) */
+  box-sizing: border-box;
+  height: 40px;
+  padding: 8px 7px 8px 12px;
+  background: var(--tool-window-bg, var(--fa-bg-tool));
+  border-bottom: 1px solid var(--tool-window-border, var(--fa-border-subtle));
+}
+
+.figma-ai-tw__headerLabel {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 16px;
+  color: var(--tool-window-header-text, var(--fa-text));
+}
+
+.figma-ai-tw__headerIcons {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 0;
+}
+
+.figma-ai-tw__newChat {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 6px;
+  margin: 0;
+  border: none;
+  border-radius: 3px;
+  background: transparent;
+  color: #dfe1e5;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 16px;
+  cursor: pointer;
+}
+
+.figma-ai-tw__newChat:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.figma-ai-tw__iconHit {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  margin: 0;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.figma-ai-tw__iconHit:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.figma-ai-tw__iconHit img {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+.figma-ai-tw__scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  /* Keep chat column width stable when the vertical scrollbar appears (e.g. THINKING-WG “All” / long AI block). */
+  scrollbar-gutter: stable;
+  display: flex;
+  flex-direction: column;
+}
+
+.figma-ai-tw__feed {
+  position: relative;
+  /* Grow with content so the scroll area scrolls; do not pin height to one line of user prompt. */
+  flex: 1 0 auto;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  box-sizing: border-box;
+  /* Single horizontal gutter for user + AI (Figma 7327:113055) — avoids width drift vs nested padded blocks. */
+  padding: 0 20px 8px 24px;
+}
+
+.figma-ai-tw__feed > * {
+  min-width: 0;
+}
+
+.figma-ai-tw__feed:focus {
+  outline: none;
+}
+
+.figma-ai-tw__userWrap {
+  position: relative;
+  flex-shrink: 0;
+  width: 100%;
+  max-width: 100%;
+  z-index: 1;
+  /* Vertical only — horizontal gutters live on `.figma-ai-tw__feed` */
+  padding: 8px 0 12px 0;
+  box-sizing: border-box;
+  background: var(--bg-primary, #191a1c);
+}
+
+.figma-ai-tw__userRow {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 8px 10px 8px 16px;
+  border-radius: 6px;
+  background: var(--fa-user-bubble);
+}
+
+.figma-ai-tw__userText {
+  flex: 1;
+  min-width: 0;
+  margin: 2px 0 0;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  color: #dfe1e5;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+.figma-ai-tw__aiBlock {
+  /* In document flow under `.figma-ai-tw__userWrap` — spacing from user padding + this padding */
+  margin-top: 0;
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  /* Vertical only — horizontal gutters live on `.figma-ai-tw__feed` */
+  padding: 8px 0 12px 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 14px;
+}
+
+.figma-ai-tw__paragraph {
+  margin: 0;
+  padding: 0;
+  max-width: 65ch;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 23px;
+  letter-spacing: -0.011em;
+  color: var(--fa-text-body);
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+.figma-ai-tw__snippetWrap {
+  padding: 12px 0;
+}
+
+.figma-ai-tw__snippet {
+  position: relative;
+  box-sizing: border-box;
+  border-radius: 8px;
+  background: var(--fa-card-bg);
+  border: 1px solid var(--fa-card-border);
+  overflow: hidden;
+}
+
+.figma-ai-tw__snippetHeader {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.figma-ai-tw__snippetLeft {
+  display: flex;
+  flex: 1;
+  gap: 8px;
+  align-items: center;
+  padding: 10px 14px;
+  min-width: 0;
+}
+
+
+.figma-ai-tw__snippetCmd {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 16px;
+  color: var(--fa-text);
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.figma-ai-tw__snippetCmd .m {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+.figma-ai-tw__snippetCmd .o {
+  color: var(--fa-mono-orange);
+}
+
+.figma-ai-tw__snippetCmd .p {
+  color: var(--fa-mono-purple);
+}
+
+.figma-ai-tw__snippetRight {
+  display: flex;
+  align-items: center;
+  padding: 4px 10px 0 6px;
+  gap: 2px;
+}
+
+.figma-ai-tw__snippetOutline {
+  position: absolute;
+  inset: -1px;
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+/* Deferred approval + running snippet: IDE loader (`icons/Agents/Loader animated.svg`) + rotate wrapper. */
+.figma-ai-tw__snippetIconSpinner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  line-height: 0;
+  vertical-align: middle;
+}
+
+.figma-ai-tw__snippetIconSpinnerImgWrap {
+  display: block;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  line-height: 0;
+  transform-origin: 50% 50%;
+  animation: fa-snippet-ide-spinner-rot 0.85s linear infinite;
+}
+
+.figma-ai-tw__snippetIconSpinnerImg {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+@keyframes fa-snippet-ide-spinner-rot {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .figma-ai-tw__snippetIconSpinnerImgWrap {
+    animation: none;
+  }
+}
+
+.figma-ai-tw__snippetOutline--active {
+  border: 1px solid var(--fa-brand);
+}
+
+/* Awaiting user choice: gray 1px border stays; blue gradient ring is painted above the face (masked), not replacing the border */
+.figma-ai-tw__snippet--pending {
+  border: 1px solid var(--fa-card-border);
+  background: var(--fa-card-bg);
+  overflow: visible;
+}
+
+.figma-ai-tw__snippet--pending .figma-ai-tw__snippetHeader {
+  position: relative;
+  z-index: 2;
+  background: var(--fa-card-bg);
+  border-radius: 7px 7px 0 0;
+}
+
+.figma-ai-tw__snippet--pending .figma-ai-tw__snippetDetails {
+  position: relative;
+  z-index: 2;
+}
+
+.figma-ai-tw__snippet--pending::before {
+  content: '';
+  position: absolute;
+  /* 1px ring over the gray border; angle-only spin (no transform on this layer) */
+  inset: -1px;
+  z-index: 3;
+  box-sizing: border-box;
+  border-radius: 9px;
+  padding: 1px;
+  /*
+   * Conic from a slightly offset center (at 50% 44%) — on wide cards this evens out
+   * “thin top/bottom vs fat sides” vs true center. Soft stops = fade in/out, not a hard cap.
+   */
+  background: conic-gradient(
+    from var(--fa-snippet-spin) at 50% 44%,
+    transparent 0deg,
+    transparent 255deg,
+    rgba(53, 112, 228, 0.08) 263deg,
+    rgba(53, 112, 228, 0.45) 278deg,
+    #3570e4 307deg,
+    rgba(53, 112, 228, 0.45) 337deg,
+    rgba(53, 112, 228, 0.08) 352deg,
+    transparent 360deg
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  animation: fa-snippet-spin-border 6s linear infinite;
+}
+
+@keyframes fa-snippet-spin-border {
+  to {
+    --fa-snippet-spin: 360deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .figma-ai-tw__snippet--pending::before {
+    animation: none;
+    --fa-snippet-spin: 90deg;
+    background: conic-gradient(
+      from var(--fa-snippet-spin) at 50% 44%,
+      transparent 0deg,
+      transparent 255deg,
+      rgba(53, 112, 228, 0.08) 263deg,
+      rgba(53, 112, 228, 0.45) 278deg,
+      #3570e4 307deg,
+      rgba(53, 112, 228, 0.45) 337deg,
+      rgba(53, 112, 228, 0.08) 352deg,
+      transparent 360deg
+    );
+  }
+}
+
+.figma-ai-tw__snippetDetails {
+  background: var(--fa-details-bg);
+  border-radius: 0 0 7px 7px;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.figma-ai-tw__approval {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  /* Extra right inset so ⌥ shortcut badges stay inside the rounded card (snippet no longer pads) */
+  padding: 8px 12px 8px 8px;
+  gap: 0;
+}
+
+.figma-ai-tw__approval .figma-ai-tw__icon16 {
+  color: #868a91;
+}
+
+.figma-ai-tw__approval .figma-ai-tw__icon16--ban {
+  color: #868a91;
+}
+
+.figma-ai-tw__approvalItem {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 4px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button.figma-ai-tw__approvalItem {
+  appearance: none;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  border: none;
+  background: transparent;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button.figma-ai-tw__approvalItem:focus,
+button.figma-ai-tw__approvalItem:focus-visible {
+  outline: none;
+}
+
+.figma-ai-tw__approvalItem--selected::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 6px;
+  background: var(--fa-select-bg);
+  border: 1px solid var(--fa-select-border);
+}
+
+/*
+ * Pointer hover — neutral grey, intentionally NOT the blue keyboard selection.
+ * Independent from focus: the blue `--selected` row can sit on one option while the
+ * mouse hovers another (grey). The blue selection wins when a row is both.
+ */
+button.figma-ai-tw__approvalItem:hover:not(.figma-ai-tw__approvalItem--selected)::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 6px;
+  background: var(--fa-approval-hover-bg, rgba(255, 255, 255, 0.05));
+}
+
+/* Focus left the option row (composer, header, or outside tool window): neutral chrome, no ⏎ hint. */
+.figma-ai-tw__approvalItem--selected.figma-ai-tw__approvalItem--selected-muted::before {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--fa-card-border);
+}
+
+.figma-ai-tw__approvalItem > * {
+  position: relative;
+  z-index: 1;
+}
+
+.figma-ai-tw__approvalItem img {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.figma-ai-tw__approvalText {
+  display: block;
+  flex: 1 1 0%;
+  min-width: 0;
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 16px;
+  color: var(--fa-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.figma-ai-tw__approvalShortcuts {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.figma-ai-tw__shortcut {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  height: 18px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--fa-shortcut-bg);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+  color: var(--fa-text-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.figma-ai-tw__shortcut--ghost {
+  min-width: auto;
+  padding: 0 2px;
+  background: transparent;
+  color: var(--fa-text-secondary);
+  font-weight: 600;
+}
+
+.figma-ai-tw__shortcut--ghostArrow {
+  padding: 0 1px;
+  line-height: 0;
+  color: var(--fa-text-secondary);
+}
+
+.figma-ai-tw__shortcut--ghostArrow svg {
+  display: block;
+}
+
+.figma-ai-tw__approvalNavHints {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  flex-shrink: 0;
+  min-width: 28px;
+  min-height: 18px;
+}
+
+.figma-ai-tw__approvalNavHints--reserve {
+  visibility: hidden;
+}
+
+.figma-ai-tw__approvalItem > .figma-ai-tw__shortcut {
+  margin-left: auto;
+}
+
+/* ─── Default AI Chat: terminal command rows (AIA Agents MCP — flat chrome, done + hover actions) ─── */
+
+/* Ungrouped cadence: bridge paragraphs + command rows share the same 14px rhythm as `.figma-ai-tw__aiBlock`. */
+.figma-ai-tw__aiaDefaultSnippets {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 14px;
+  min-width: 0;
+}
+
+.figma-ai-tw__aiaDefaultSnippets > .figma-ai-tw__paragraph--aiaCmdBridge {
+  margin: 0;
+  max-width: 65ch;
+}
+
+.figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__snippetWrap--aiaCmd {
+  padding: 0;
+}
+
+/*
+ * MCP frame: 2px ring on the wrap + inner face — **pending** (`Run` + choices) only.
+ * “Ran” delayed-reveal shimmer (`--aiaRanWaiting`): **flat** row, no ring.
+ */
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippetWrap--aiaCmd:has(.figma-ai-tw__snippet--pending) {
+  position: relative;
+  isolation: isolate;
+  margin: 0;
+  padding: 2px;
+  border-radius: 10px;
+  box-sizing: border-box;
+  background: rgba(53, 112, 228, 0.2);
+}
+
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippetWrap--aiaCmd:has(.figma-ai-tw__snippet--pending)::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: 10px;
+  box-sizing: border-box;
+  padding: 2px;
+  background: conic-gradient(
+    from var(--fa-aia-mcp-border-spin) at 50% 50%,
+    rgba(53, 112, 228, 0) 0deg,
+    rgba(53, 112, 228, 0) 292deg,
+    #3570e4 312deg,
+    rgba(53, 112, 228, 0.35) 326deg,
+    rgba(53, 112, 228, 0) 342deg,
+    rgba(53, 112, 228, 0) 360deg
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  animation: fa-aia-mcp-pending-border-spin 2.2s linear infinite;
+}
+
+@keyframes fa-aia-mcp-pending-border-spin {
+  to {
+    --fa-aia-mcp-border-spin: 360deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .figma-ai-tw__aiaDefaultSnippets
+    .figma-ai-tw__snippetWrap--aiaCmd:has(.figma-ai-tw__snippet--pending)::before {
+    animation: none;
+    --fa-aia-mcp-border-spin: 52deg;
+  }
+}
+
+/* Inner face — inset to gradient ring inner edge (AIA Agents); top slightly tighter than sides so header aligns with horizontal gutters. */
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippetWrap--aiaCmd:has(.figma-ai-tw__snippet--pending)
+  .figma-ai-tw__snippet--aiaCmd.figma-ai-tw__snippet--pending {
+  border: none;
+  border-radius: 8px;
+  background: var(--fa-bg);
+  padding: 6px 8px 8px;
+  box-sizing: border-box;
+}
+
+.figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__snippet--aiaCmd {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  overflow: visible;
+}
+
+.figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__snippet--aiaCmd.figma-ai-tw__snippet--aiaCmdInProgress {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* In-progress feed row: terminal glyph matches completed muted chrome (not default stroke). */
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippet--aiaCmd.figma-ai-tw__snippet--aiaCmdInProgress
+  .figma-ai-tw__snippetIcon {
+  color: var(--fa-text-secondary);
+}
+
+.figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__snippet--aiaCmd.figma-ai-tw__snippet--aiaRanWaiting {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* Deferred “Ran” reveal: terminal glyph matches completed muted chrome. */
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippet--aiaCmd.figma-ai-tw__snippet--aiaRanWaiting
+  .figma-ai-tw__snippetIcon {
+  color: var(--fa-text-secondary);
+}
+
+.figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__snippet--aiaCmd .figma-ai-tw__snippetOutline {
+  display: none;
+}
+
+.figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__snippet--aiaCmd .figma-ai-tw__snippetHeader {
+  background: transparent;
+  align-items: center;
+}
+
+.figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__snippet--aiaCmd .figma-ai-tw__snippetLeft {
+  padding: 4px 0;
+}
+
+.figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__snippetLeft--aiaCmdExpandHit {
+  cursor: pointer;
+}
+
+.figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__snippetLeft--aiaCmdExpandHit:focus-visible {
+  outline: 2px solid var(--fa-brand);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Default cmd rows: single-line ellipsis (incl. completed hover when trailing icons reserve ~100px). */
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippet--aiaCmd
+  .figma-ai-tw__snippetCmd:not(.figma-ai-tw__snippetCmd--aiaMcpLine) {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow-wrap: normal;
+}
+
+/* Any completed default cmd row (not only first): reserve width when trailing icons appear on hover
+ * (`snippetRight` is absolutely positioned over the text — MCP args button needs the same gutter as row 1). */
+.figma-ai-tw__aiaDefaultSnippets
+  > .figma-ai-tw__snippetWrap--aiaCmd:hover
+  .figma-ai-tw__snippet--aiaCmdCompleted:not(.figma-ai-tw__snippet--pending)
+  .figma-ai-tw__snippetLeft,
+.figma-ai-tw__aiaDefaultSnippets
+  > .figma-ai-tw__snippetWrap--aiaCmd:focus-within:has(
+    .figma-ai-tw__snippetRight .figma-ai-tw__iconHit:focus-visible
+  )
+  .figma-ai-tw__snippet--aiaCmdCompleted:not(.figma-ai-tw__snippet--pending)
+  .figma-ai-tw__snippetLeft,
+.figma-ai-tw__aiaDefaultSnippets
+  > .figma-ai-tw__snippetWrap--aiaCmd:hover
+  .figma-ai-tw__snippet--aiaCmdRejected
+  .figma-ai-tw__snippetLeft,
+.figma-ai-tw__aiaDefaultSnippets
+  > .figma-ai-tw__snippetWrap--aiaCmd:focus-within:has(
+    .figma-ai-tw__snippetRight .figma-ai-tw__iconHit:focus-visible
+  )
+  .figma-ai-tw__snippet--aiaCmdRejected
+  .figma-ai-tw__snippetLeft,
+.figma-ai-tw__aiaDefaultSnippets
+  > .figma-ai-tw__snippetWrap--aiaCmd:hover
+  .figma-ai-tw__snippet--aiaCmdFailed
+  .figma-ai-tw__snippetLeft,
+.figma-ai-tw__aiaDefaultSnippets
+  > .figma-ai-tw__snippetWrap--aiaCmd:focus-within:has(
+    .figma-ai-tw__snippetRight .figma-ai-tw__iconHit:focus-visible
+  )
+  .figma-ai-tw__snippet--aiaCmdFailed
+  .figma-ai-tw__snippetLeft {
+  padding-right: 100px;
+}
+
+.figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__snippet--aiaCmd .figma-ai-tw__snippetRight {
+  padding-top: 0;
+}
+
+/* Deferred approval: “Ran” line — shimmer on full command text (same stack as WG pending rows). */
+.figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__snippetCmd.figma-ai-tw__snippetCmd--aiaLoading {
+  color: transparent;
+  background-image: var(--fa-wg-sync-shimmer-highlight), linear-gradient(#73767c, #73767c);
+  background-size: 230% 100%, 100% 100%;
+  background-repeat: no-repeat, no-repeat;
+  background-position: -100% 0, 0 0;
+  background-clip: text;
+  -webkit-background-clip: text;
+  /* Repeat LTR only (no `alternate` — that reads as a ping-pong sweep). */
+  animation: figma-ai-tw-wg-text-shimmer 2.1s linear infinite;
+}
+
+/* First-row “Ran” delay: shimmer sweeps RTL (opposite of default WG text shimmer). */
+.figma-ai-tw__aiaDefaultSnippets
+  > .figma-ai-tw__snippetWrap--aiaCmd:first-of-type
+  .figma-ai-tw__snippet--aiaRanWaiting
+  .figma-ai-tw__snippetCmd.figma-ai-tw__snippetCmd--aiaFirstRowCmdEllipsis.figma-ai-tw__snippetCmd--aiaLoading {
+  background-position: 100% 0, 0 0;
+  animation-direction: reverse;
+}
+
+.figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__snippetCmd.figma-ai-tw__snippetCmd--aiaLoading span,
+.figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__snippetCmd.figma-ai-tw__snippetCmd--aiaLoading .m.o,
+.figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__snippetCmd.figma-ai-tw__snippetCmd--aiaLoading .m.p {
+  color: transparent;
+}
+
+/* In-progress (post-pick): header command line — same sweep as WG summary “Thinking and running commands”. */
+.figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__snippet--aiaCmdInProgress .figma-ai-tw__snippetCmd.figma-ai-tw__snippetCmd--aiaLoading {
+  background-position: 115% 0, 0 0;
+  animation: figma-ai-tw-wg-summary-text-shimmer 2.6s linear infinite;
+}
+
+/* Completed / rejected / failed: actions on hover (Figma MCP done + hover), no reserved right gutter at rest.
+ * Use `focus-within:has(.iconHit:focus-visible)` (not bare `focus-within`) so a mouse-clicked
+ * trailing button does not keep the strip visible after pointer leave (plain `:focus` would). */
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippet--aiaCmdCompleted:not(.figma-ai-tw__snippet--pending)
+  .figma-ai-tw__snippetHeader,
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippet--aiaCmdRejected
+  .figma-ai-tw__snippetHeader,
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippet--aiaCmdFailed
+  .figma-ai-tw__snippetHeader {
+  position: relative;
+}
+
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippet--aiaCmdCompleted:not(.figma-ai-tw__snippet--pending)
+  .figma-ai-tw__snippetRight,
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippet--aiaCmdRejected
+  .figma-ai-tw__snippetRight,
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippet--aiaCmdFailed
+  .figma-ai-tw__snippetRight {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  padding: 0;
+  gap: 2px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippetWrap--aiaCmd:hover
+  .figma-ai-tw__snippet--aiaCmdCompleted:not(.figma-ai-tw__snippet--pending)
+  .figma-ai-tw__snippetRight,
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippetWrap--aiaCmd:focus-within:has(.figma-ai-tw__snippetRight .figma-ai-tw__iconHit:focus-visible)
+  .figma-ai-tw__snippet--aiaCmdCompleted:not(.figma-ai-tw__snippet--pending)
+  .figma-ai-tw__snippetRight,
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippetWrap--aiaCmd:hover
+  .figma-ai-tw__snippet--aiaCmdRejected
+  .figma-ai-tw__snippetRight,
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippetWrap--aiaCmd:focus-within:has(.figma-ai-tw__snippetRight .figma-ai-tw__iconHit:focus-visible)
+  .figma-ai-tw__snippet--aiaCmdRejected
+  .figma-ai-tw__snippetRight,
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippetWrap--aiaCmd:hover
+  .figma-ai-tw__snippet--aiaCmdFailed
+  .figma-ai-tw__snippetRight,
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippetWrap--aiaCmd:focus-within:has(.figma-ai-tw__snippetRight .figma-ai-tw__iconHit:focus-visible)
+  .figma-ai-tw__snippet--aiaCmdFailed
+  .figma-ai-tw__snippetRight {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Pending: global pending ::before off; header / gutters inside padded face */
+.figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__snippet--aiaCmd.figma-ai-tw__snippet--pending::before {
+  display: none;
+}
+
+.figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__snippet--aiaCmd.figma-ai-tw__snippet--pending .figma-ai-tw__snippetHeader {
+  border-radius: 0;
+  gap: 8px;
+}
+
+.figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__snippet--aiaCmd.figma-ai-tw__snippet--pending .figma-ai-tw__snippetLeft {
+  /* Snippet face already has 8px; do not stack `--aiaCmd` snippetLeft vertical padding here. */
+  padding: 0;
+}
+
+.figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__snippet--aiaCmd.figma-ai-tw__snippet--pending .figma-ai-tw__snippetRight {
+  position: static;
+  transform: none;
+  opacity: 1;
+  pointer-events: auto;
+  /* Same: avoid stacking base / `--aiaCmd` snippetRight padding on top of the 8px face. */
+  padding: 0;
+}
+
+.figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__snippet--aiaCmd.figma-ai-tw__snippet--aiaRanWaiting .figma-ai-tw__snippetHeader {
+  position: relative;
+  gap: 8px;
+}
+
+.figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__snippet--aiaCmd.figma-ai-tw__snippet--aiaRanWaiting .figma-ai-tw__snippetRight {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* First-row Ran delay: widen header gutter on hover when trailing actions appear (instant). */
+.figma-ai-tw__aiaDefaultSnippets
+  > .figma-ai-tw__snippetWrap--aiaCmd:first-of-type:hover
+  .figma-ai-tw__snippet--aiaRanWaiting
+  .figma-ai-tw__snippetLeft,
+.figma-ai-tw__aiaDefaultSnippets
+  > .figma-ai-tw__snippetWrap--aiaCmd:first-of-type:focus-within:has(
+    .figma-ai-tw__snippetRight .figma-ai-tw__iconHit:focus-visible
+  )
+  .figma-ai-tw__snippet--aiaRanWaiting
+  .figma-ai-tw__snippetLeft {
+  padding-right: 100px;
+}
+
+.figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__snippet--aiaCmd.figma-ai-tw__snippet--aiaCmdInProgress .figma-ai-tw__snippetRight {
+  position: static;
+  transform: none;
+  opacity: 1;
+  pointer-events: auto;
+  padding: 0;
+}
+
+.figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__snippet--aiaCmd.figma-ai-tw__snippet--aiaCmdInProgress .figma-ai-tw__snippetHeader {
+  gap: 8px;
+}
+
+/* In-progress: trailing strip is in-flow (`snippetRight` static) — icons expand in flex;
+ * do not add completed-row 100px overlay gutter on hover (that crushed the shimmer cmd to 0px). */
+
+/* Default-chat command log: npm stream + “Expand” logs for any `--aiaCmd` row (same chrome as in-progress npm tail). */
+.figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__aiaNpmInitStreamTailOuter {
+  margin-top: 3px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__aiaNpmInitStreamTail {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  box-sizing: border-box;
+  width: 100%;
+  border: 1px solid var(--fa-card-border);
+  border-radius: 8px;
+  padding: 8px;
+  background: var(--fa-bg);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  color: var(--fa-text-secondary);
+}
+
+/* Compact 3-line streaming viewport (in-progress tool output). */
+.figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__aiaNpmInitStreamTail--compactStream {
+  gap: 0;
+  --fa-cmd-log-scrim-bg: var(--fa-bg);
+}
+
+.figma-ai-tw__aiaDefaultSnippets button.figma-ai-tw__aiaNpmInitStreamTail--compactExpandable {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 0;
+  padding: 8px;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  --fa-cmd-log-scrim-bg: var(--fa-bg);
+}
+
+.figma-ai-tw__aiaDefaultSnippets button.figma-ai-tw__aiaNpmInitStreamTail--compactExpandable:hover {
+  border-color: var(--fa-card-border-hover, #3d3f45);
+  background: var(--fa-snippet-raised-bg, #212326);
+  --fa-cmd-log-scrim-bg: var(--fa-snippet-raised-bg, #212326);
+}
+
+.figma-ai-tw__aiaDefaultSnippets button.figma-ai-tw__aiaNpmInitStreamTail--compactExpandable:focus-visible {
+  outline: 2px solid var(--fa-brand, #6b9fff);
+  outline-offset: 1px;
+  --fa-cmd-log-scrim-bg: var(--fa-snippet-raised-bg, #212326);
+}
+
+.figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__aiaNpmInitStreamTail--compactStream .figma-ai-tw__aiaNpmInitStreamTailViewport {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Top fade when a 4th line pushes the 1st out (last-3 viewport only). */
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__aiaNpmInitStreamTail--compactStream
+  .figma-ai-tw__aiaNpmInitStreamTailViewport--overflow::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 32px;
+  pointer-events: none;
+  z-index: 1;
+  background: linear-gradient(
+    180deg,
+    var(--fa-cmd-log-scrim-bg, var(--fa-bg-tool)) 0%,
+    color-mix(in srgb, var(--fa-cmd-log-scrim-bg, var(--fa-bg-tool)) 55%, transparent) 38%,
+    transparent 100%
+  );
+}
+
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__aiaNpmInitStreamTail--compactStream
+  .figma-ai-tw__aiaNpmInitStreamTailViewport--lines1 {
+  height: 16px;
+  min-height: 16px;
+}
+
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__aiaNpmInitStreamTail--compactStream
+  .figma-ai-tw__aiaNpmInitStreamTailViewport--lines2 {
+  height: calc(16px * 2 + 2px);
+  min-height: calc(16px * 2 + 2px);
+}
+
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__aiaNpmInitStreamTail--compactStream
+  .figma-ai-tw__aiaNpmInitStreamTailViewport--lines3 {
+  height: calc(16px * 3 + 2px * 2);
+  min-height: calc(16px * 3 + 2px * 2);
+}
+
+.figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__aiaNpmInitStreamTail--compactStream .figma-ai-tw__aiaNpmInitStreamTailStack {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__aiaNpmInitStreamTail--compactStream
+  .figma-ai-tw__aiaNpmInitStreamTailLine--compact {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-height: 16px;
+  line-height: 16px;
+}
+
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__aiaNpmInitStreamTail--compactStream
+  .figma-ai-tw__aiaNpmInitStreamTailLine--compactEmpty {
+  color: color-mix(in srgb, var(--fa-text-secondary) 12%, transparent);
+}
+
+/* Compact npm stream (~3 lines): single-line ellipsis per row. */
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippet--aiaCmd.figma-ai-tw__snippet--aiaCmdInProgress
+  .figma-ai-tw__aiaNpmInitStreamTail:not(.figma-ai-tw__aiaNpmInitStreamTail--expandedLog)
+  .figma-ai-tw__aiaNpmInitStreamTailLine {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Legacy fallback if expanded log renders without command panel. */
+.figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__aiaNpmInitStreamTail--expandedLog {
+  min-height: calc(70px * 2.5);
+  max-height: calc(70px * 2.5);
+  overflow-y: auto;
+}
+
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__aiaNpmInitStreamTail--expandedLog
+  .figma-ai-tw__aiaNpmInitStreamTailLine {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  overflow: visible;
+  text-overflow: unset;
+}
+
+.figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__snippet--aiaCmd.figma-ai-tw__snippet--aiaCmdLogExpanded {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippet--aiaCmd.figma-ai-tw__snippet--aiaCmdLogExpanded
+  .figma-ai-tw__snippetHeader {
+  flex-shrink: 0;
+}
+
+/* Command log opens below the header row (grid 0fr → 1fr — same as Thinking WG expand list). */
+.figma-ai-tw__aiaCmdExpandReveal,
+.figma-ai-tw__thinkingWgExpandList,
+.figma-ai-tw__thinkingWgListRevealWrap,
+.figma-ai-tw__thinkingWgReasoningCpBodyReveal {
+  transition: grid-template-rows var(--fa-expand-reveal-duration) var(--fa-expand-reveal-ease);
+}
+
+.figma-ai-tw__aiaCmdExpandRevealInner,
+.figma-ai-tw__thinkingWgExpandListInner,
+.figma-ai-tw__thinkingWgListRevealInner,
+.figma-ai-tw__thinkingWgReasoningCpBodyRevealInner {
+  transition: opacity var(--fa-expand-reveal-duration) var(--fa-expand-reveal-ease);
+}
+
+.figma-ai-tw__aiaCmdExpandReveal {
+  display: grid;
+  grid-template-rows: 0fr;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  contain: layout;
+}
+
+.figma-ai-tw__aiaCmdExpandReveal--open {
+  grid-template-rows: 1fr;
+}
+
+.figma-ai-tw__aiaCmdExpandReveal:not(.figma-ai-tw__aiaCmdExpandReveal--open) .figma-ai-tw__aiaCmdExpandRevealInner {
+  opacity: var(--fa-expand-reveal-fade);
+}
+
+.figma-ai-tw__aiaCmdExpandReveal--open .figma-ai-tw__aiaCmdExpandRevealInner {
+  opacity: 1;
+}
+
+.figma-ai-tw__aiaCmdExpandRevealInner {
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Expanded log: collapse always visible; reserve gutter for the 26px toggle at rest. */
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippet--aiaCmd.figma-ai-tw__snippet--aiaCmdLogExpanded
+  .figma-ai-tw__snippetLeft {
+  padding-right: 26px;
+}
+
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippet--aiaCmd.figma-ai-tw__snippet--aiaCmdLogExpanded
+  .figma-ai-tw__snippetRight {
+  opacity: 1;
+  pointer-events: none;
+}
+
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippet--aiaCmd.figma-ai-tw__snippet--aiaCmdLogExpanded
+  .figma-ai-tw__snippetRight
+  > .figma-ai-tw__iconHit:not(.figma-ai-tw__iconHit--aiaLogToggle) {
+  box-sizing: border-box;
+  width: 0;
+  min-width: 0;
+  max-width: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  flex-shrink: 1;
+  transition: opacity 0.15s ease;
+}
+
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippet--aiaCmd.figma-ai-tw__snippet--aiaCmdLogExpanded
+  .figma-ai-tw__snippetRight
+  > .figma-ai-tw__iconHit--aiaLogToggle {
+  box-sizing: border-box;
+  width: 26px;
+  min-width: 26px;
+  max-width: 26px;
+  overflow: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippetWrap--aiaCmd:hover
+  .figma-ai-tw__snippet--aiaCmd.figma-ai-tw__snippet--aiaCmdLogExpanded
+  .figma-ai-tw__snippetLeft,
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippetWrap--aiaCmd:focus-within:has(
+    .figma-ai-tw__snippetRight .figma-ai-tw__iconHit:focus-visible
+  )
+  .figma-ai-tw__snippet--aiaCmd.figma-ai-tw__snippet--aiaCmdLogExpanded
+  .figma-ai-tw__snippetLeft {
+  padding-right: 100px;
+}
+
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippetWrap--aiaCmd:hover
+  .figma-ai-tw__snippet--aiaCmd.figma-ai-tw__snippet--aiaCmdLogExpanded
+  .figma-ai-tw__snippetRight,
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippetWrap--aiaCmd:focus-within:has(
+    .figma-ai-tw__snippetRight .figma-ai-tw__iconHit:focus-visible
+  )
+  .figma-ai-tw__snippet--aiaCmd.figma-ai-tw__snippet--aiaCmdLogExpanded
+  .figma-ai-tw__snippetRight {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippetWrap--aiaCmd:hover
+  .figma-ai-tw__snippet--aiaCmd.figma-ai-tw__snippet--aiaCmdLogExpanded
+  .figma-ai-tw__snippetRight
+  > .figma-ai-tw__iconHit:not(.figma-ai-tw__iconHit--aiaLogToggle),
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippetWrap--aiaCmd:focus-within:has(
+    .figma-ai-tw__snippetRight .figma-ai-tw__iconHit:focus-visible
+  )
+  .figma-ai-tw__snippet--aiaCmd.figma-ai-tw__snippet--aiaCmdLogExpanded
+  .figma-ai-tw__snippetRight
+  > .figma-ai-tw__iconHit:not(.figma-ai-tw__iconHit--aiaLogToggle) {
+  width: 26px;
+  min-width: 26px;
+  max-width: 26px;
+  overflow: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Expanded command panel — grows with content up to 400px; bottom fade when clipped. */
+.figma-ai-tw__aiaCmdExpandedPanel {
+  margin-top: 3px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.figma-ai-tw__aiaCmdExpandedPanel__shell {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 0;
+  border: 1px solid var(--fa-card-border);
+  border-radius: 8px;
+  background: var(--fa-bg);
+  overflow: hidden;
+  --fa-cmd-expanded-scrim-bg: var(--fa-bg);
+}
+
+.figma-ai-tw__aiaCmdExpandedPanel__shell--clipped {
+  position: relative;
+}
+
+.figma-ai-tw__aiaCmdExpandedPanel--fullscreen .figma-ai-tw__aiaCmdExpandedPanel__shell {
+  display: flex;
+  flex-direction: column;
+  /* Open the box so the sticky Collapse can pin to the viewport, not this shell. */
+  overflow: visible;
+}
+
+.figma-ai-tw__aiaCmdExpandedPanel--fullscreen .figma-ai-tw__aiaCmdExpandedLogs {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* Fullscreen: don't let the reveal wrapper clip / become the sticky scroll-container. */
+.figma-ai-tw__aiaCmdExpandReveal--open:has(.figma-ai-tw__aiaCmdExpandedPanel--fullscreen)
+  .figma-ai-tw__aiaCmdExpandRevealInner {
+  overflow: visible;
+}
+
+.figma-ai-tw__aiaCmdExpandedLogsWrap--fullscreen {
+  overflow: visible;
+}
+
+.figma-ai-tw__aiaCmdExpandedLogsWrap {
+  position: relative;
+  flex: 0 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.figma-ai-tw__aiaCmdExpandedLogsWrap--clipped {
+  flex: 1 1 auto;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.figma-ai-tw__aiaCmdExpandedLogsWrap--clipped::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  height: 36px;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    color-mix(in srgb, var(--fa-cmd-expanded-scrim-bg) 55%, transparent) 45%,
+    var(--fa-cmd-expanded-scrim-bg) 100%
+  );
+  transition: opacity 0.12s ease;
+}
+
+.figma-ai-tw__aiaCmdExpandedExpandBtn {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0 10px 6px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  color: #fff;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s ease;
+}
+
+.figma-ai-tw__aiaCmdExpandedLogsWrap--clipped:hover .figma-ai-tw__aiaCmdExpandedExpandBtn,
+.figma-ai-tw__aiaCmdExpandedLogsWrap--clipped:focus-within:has(
+    .figma-ai-tw__aiaCmdExpandedExpandBtn:focus-visible
+  )
+  .figma-ai-tw__aiaCmdExpandedExpandBtn,
+.figma-ai-tw__aiaCmdExpandedLogsWrap--fullscreen:hover .figma-ai-tw__aiaCmdExpandedExpandBtn,
+.figma-ai-tw__aiaCmdExpandedLogsWrap--fullscreen:focus-within:has(
+    .figma-ai-tw__aiaCmdExpandedExpandBtn:focus-visible
+  )
+  .figma-ai-tw__aiaCmdExpandedExpandBtn {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.figma-ai-tw__aiaCmdExpandedExpandBtn:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.figma-ai-tw__aiaCmdExpandedExpandBtn:focus-visible {
+  outline: 2px solid rgba(100, 149, 237, 0.85);
+  outline-offset: 1px;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/*
+ * Fullscreen: Collapse is pinned to the bottom of the block via sticky, so when the block is
+ * taller than the screen it floats at the bottom of the viewport (on hover) instead of scrolling
+ * away; once the block bottom comes into view it rests there. Gradient keeps the label readable
+ * over code while floating.
+ */
+.figma-ai-tw__aiaCmdExpandedLogsWrap--fullscreen .figma-ai-tw__aiaCmdExpandedExpandBtn {
+  position: sticky;
+  left: auto;
+  right: auto;
+  bottom: 0;
+  align-items: center;
+  margin-top: -28px;
+  padding: 12px 10px 8px;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    color-mix(in srgb, var(--fa-cmd-expanded-scrim-bg) 70%, transparent) 45%,
+    var(--fa-cmd-expanded-scrim-bg) 100%
+  );
+  /* Match the shell's rounded bottom corners so the gradient doesn't bleed past the border. */
+  border-bottom-left-radius: 7px;
+  border-bottom-right-radius: 7px;
+}
+
+.figma-ai-tw__aiaCmdExpandedCmd {
+  position: relative;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  padding: 8px 36px 4px 10px;
+  background: transparent;
+  border: none;
+}
+
+.figma-ai-tw__aiaCmdExpandedPanel__shell--rejectionFeedback .figma-ai-tw__aiaCmdExpandedCmd {
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--fa-card-border);
+}
+
+.figma-ai-tw__aiaCmdExpandedPanel__shell--rejectionFeedback .figma-ai-tw__aiaCmdExpandedLogs {
+  padding-top: 10px;
+}
+
+.figma-ai-tw__aiaCmdExpandedCmdPre {
+  margin: 0;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  color: var(--fa-editor-mono-text);
+}
+
+.figma-ai-tw__aiaCmdExpandedCmd .m {
+  font-family: inherit;
+}
+
+.figma-ai-tw__aiaCmdExpandedCmd .m.o {
+  color: var(--fa-mono-orange);
+}
+
+.figma-ai-tw__aiaCmdExpandedCmd .m.p {
+  color: var(--fa-mono-purple);
+}
+
+.figma-ai-tw__aiaCmdExpandedCmd .m.c {
+  color: var(--fa-mono-cyan);
+}
+
+.figma-ai-tw__aiaCmdExpandedCmd .m.s {
+  color: var(--fa-mono-string);
+}
+
+.figma-ai-tw__aiaCmdExpandedMcpTool {
+  color: var(--fa-editor-mono-text);
+}
+
+/* Expanded MCP args: full inline JSON (no header-row ellipsis); colors match tooltip / MCP tokens. */
+.figma-ai-tw__aiaCmdExpandedCmd .figma-ai-tw__aiaCmdExpandedMcpArgs {
+  display: inline;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+  flex: none;
+  min-width: 0;
+}
+
+.figma-ai-tw__aiaCmdExpandedCmd .figma-ai-tw__aiaMcpJsonPunc {
+  color: var(--fa-text-secondary);
+}
+
+.figma-ai-tw__aiaCmdExpandedCmd .figma-ai-tw__aiaMcpJsonKey {
+  color: var(--fa-mono-purple);
+}
+
+.figma-ai-tw__aiaCmdExpandedCmd .figma-ai-tw__aiaMcpJsonStr {
+  color: var(--fa-mono-string);
+}
+
+.figma-ai-tw__aiaCmdExpandedCmd .figma-ai-tw__aiaMcpJsonNum {
+  color: var(--fa-mono-cyan);
+}
+
+.figma-ai-tw__aiaCmdExpandedCmd > .tooltip-trigger {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 3;
+  pointer-events: auto;
+}
+
+.figma-ai-tw__aiaCmdExpandedLogsWrap > .tooltip-trigger {
+  position: absolute;
+  top: 0;
+  right: 4px;
+  z-index: 3;
+  pointer-events: auto;
+}
+
+.figma-ai-tw__aiaCmdExpandedCopyBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 26px;
+  height: 26px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--fa-bg-tool) 72%, transparent);
+  color: var(--fa-text-secondary);
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s ease, background 0.12s ease;
+}
+
+.figma-ai-tw__aiaCmdExpandedCmd:hover .figma-ai-tw__aiaCmdExpandedCopyBtn,
+.figma-ai-tw__aiaCmdExpandedCmd > .tooltip-trigger:hover .figma-ai-tw__aiaCmdExpandedCopyBtn,
+.figma-ai-tw__aiaCmdExpandedCmd:focus-within:has(.figma-ai-tw__aiaCmdExpandedCopyBtn:focus-visible)
+  .figma-ai-tw__aiaCmdExpandedCopyBtn {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.figma-ai-tw__aiaCmdExpandedCopyBtn:hover {
+  background: color-mix(in srgb, var(--fa-bg-tool) 92%, #fff 8%);
+  color: var(--fa-text-body);
+}
+
+.figma-ai-tw__aiaCmdExpandedCopyBtn:focus-visible {
+  outline: 2px solid rgba(100, 149, 237, 0.85);
+  outline-offset: 1px;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.figma-ai-tw__aiaCmdExpandedLogsWrap:hover .figma-ai-tw__aiaCmdExpandedCopyBtn--logs,
+.figma-ai-tw__aiaCmdExpandedLogsWrap > .tooltip-trigger:hover .figma-ai-tw__aiaCmdExpandedCopyBtn--logs,
+.figma-ai-tw__aiaCmdExpandedLogsWrap:focus-within:has(
+    .figma-ai-tw__aiaCmdExpandedCopyBtn--logs:focus-visible
+  )
+  .figma-ai-tw__aiaCmdExpandedCopyBtn--logs {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.figma-ai-tw__aiaCmdExpandedLogs {
+  position: relative;
+  flex: 0 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: visible;
+  overscroll-behavior: contain;
+  box-sizing: border-box;
+  padding: 0 36px 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  color: var(--fa-text-secondary);
+  background: transparent;
+}
+
+.figma-ai-tw__aiaCmdExpandedLogsLine {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.figma-ai-tw__aiaCmdExpandedLogsFeedback {
+  margin-top: 0;
+}
+
+.figma-ai-tw__aiaCmdExpandedLogsFeedback .figma-ai-tw__aiaCmdRejectionFeedback {
+  margin: 0;
+  padding: 0;
+}
+
+.figma-ai-tw__aiaCmdExpandedLogsFeedback .figma-ai-tw__aiaCmdRejectionFeedbackStatus,
+.figma-ai-tw__aiaCmdExpandedLogsFeedback .figma-ai-tw__aiaCmdRejectionFeedbackPrompt {
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.figma-ai-tw__aiaCmdExpandedLogsFeedback .figma-ai-tw__aiaCmdRejectionFeedbackStatus:first-of-type {
+  margin-bottom: 4px;
+}
+
+.figma-ai-tw__aiaCmdExpandedLogsFeedback .figma-ai-tw__aiaCmdRejectionFeedbackPrompt {
+  margin-top: 0;
+}
+
+.figma-ai-tw__aiaCmdExpandedLogsFeedback
+  .figma-ai-tw__aiaCmdRejectionFeedbackPrompt
+  + .figma-ai-tw__aiaCmdRejectionFeedbackStatus {
+  margin-top: 10px;
+  margin-bottom: 2px;
+}
+
+.figma-ai-tw__aiaCmdExpandedLogsFeedback .figma-ai-tw__aiaCmdRejectionFeedbackSent {
+  margin-top: 0;
+}
+
+/* Ran delay + in-progress: trailing actions (incl. Stop) hidden until hover — instant toggle. */
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippet--aiaCmd.figma-ai-tw__snippet--aiaRanWaiting
+  .figma-ai-tw__snippetRight
+  > .figma-ai-tw__iconHit,
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippet--aiaCmd.figma-ai-tw__snippet--aiaCmdInProgress
+  .figma-ai-tw__snippetRight
+  > .figma-ai-tw__iconHit {
+  box-sizing: border-box;
+  width: 0;
+  min-width: 0;
+  max-width: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  flex-shrink: 1;
+}
+
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippetWrap--aiaCmd:hover
+  .figma-ai-tw__snippet--aiaCmd.figma-ai-tw__snippet--aiaRanWaiting
+  .figma-ai-tw__snippetRight
+  > .figma-ai-tw__iconHit,
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippetWrap--aiaCmd:focus-within:has(.figma-ai-tw__snippetRight .figma-ai-tw__iconHit:focus-visible)
+  .figma-ai-tw__snippet--aiaCmd.figma-ai-tw__snippet--aiaRanWaiting
+  .figma-ai-tw__snippetRight
+  > .figma-ai-tw__iconHit,
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippetWrap--aiaCmd:hover
+  .figma-ai-tw__snippet--aiaCmd.figma-ai-tw__snippet--aiaCmdInProgress
+  .figma-ai-tw__snippetRight
+  > .figma-ai-tw__iconHit,
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippetWrap--aiaCmd:focus-within:has(.figma-ai-tw__snippetRight .figma-ai-tw__iconHit:focus-visible)
+  .figma-ai-tw__snippet--aiaCmd.figma-ai-tw__snippet--aiaCmdInProgress
+  .figma-ai-tw__snippetRight
+  > .figma-ai-tw__iconHit {
+  width: 26px;
+  min-width: 26px;
+  max-width: 26px;
+  overflow: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Rejected / failed collapsed feed rows (permissions-in-input states showcase). */
+.figma-ai-tw__aiaCmdStatusIcon {
+  display: block;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippet--aiaCmdRejected
+  .figma-ai-tw__snippetCmd,
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippet--aiaCmdFailed
+  .figma-ai-tw__snippetCmd {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.figma-ai-tw__aiaCmdStatusLabel {
+  flex: none;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+}
+
+.figma-ai-tw__aiaCmdStatusLabel--rejected,
+.figma-ai-tw__aiaCmdStatusLabel--failed {
+  color: #9fa2a8;
+}
+
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippet--aiaCmdRejected
+  .figma-ai-tw__aiaCmdStatusCmd,
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippet--aiaCmdFailed
+  .figma-ai-tw__aiaCmdStatusCmd {
+  color: #4c4f56;
+}
+
+/* Skipped / tail command — UI Paragraph (Figma skipped-row copy) */
+.figma-ai-tw__aiaCmdStatusCmd {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  color: #9fa2a8;
+}
+
+/* Completed row: muted icon + copy (Figma “done”) — all default-chat terminal rows in this state. */
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippet--aiaCmd.figma-ai-tw__snippet--aiaCmdCompleted
+  .figma-ai-tw__snippetIcon {
+  color: var(--fa-text-secondary);
+}
+
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippet--aiaCmd.figma-ai-tw__snippet--aiaCmdCompleted
+  .figma-ai-tw__snippetCmd,
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippet--aiaCmd.figma-ai-tw__snippet--aiaCmdCompleted
+  .figma-ai-tw__snippetCmd
+  .m,
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippet--aiaCmd.figma-ai-tw__snippet--aiaCmdCompleted
+  .figma-ai-tw__snippetCmd
+  .o,
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippet--aiaCmd.figma-ai-tw__snippet--aiaCmdCompleted
+  .figma-ai-tw__snippetCmd
+  .p {
+  color: var(--fa-text-secondary);
+}
+
+/* MCP tool row (`ijproxy.read_file` + args) — Figma `9551:23298`, JSON tooltip `9541:81985`. */
+.figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__snippetLeft--aiaMcp {
+  gap: 6px;
+}
+
+.figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__snippetIcon--aiaMcpPlugin {
+  flex-shrink: 0;
+  color: var(--fa-icon-stroke);
+}
+
+.figma-ai-tw__aiaMcpIconSvg {
+  display: block;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippet--aiaCmdMcp.figma-ai-tw__snippet--aiaCmdCompleted
+  .figma-ai-tw__snippetIcon--aiaMcpPlugin {
+  color: var(--fa-text-secondary);
+}
+
+.figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__snippetCmd--aiaMcpLine {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  /* One mono stack for the whole MCP header line (pending / in-progress / done) — avoids width “jump” between states. */
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 16px;
+}
+
+/* In-progress: single clipped line (shimmer + ellipsis; flex keeps tool + args on one row). */
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippetCmd--aiaMcpLine.figma-ai-tw__snippetCmd--aiaLoading {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1 1 0%;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.figma-ai-tw__aiaMcpToolName {
+  flex-shrink: 0;
+  color: var(--fa-editor-mono-text);
+}
+
+/* Completed MCP row: same muted mono as other `--aiaCmdCompleted` tails (`npm` / `init -y`). */
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippet--aiaCmdMcp.figma-ai-tw__snippet--aiaCmdCompleted
+  .figma-ai-tw__aiaMcpToolName {
+  color: var(--fa-text-secondary);
+}
+
+.figma-ai-tw__snippetCmd--aiaMcpLine .figma-ai-tw__aiaMcpTipTrigger {
+  min-width: 0;
+  flex: 1 1 0;
+  max-width: 100%;
+}
+
+.figma-ai-tw__aiaMcpArgsTrigger {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  color: var(--fa-text-disabled);
+  text-align: left;
+  cursor: default;
+}
+
+.figma-ai-tw__aiaMcpArgsInline {
+  display: inline-block;
+  min-width: 0;
+  flex: 1 1 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  color: var(--fa-text-disabled);
+}
+
+.figma-ai-tw__aiaMcpJsonTooltip {
+  position: fixed;
+  z-index: 10001;
+  box-sizing: border-box;
+  max-width: 220px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--fa-card-border);
+  background: var(--fa-card-bg);
+  color: var(--fa-text-secondary);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 16px;
+  pointer-events: none;
+  box-shadow: 0 3px 6px rgba(27, 31, 38, 0.18);
+}
+
+.figma-ai-tw__aiaMcpJsonTooltipInner {
+  min-width: 0;
+}
+
+.figma-ai-tw__aiaMcpJsonTooltipPara {
+  margin: 0;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.figma-ai-tw__aiaMcpJsonLine {
+  display: block;
+}
+
+.figma-ai-tw__aiaMcpJsonPunc {
+  color: var(--fa-text-secondary);
+}
+
+.figma-ai-tw__aiaMcpJsonKey {
+  color: var(--fa-mono-purple);
+}
+
+.figma-ai-tw__aiaMcpJsonStr {
+  color: var(--fa-mono-string);
+}
+
+.figma-ai-tw__aiaMcpJsonNum {
+  color: var(--fa-mono-cyan);
+}
+
+.figma-ai-tw__aiaCmdOverflowTipTrigger {
+  display: block;
+  min-width: 0;
+  flex: 1 1 auto;
+  max-width: 100%;
+}
+
+.figma-ai-tw__snippetLeft--aiaCmdExpandHit .figma-ai-tw__aiaCmdOverflowTipTrigger,
+.figma-ai-tw__snippetCmd--aiaMcpLine .figma-ai-tw__aiaCmdOverflowTipTrigger {
+  flex: 1 1 0;
+}
+
+.figma-ai-tw__aiaCmdOverflowTooltip {
+  position: fixed;
+  z-index: 10002;
+  box-sizing: border-box;
+  width: max-content;
+  max-width: min(92vw, 560px);
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--fa-card-border);
+  background: var(--fa-card-bg);
+  color: var(--fa-text-secondary);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 16px;
+  pointer-events: none;
+  box-shadow: 0 3px 6px rgba(27, 31, 38, 0.18);
+}
+
+.figma-ai-tw__aiaCmdOverflowTooltipInner {
+  margin: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.figma-ai-tw__aiaCmdOverflowTooltip .m.o {
+  color: var(--fa-mono-orange);
+}
+
+.figma-ai-tw__aiaCmdOverflowTooltip .m.p {
+  color: var(--fa-mono-purple);
+}
+
+.figma-ai-tw__aiaCmdOverflowTooltip .m.s {
+  color: var(--fa-mono-string);
+}
+
+.figma-ai-tw__aiaCmdOverflowTooltip .m.c {
+  color: var(--fa-text-disabled);
+}
+
+.figma-ai-tw__aiaCmdOverflowTooltip .figma-ai-tw__aiaMcpToolName {
+  color: var(--fa-text-secondary);
+}
+
+.figma-ai-tw__aiaCmdOverflowTooltip .figma-ai-tw__aiaCmdExpandedMcpArgs,
+.figma-ai-tw__aiaCmdOverflowTooltip .figma-ai-tw__aiaMcpJsonPunc {
+  color: var(--fa-text-secondary);
+}
+
+.figma-ai-tw__aiaCmdOverflowTooltip .figma-ai-tw__aiaMcpJsonKey {
+  color: var(--fa-mono-purple);
+}
+
+.figma-ai-tw__aiaCmdOverflowTooltip .figma-ai-tw__aiaMcpJsonStr {
+  color: var(--fa-mono-string);
+}
+
+.figma-ai-tw__aiaCmdOverflowTooltip .figma-ai-tw__aiaMcpJsonNum {
+  color: var(--fa-mono-cyan);
+}
+
+.figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__snippetDetails {
+  background: transparent;
+  border-radius: 0;
+}
+
+.figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__approval {
+  padding: 4px 4px 4px 0;
+}
+
+.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippetWrap--aiaCmd:has(.figma-ai-tw__snippet--pending)
+  .figma-ai-tw__approval {
+  padding: 0;
+  margin: 0;
+}
+
+.figma-ai-tw__iconHit--aiaStop .figma-ai-tw__icon16 {
+  color: #e5534b;
+}
+
+.figma-ai-tw__inputSection {
+  flex-shrink: 0;
+  padding: 0 6px;
+  overflow: hidden;
+}
+
+/* permissions-in-input: pending approval docks above the composer (input + footer stay visible). */
+.figma-ai-tw--approvalInComposer .figma-ai-tw__inputSection {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  padding: 0 6px 6px;
+}
+
+.figma-ai-tw__composerApprovalDock {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  flex-shrink: 0;
+  min-width: 0;
+  margin: 0 0 6px;
+}
+
+.figma-ai-tw__composerApprovalDock.figma-ai-tw__aiaDefaultSnippets {
+  gap: 0;
+}
+
+.figma-ai-tw__composerApprovalDock.figma-ai-tw__aiaDefaultSnippets
+  .figma-ai-tw__snippetWrap--aiaCmd:has(.figma-ai-tw__snippet--pending) {
+  margin: 0;
+}
+
+.figma-ai-tw__composerApprovalDock .figma-ai-tw__snippet--composerPermission {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/*
+ * Composer permission: inner face stays transparent so the prompt/buttons sit on the chat
+ * surface; only `.composerPermissionCmdFace` uses `--fa-bg`. Without this, the wrap’s
+ * `rgba(53, 112, 228, 0.2)` fill bleeds through the whole block (looked like a blue card).
+ */
+.figma-ai-tw__composerApprovalDock
+  .figma-ai-tw__snippetWrap--aiaCmd:has(.figma-ai-tw__snippet--composerPermission) {
+  background: transparent;
+}
+
+.figma-ai-tw__composerApprovalDock
+  .figma-ai-tw__snippetWrap--aiaCmd:has(.figma-ai-tw__snippet--composerPermission)
+  .figma-ai-tw__snippet--aiaCmd.figma-ai-tw__snippet--pending {
+  --fa-composer-perm-gutter: 14px;
+  background: transparent;
+  padding: 8px var(--fa-composer-perm-gutter) 8px;
+  box-sizing: border-box;
+  /* Static frame — visible while the outer pending ring animates (thinner than composer `2px`). */
+  border: 1px solid var(--fa-card-border);
+  border-radius: 8px;
+}
+
+.figma-ai-tw__composerApprovalDock
+  .figma-ai-tw__snippet--composerPermission.figma-ai-tw__snippet--pending
+  .figma-ai-tw__snippetDetails {
+  background: transparent;
+}
+
+.figma-ai-tw__composerPermissionPrompt {
+  position: relative;
+  z-index: 2;
+  margin: 0 0 6px;
+  padding: 0;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  letter-spacing: -0.011em;
+  color: var(--fa-text-body);
+  background: transparent;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+.figma-ai-tw__composerPermissionCmdFace {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin: 0 0 10px;
+  padding: 6px 4px;
+  border-radius: 8px;
+  background: var(--fa-snippet-raised-bg, #212326);
+  box-sizing: border-box;
+}
+
+.figma-ai-tw__composerApprovalDock
+  .figma-ai-tw__snippet--composerPermission
+  .figma-ai-tw__composerPermissionCmdFace
+  .figma-ai-tw__snippetHeader {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  border-radius: 0;
+  padding: 0;
+  background: transparent;
+}
+
+.figma-ai-tw__composerApprovalDock
+  .figma-ai-tw__snippet--composerPermission
+  .figma-ai-tw__composerPermissionCmdFace
+  .figma-ai-tw__snippetLeft {
+  align-items: center;
+  padding: 0;
+  gap: 8px;
+}
+
+.figma-ai-tw__composerApprovalDock
+  .figma-ai-tw__snippet--composerPermission
+  .figma-ai-tw__composerPermissionCmdFace
+  .figma-ai-tw__snippetLeft--composerPermissionCmd {
+  gap: 0;
+}
+
+.figma-ai-tw__composerApprovalDock
+  .figma-ai-tw__snippet--composerPermission
+  .figma-ai-tw__snippetCmd--composerPermissionCmd {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-family: var(--font-family-mono, 'JetBrains Mono', ui-monospace, monospace);
+}
+
+/* npm: full command wraps inside the gray cmd face (no single-line ellipsis). */
+.figma-ai-tw__composerApprovalDock
+  .figma-ai-tw__snippet--composerPermission
+  .figma-ai-tw__snippetCmd--composerPermissionCmd:not(.figma-ai-tw__snippetCmd--aiaMcpLine) {
+  display: block;
+  overflow: visible;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 16px;
+}
+
+.figma-ai-tw__composerApprovalDock
+  .figma-ai-tw__snippet--composerPermission
+  .figma-ai-tw__snippetCmd--composerPermissionCmd
+  .m.o {
+  color: var(--fa-mono-orange);
+}
+
+.figma-ai-tw__composerApprovalDock
+  .figma-ai-tw__snippet--composerPermission
+  .figma-ai-tw__snippetCmd--composerPermissionCmd
+  .m.p {
+  color: var(--fa-mono-purple);
+}
+
+/* Flags / long args — muted neutral (lighter than `--fa-text-disabled`; parity with readable secondary mono). */
+.figma-ai-tw__composerApprovalDock
+  .figma-ai-tw__snippet--composerPermission
+  .figma-ai-tw__snippetCmd--composerPermissionCmd
+  .m.c {
+  color: var(--fa-text-muted);
+}
+
+/* Icon column: command row + Yes/No rows share the same left inset and 16px icon / 16px text rhythm. */
+.figma-ai-tw__composerApprovalDock
+  .figma-ai-tw__snippet--composerPermission
+  .figma-ai-tw__composerPermissionCmdFace
+  .figma-ai-tw__snippetLeft--composerPermissionCmd,
+  .figma-ai-tw__snippetLeft--composerPermissionMcp {
+  align-items: center;
+  min-height: 0;
+  gap: 0;
+}
+
+.figma-ai-tw__composerApprovalDock
+  .figma-ai-tw__snippet--composerPermission
+  .figma-ai-tw__snippetCmd--composerPermissionMcp {
+  display: block;
+  overflow: visible;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 16px;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.figma-ai-tw__composerPermissionMcpIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin: 0 6px 0 0;
+  vertical-align: middle;
+  color: var(--fa-text-secondary);
+}
+
+.figma-ai-tw__composerPermissionTerminalIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin: 0 6px 0 0;
+  vertical-align: middle;
+  color: var(--fa-text-secondary);
+}
+
+.figma-ai-tw__composerApprovalDock
+  .figma-ai-tw__snippet--composerPermission
+  .figma-ai-tw__snippetCmd--composerPermissionMcp
+  .figma-ai-tw__aiaMcpToolName {
+  color: var(--fa-editor-mono-text);
+}
+
+.figma-ai-tw__composerApprovalDock
+  .figma-ai-tw__snippet--composerPermission
+  .figma-ai-tw__composerPermissionMcpArgs {
+  flex: none;
+  display: inline;
+  overflow: visible;
+  white-space: normal;
+  text-overflow: clip;
+  color: var(--fa-text-disabled);
+}
+
+.figma-ai-tw__composerApprovalDock
+  .figma-ai-tw__snippet--composerPermission
+  .figma-ai-tw__snippetIcon,
+.figma-ai-tw__composerApprovalDock
+  .figma-ai-tw__snippet--composerPermission
+  .figma-ai-tw__snippetIcon--aiaMcpPlugin {
+  align-self: center;
+}
+
+/* Inline mono tokens — not flex (space-only spans collapse as flex items). */
+.figma-ai-tw__composerApprovalDock
+  .figma-ai-tw__snippet--composerPermission
+  .figma-ai-tw__snippetCmd--composerPermissionCmd {
+  display: block;
+  margin: 0;
+  line-height: 16px;
+}
+
+.figma-ai-tw__composerApprovalDock
+  .figma-ai-tw__snippet--composerPermission
+  .figma-ai-tw__snippetDetails {
+  padding-top: 2px;
+}
+
+.figma-ai-tw__composerApprovalDock
+  .figma-ai-tw__snippet--composerPermission
+  .figma-ai-tw__approval {
+  /* Same icon column as command row: gutter + 10px list inset → 24px from frame edge. */
+  padding: 0 10px 6px 10px;
+}
+
+.figma-ai-tw__composerApprovalDock
+  .figma-ai-tw__snippet--composerPermission
+  .figma-ai-tw__approvalItem {
+  align-items: center;
+  min-height: 26px;
+  /* Left inset so the row icon doesn’t sit flush on the ::before selection chrome. */
+  padding: 4px 6px 4px 8px;
+  gap: 8px;
+}
+
+.figma-ai-tw__composerApprovalDock
+  .figma-ai-tw__snippet--composerPermission
+  .figma-ai-tw__approvalItem
+  .figma-ai-tw__icon16 {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  line-height: 0;
+}
+
+.figma-ai-tw__composerApprovalDock
+  .figma-ai-tw__snippet--composerPermission
+  .figma-ai-tw__approvalText {
+  line-height: 16px;
+}
+
+.figma-ai-tw__composerPermissionSubmitBar {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0 4px;
+  box-sizing: border-box;
+}
+
+/* Kit slim buttons — fit label + shortcut glyphs */
+.figma-ai-tw__composerPermissionSkipBtn.button,
+.figma-ai-tw__composerPermissionSubmitBtn.button {
+  min-width: auto;
+}
+
+.figma-ai-tw__composerPermissionBtnShortcut {
+  color: var(--text-muted, var(--fa-text-secondary));
+  font-weight: 600;
+}
+
+.figma-ai-tw__composerPermissionBtnShortcut--onPrimary {
+  color: var(--button-primary-text, #fff);
+  opacity: 0.72;
+}
+
+.figma-ai-tw__field {
+  background: var(--bg-primary, #191a1c);
+  border: 2px solid var(--fa-card-border);
+  border-radius: 8px;
+  padding: 2px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Blue frame only when focus is inside the composer (toolbar buttons count as “in field”) */
+.figma-ai-tw__field:focus-within {
+  border-color: var(--fa-brand);
+}
+
+.figma-ai-tw__field--awaitingRejectionFeedback {
+  border-color: var(--fa-brand);
+}
+
+.figma-ai-tw__aiaCmdRejectionFeedback {
+  margin: 8px 0 4px;
+  padding: 0 2px;
+}
+
+.figma-ai-tw__aiaCmdRejectionFeedbackStatus {
+  margin: 0 0 4px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  color: var(--fa-text-secondary);
+}
+
+.figma-ai-tw__aiaCmdRejectionFeedbackStatus + .figma-ai-tw__aiaCmdRejectionFeedbackPrompt {
+  margin-top: 2px;
+}
+
+.figma-ai-tw__aiaCmdRejectionFeedbackPrompt + .figma-ai-tw__aiaCmdRejectionFeedbackStatus {
+  margin-top: 8px;
+  margin-bottom: 2px;
+}
+
+.figma-ai-tw__aiaCmdRejectionFeedbackStatus + .figma-ai-tw__aiaCmdRejectionFeedbackSent {
+  margin-top: 0;
+}
+
+.figma-ai-tw__aiaCmdRejectionFeedbackPrompt {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  color: var(--fa-text);
+}
+
+.figma-ai-tw__aiaCmdRejectionFeedbackSpark {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+}
+
+.figma-ai-tw__aiaCmdRejectionFeedbackSpark .figma-ai-tw__iconImg {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+.figma-ai-tw__aiaCmdRejectionFeedbackSent {
+  margin: 0;
+  padding: 0;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  color: var(--fa-text);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.figma-ai-tw__inputTop {
+  min-height: 57px;
+  padding: 6px 2px 0 2px;
+}
+
+.figma-ai-tw__composerInput {
+  display: block;
+  width: 100%;
+  min-height: 51px;
+  margin: 0;
+  padding: 10px 13px 4px 12px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--fa-text);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 16px;
+  resize: none;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.figma-ai-tw__composerInput::placeholder {
+  color: var(--fa-text-secondary);
+}
+
+.figma-ai-tw__placeholder {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 16px;
+  color: var(--fa-text-secondary);
+}
+
+.figma-ai-tw__attachments {
+  padding: 0 14px 3px;
+  min-height: 8px;
+}
+
+.figma-ai-tw__inputToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 30px;
+  padding: 0 8px 4px;
+}
+
+.figma-ai-tw__inputLeft {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.figma-ai-tw__dropdownFake {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 4px;
+  margin: 0;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--fa-text-muted);
+  cursor: pointer;
+}
+
+.figma-ai-tw__dropdownFake:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.figma-ai-tw__dropdownFake img {
+  width: 16px;
+  height: 16px;
+}
+
+.figma-ai-tw__inputRight {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.figma-ai-tw__feedback {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 8px;
+  height: 38px;
+  box-sizing: border-box;
+}
+
+.figma-ai-tw__feedbackLeft {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  min-width: 0;
+}
+
+.figma-ai-tw__agentBtn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 4px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--fa-text-muted);
+  cursor: pointer;
+}
+
+.figma-ai-tw__agentLabel {
+  white-space: nowrap;
+}
+
+.figma-ai-tw__agentBtn:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.figma-ai-tw__agentBtn img {
+  width: 16px;
+  height: 16px;
+}
+
+.figma-ai-tw__modelDd {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 4px;
+  margin: 0;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--fa-text-muted);
+  cursor: pointer;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.figma-ai-tw__modelDd:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.figma-ai-tw__modelDd img {
+  width: 16px;
+  height: 16px;
+}
+
+@container figma-ai-tw (max-width: 360px) {
+  .figma-ai-tw__agentLabel {
+    display: none;
+  }
+}
+
+.figma-ai-tw__feedbackLink {
+  margin: 0;
+  padding: 6px 0;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 16px;
+  color: var(--fa-text-secondary);
+  text-decoration: none;
+}
+
+.figma-ai-tw__feedbackLink:hover {
+  color: var(--fa-text);
+}
+
+/* ── THINKING-WG — AIA-Agents Figma 9385:19155 (Agent Step Box) + 9385:19188 (collapsed summary) ── */
+
+.figma-ai-tw__paragraph code {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--fa-text-muted);
+  background: rgba(255, 255, 255, 0.055);
+  padding: 1px 5px 2px;
+  border-radius: 4px;
+  vertical-align: baseline;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* WG CP trace: keep rows inside the tool-window column (flex min-width:auto otherwise blows out width). */
+.figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace {
+  overflow-x: clip;
+  max-width: 100%;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace > .figma-ai-tw__snippetWrap--aiaCmd,
+.figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace > .figma-ai-tw__thinkingWgMixedCpTraceReasoning,
+.figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace > .figma-ai-tw__wgStepRow {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace .figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__snippet--aiaCmd {
+  overflow: hidden;
+  max-width: 100%;
+}
+
+/* Working Group CP trace: nested `aiaDefaultSnippets` per command — reuse default AIA terminal CSS. */
+.figma-ai-tw__thinkingWgMixedCpTraceList .figma-ai-tw__aiaDefaultSnippets--thinkingWgCpTrace {
+  display: contents;
+}
+
+/* WG CP trace: terminal + MCP rows always one line (incl. in-progress shimmer). */
+.figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace .figma-ai-tw__snippet--aiaCmd .figma-ai-tw__snippetHeader {
+  flex-wrap: nowrap;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace .figma-ai-tw__snippet--aiaCmd .figma-ai-tw__snippetLeft {
+  flex: 1;
+  min-width: 0;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace
+  .figma-ai-tw__snippetCmd:not(.figma-ai-tw__snippetCmd--aiaMcpLine) {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace .figma-ai-tw__aiaCmdExpandReveal,
+.figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace .figma-ai-tw__aiaNpmInitStreamTailOuter {
+  min-width: 0;
+}
+
+/* Mixed #0 `aiaCmdTrace` + V6: row icons in the 16px column (spine sits in gutter at 8px). */
+.figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace[data-cp-trace-style='timelineDots']
+  > .figma-ai-tw__snippetWrap--aiaCmd
+  .figma-ai-tw__snippet--aiaCmd
+  .figma-ai-tw__snippetHeader {
+  align-items: flex-start;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace[data-cp-trace-style='timelineDots']
+  > .figma-ai-tw__snippetWrap--aiaCmd
+  .figma-ai-tw__snippet--aiaCmd
+  .figma-ai-tw__snippetIcon {
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  margin-top: 3px;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace[data-cp-trace-style='timelineDots']
+  > .figma-ai-tw__snippetWrap--aiaCmd
+  .figma-ai-tw__snippet--aiaCmd
+  .figma-ai-tw__snippetIcon
+  .figma-ai-tw__aiaCmdStatusIcon,
+.figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace[data-cp-trace-style='timelineDots']
+  > .figma-ai-tw__snippetWrap--aiaCmd
+  .figma-ai-tw__snippet--aiaCmd
+  .figma-ai-tw__snippetIcon
+  svg {
+  width: 16px;
+  height: 16px;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace[data-cp-trace-style='timelineDots']
+  > .figma-ai-tw__snippetWrap--aiaCmd
+  .figma-ai-tw__snippet--aiaCmd
+  .figma-ai-tw__snippetLeft {
+  gap: 8px;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceList
+  .figma-ai-tw__snippet--aiaCmdCompleted
+  .figma-ai-tw__snippetCmd
+  .m,
+.figma-ai-tw__thinkingWgMixedCpTraceList
+  .figma-ai-tw__snippet--aiaCmdCompleted
+  .figma-ai-tw__snippetCmd
+  .o,
+.figma-ai-tw__thinkingWgMixedCpTraceList
+  .figma-ai-tw__snippet--aiaCmdCompleted
+  .figma-ai-tw__snippetCmd
+  .p {
+  color: var(--fa-text-secondary);
+}
+
+/* Working CP peek / collapsed: no per-command hover actions — shell click expands the whole block. */
+.figma-ai-tw__thinkingWgReasoningCpBodyShell--peek .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace {
+  cursor: pointer;
+}
+
+.figma-ai-tw__snippetWrap--thinkingWgMixedCp:not(.figma-ai-tw__snippetWrap--reasoningCpExpanded)
+  .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace
+  .figma-ai-tw__snippetRight,
+.figma-ai-tw__snippetWrap--thinkingWgMixedCp:not(.figma-ai-tw__snippetWrap--reasoningCpExpanded)
+  .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace
+  .figma-ai-tw__snippetWrap--aiaCmd:hover
+  .figma-ai-tw__snippetRight,
+.figma-ai-tw__snippetWrap--thinkingWgMixedCp:not(.figma-ai-tw__snippetWrap--reasoningCpExpanded)
+  .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace
+  .figma-ai-tw__snippetWrap--aiaCmd:focus-within:has(.figma-ai-tw__snippetRight .figma-ai-tw__iconHit:focus-visible)
+  .figma-ai-tw__snippetRight,
+.figma-ai-tw__snippetWrap--thinkingWgMixedCp:not(.figma-ai-tw__snippetWrap--reasoningCpExpanded)
+  .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace
+  .figma-ai-tw__snippet--aiaCmdLogExpanded
+  .figma-ai-tw__snippetRight,
+.figma-ai-tw__snippetWrap--thinkingWgMixedCp:not(.figma-ai-tw__snippetWrap--reasoningCpExpanded)
+  .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace
+  .figma-ai-tw__snippet--aiaCmdLogExpanded
+  .figma-ai-tw__snippetRight
+  > .figma-ai-tw__iconHit--aiaLogToggle {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.figma-ai-tw__snippetWrap--thinkingWgMixedCp:not(.figma-ai-tw__snippetWrap--reasoningCpExpanded)
+  .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace
+  .figma-ai-tw__snippetWrap--aiaCmd:hover
+  .figma-ai-tw__snippet--aiaCmdCompleted:not(.figma-ai-tw__snippet--pending)
+  .figma-ai-tw__snippetLeft,
+.figma-ai-tw__snippetWrap--thinkingWgMixedCp:not(.figma-ai-tw__snippetWrap--reasoningCpExpanded)
+  .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace
+  .figma-ai-tw__snippetWrap--aiaCmd:focus-within:has(.figma-ai-tw__snippetRight .figma-ai-tw__iconHit:focus-visible)
+  .figma-ai-tw__snippet--aiaCmdCompleted:not(.figma-ai-tw__snippet--pending)
+  .figma-ai-tw__snippetLeft,
+.figma-ai-tw__snippetWrap--thinkingWgMixedCp:not(.figma-ai-tw__snippetWrap--reasoningCpExpanded)
+  .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace
+  .figma-ai-tw__snippetWrap--aiaCmd:hover
+  .figma-ai-tw__snippet--aiaCmdRejected
+  .figma-ai-tw__snippetLeft,
+.figma-ai-tw__snippetWrap--thinkingWgMixedCp:not(.figma-ai-tw__snippetWrap--reasoningCpExpanded)
+  .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace
+  .figma-ai-tw__snippetWrap--aiaCmd:hover
+  .figma-ai-tw__snippet--aiaCmdFailed
+  .figma-ai-tw__snippetLeft,
+.figma-ai-tw__snippetWrap--thinkingWgMixedCp:not(.figma-ai-tw__snippetWrap--reasoningCpExpanded)
+  .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace
+  .figma-ai-tw__snippet--aiaCmdLogExpanded
+  .figma-ai-tw__snippetLeft {
+  padding-right: 0;
+}
+
+.figma-ai-tw__aiaDefaultSnippets--thinkingWgMixed {
+  padding-top: 0;
+}
+
+.figma-ai-tw__aiaDefaultSnippets--thinkingWgMixed > .figma-ai-tw__paragraph--aiaCmdBridge {
+  margin-bottom: 8px;
+}
+
+.figma-ai-tw__wgStepBox {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 4px 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Working Group (`panelKind=mixed`): list-reveal + expanded trace — shared icon + copy tokens + compact vertical rhythm. */
+.figma-ai-tw__wgStepBox--mixedExpand {
+  gap: 6px;
+}
+
+.figma-ai-tw__wgStepBox--mixedExpand .figma-ai-tw__wgStepIconCol {
+  color: #868a91;
+}
+
+.figma-ai-tw__wgStepBox--mixedExpand .figma-ai-tw__wgStepText {
+  color: #73767c;
+}
+
+.figma-ai-tw__wgStepBox--mixedExpand .figma-ai-tw__wgStepTextCmd:not(.figma-ai-tw__wgStepText--pending):not(
+    .figma-ai-tw__wgStepText--summarySyncShimmer
+  ),
+.figma-ai-tw__wgStepBox--mixedExpand
+  .figma-ai-tw__wgStepTextReasoning:not(.figma-ai-tw__wgStepText--pending):not(.figma-ai-tw__wgStepText--summarySyncShimmer) {
+  color: #73767c;
+}
+
+.figma-ai-tw__wgStepBox--mixedExpand .figma-ai-tw__thinkingWgReasoningBodyPara {
+  color: #73767c;
+}
+
+/* Mixed list-reveal + expanded `#thinking-wg-command-list`: reasoning row title = one line + ellipsis (not 2-line wrap). */
+.figma-ai-tw__wgStepBox--mixedExpand .figma-ai-tw__wgStepText:has(> .figma-ai-tw__wgStepTextReasoning) {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  overflow-wrap: normal;
+}
+
+/* Expanded mixed `#thinking-wg-command-list` (`data-wg-mixed-rail`): shared body typography; `padding-left: 24px` matches `.wgSummaryBtn` label inset (16px icon cluster + 8px gap) so row glyphs line up with the summary headline text. */
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-rail='segmented'],
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-rail='continuous'] {
+  position: relative;
+  padding: 4px 0 4px 24px;
+  box-sizing: border-box;
+}
+
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-rail='segmented']::before,
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-rail='continuous']::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  /* End at ~center of last 16px icon row — no stub past the final glyph (reveal + finished). */
+  bottom: 11px;
+  width: 1px;
+  background: rgba(134, 138, 145, 0.38);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-rail='segmented']::before {
+  /* Icon column starts after 24px inset — spine through glyph center (16px slot / 2). */
+  left: calc(24px + 8px - 0.5px);
+}
+
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-rail='continuous']::before {
+  /* Uninterrupted spine in the gutter left of the icon column. */
+  left: calc(8px - 0.5px);
+}
+
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-rail='segmented'] > .figma-ai-tw__wgStepRow,
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-rail='segmented'] > .figma-ai-tw__thinkingWgMixedExpandBeat {
+  position: relative;
+  z-index: 1;
+}
+
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-rail='segmented'] .figma-ai-tw__wgStepIconCol,
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-rail='segmented'] .figma-ai-tw__thinkingWgMixedExpandBeat__iconCol {
+  z-index: 2;
+  background: var(--fa-bg-tool);
+  border-radius: 3px;
+  box-shadow: 0 0 0 3px var(--fa-bg-tool);
+}
+
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-rail='segmented'] .figma-ai-tw__wgStepTextCmd,
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-rail='segmented'] .figma-ai-tw__wgStepTextReasoning,
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-rail='continuous'] .figma-ai-tw__wgStepTextCmd,
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-rail='continuous'] .figma-ai-tw__wgStepTextReasoning {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 23px;
+  letter-spacing: -0.011em;
+}
+
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-rail='segmented'] .figma-ai-tw__wgStepTextCmd:not(.figma-ai-tw__wgStepText--pending):not(
+    .figma-ai-tw__wgStepText--summarySyncShimmer
+  ),
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-rail='continuous'] .figma-ai-tw__wgStepTextCmd:not(.figma-ai-tw__wgStepText--pending):not(
+    .figma-ai-tw__wgStepText--summarySyncShimmer
+  ) {
+  color: var(--fa-text-secondary, #73767c);
+}
+
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-rail='segmented']
+  .figma-ai-tw__wgStepTextReasoning:not(.figma-ai-tw__wgStepText--pending):not(.figma-ai-tw__wgStepText--summarySyncShimmer),
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-rail='continuous']
+  .figma-ai-tw__wgStepTextReasoning:not(.figma-ai-tw__wgStepText--pending):not(.figma-ai-tw__wgStepText--summarySyncShimmer) {
+  color: var(--fa-text-secondary, #73767c);
+}
+
+/*
+ * Expanded mixed `#thinking-wg-command-list` — loading-style shell: no per-row glyphs, one solid left spine,
+ * uniform secondary gray copy. Same horizontal rhythm as `data-wg-mixed-rail='continuous'` expanded + `.wgSummaryBtn`:
+ * spine in the gutter under the summary icon column (`left: calc(8px - 0.5px)`), copy inset `24px` so it lines up with
+ * “Thinking…” label text (not the old 48px segmented-only inset, which sat between chevron and headline).
+ * Overrides `data-wg-mixed-rail` glyph layout while `loadingStrip` is present.
+ */
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-expand-shell='loadingStrip'] {
+  position: relative;
+  padding: 4px 0 4px 24px;
+  box-sizing: border-box;
+}
+
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-expand-shell='loadingStrip']::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(8px - 0.5px);
+  width: 1px;
+  background: rgba(134, 138, 145, 0.42);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-expand-shell='loadingStrip'] > .figma-ai-tw__wgStepRow,
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-expand-shell='loadingStrip'] > .figma-ai-tw__thinkingWgMixedExpandBeat,
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-expand-shell='loadingStrip'] > .figma-ai-tw__thinkingWgMixedCpTraceReasoning {
+  position: relative;
+  z-index: 1;
+}
+
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-expand-shell='loadingStrip'] .figma-ai-tw__wgStepIconCol,
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-expand-shell='loadingStrip'] .figma-ai-tw__thinkingWgMixedExpandBeat__iconCol {
+  display: none;
+}
+
+/* `#4` + `twg-working-summary-preview-last3-icons`: keep row / beat glyphs visible in loading-strip shell. */
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-expand-shell='loadingStrip'][data-wg-mixed-loading-strip-icons='true']
+  .figma-ai-tw__wgStepIconCol,
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-expand-shell='loadingStrip'][data-wg-mixed-loading-strip-icons='true']
+  .figma-ai-tw__thinkingWgMixedExpandBeat__iconCol {
+  display: flex;
+}
+
+/* `#thinking-wg-command-list` (`loadingStrip` + row icons): command rows align text to icon center. */
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-expand-shell='loadingStrip'][data-wg-mixed-loading-strip-icons='true']
+  .figma-ai-tw__wgStepRow:has(.figma-ai-tw__wgStepTextCmd) {
+  align-items: center;
+}
+
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-expand-shell='loadingStrip'] .figma-ai-tw__cpTraceTimelineRail,
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-expand-shell='loadingStrip'] .figma-ai-tw__cpTraceTimelineIconSlot {
+  display: none;
+}
+
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-expand-shell='loadingStrip'] .figma-ai-tw__thinkingWgMixedExpandBeat__body .figma-ai-tw__thinkingWgMixedExpandReasoningBody {
+  padding-left: 0;
+}
+
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-expand-shell='loadingStrip'] .figma-ai-tw__wgStepText,
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-expand-shell='loadingStrip'] .figma-ai-tw__wgStepTextCmd,
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-expand-shell='loadingStrip'] .figma-ai-tw__wgStepTextReasoning,
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-expand-shell='loadingStrip'] .figma-ai-tw__wgStepTextBody {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 23px;
+  letter-spacing: -0.011em;
+  color: var(--fa-text-secondary, #73767c);
+}
+
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-expand-shell='loadingStrip'] .figma-ai-tw__wgStepTextCmd.figma-ai-tw__wgStepText--pending,
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-expand-shell='loadingStrip'] .figma-ai-tw__wgStepTextReasoning.figma-ai-tw__wgStepText--pending,
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-expand-shell='loadingStrip'] .figma-ai-tw__wgStepTextBody.figma-ai-tw__wgStepText--pending,
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-expand-shell='loadingStrip'] .figma-ai-tw__wgStepTextCmd.figma-ai-tw__wgStepText--summarySyncShimmer,
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-expand-shell='loadingStrip'] .figma-ai-tw__wgStepTextReasoning.figma-ai-tw__wgStepText--summarySyncShimmer,
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-expand-shell='loadingStrip'] .figma-ai-tw__wgStepTextBody.figma-ai-tw__wgStepText--summarySyncShimmer {
+  animation: none;
+  color: var(--fa-text-secondary, #73767c);
+  background-image: none;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+}
+
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-expand-shell='loadingStrip'] .figma-ai-tw__wgStepFailedPrefix,
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-expand-shell='loadingStrip'] .figma-ai-tw__wgStepRanPrefix {
+  color: var(--fa-text-secondary, #73767c);
+  font-weight: 400;
+}
+
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-expand-shell='loadingStrip'] .figma-ai-tw__thinkingWgReasoningBodyPara,
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-expand-shell='loadingStrip'] .figma-ai-tw__thinkingWgMixedExpandReasoningBody .figma-ai-tw__paragraph code {
+  color: var(--fa-text-secondary, #73767c);
+}
+
+.figma-ai-tw__thinkingWgExpandListInner:has([data-wg-mixed-expand-shell='loadingStrip']) {
+  position: relative;
+  isolation: isolate;
+}
+
+.figma-ai-tw__thinkingWgMixedExpandBeat {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.figma-ai-tw__thinkingWgMixedExpandBeat__toggle {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  text-align: left;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  font-style: normal;
+  line-height: 18px;
+  color: inherit;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.figma-ai-tw__thinkingWgMixedExpandBeat__toggle:focus-visible {
+  outline: 2px solid #6b9fff;
+  outline-offset: 2px;
+}
+
+.figma-ai-tw__thinkingWgMixedExpandBeat__headerRow {
+  width: 100%;
+}
+
+.figma-ai-tw__thinkingWgMixedExpandBeat__iconCol {
+  color: #868a91;
+}
+
+.figma-ai-tw__thinkingWgMixedExpandBeat__disclose {
+  display: block;
+  transform: rotate(-90deg);
+  transition: transform 0.14s ease;
+  color: #868a91;
+}
+
+.figma-ai-tw__thinkingWgMixedExpandBeat--expanded .figma-ai-tw__thinkingWgMixedExpandBeat__disclose {
+  transform: rotate(0deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .figma-ai-tw__thinkingWgMixedExpandBeat__disclose {
+    transition: none;
+  }
+}
+
+.figma-ai-tw__thinkingWgMixedExpandBeat__body {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.figma-ai-tw__thinkingWgMixedExpandBeat__body .figma-ai-tw__thinkingWgMixedExpandReasoningBody {
+  padding: 0 0 0 24px;
+  margin-top: 0;
+}
+
+.figma-ai-tw__thinkingWgMixedExpandBeat__body .figma-ai-tw__thinkingWgReasoningBodyStack {
+  gap: 10px;
+}
+
+/* listReveal (#1): same collapse motion as `#thinking-wg-command-list` — grid 1fr → 0fr (not max-height + opacity). */
+.figma-ai-tw__thinkingWgListRevealWrap {
+  display: grid;
+  grid-template-rows: 1fr;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  contain: layout;
+  margin: 0;
+}
+
+.figma-ai-tw__thinkingWgListRevealWrap--collapsing {
+  grid-template-rows: 0fr;
+  pointer-events: none;
+}
+
+.figma-ai-tw__thinkingWgListRevealWrap--collapsing .figma-ai-tw__thinkingWgListRevealInner {
+  opacity: var(--fa-expand-reveal-fade);
+}
+
+.figma-ai-tw__thinkingWgListRevealWrap:not(.figma-ai-tw__thinkingWgListRevealWrap--collapsing) .figma-ai-tw__thinkingWgListRevealInner {
+  opacity: 1;
+}
+
+.figma-ai-tw__thinkingWgListRevealInner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .figma-ai-tw__thinkingWgListRevealWrap {
+    transition: none;
+  }
+
+  .figma-ai-tw__thinkingWgListRevealWrap--collapsing {
+    grid-template-rows: 0fr;
+  }
+
+  .figma-ai-tw__aiaCmdExpandReveal,
+  .figma-ai-tw__thinkingWgExpandList,
+  .figma-ai-tw__thinkingWgListRevealWrap,
+  .figma-ai-tw__thinkingWgReasoningCpBodyReveal,
+  .figma-ai-tw__aiaCmdExpandRevealInner,
+  .figma-ai-tw__thinkingWgExpandListInner,
+  .figma-ai-tw__thinkingWgListRevealInner,
+  .figma-ai-tw__thinkingWgReasoningCpBodyRevealInner,
+  .figma-ai-tw__thinkingWgReasoningCpBodyShell {
+    transition: none;
+  }
+
+  .figma-ai-tw__aiaCmdExpandReveal:not(.figma-ai-tw__aiaCmdExpandReveal--open) .figma-ai-tw__aiaCmdExpandRevealInner,
+  .figma-ai-tw__thinkingWgExpandList:not(.figma-ai-tw__thinkingWgExpandList--heightOpen) .figma-ai-tw__thinkingWgExpandListInner,
+  .figma-ai-tw__thinkingWgListRevealWrap--collapsing .figma-ai-tw__thinkingWgListRevealInner,
+  .figma-ai-tw__thinkingWgReasoningCpBodyReveal:not(.figma-ai-tw__thinkingWgReasoningCpBodyReveal--open)
+    .figma-ai-tw__thinkingWgReasoningCpBodyRevealInner {
+    opacity: 1;
+  }
+}
+
+.figma-ai-tw__wgStepRow {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  width: 100%;
+  min-height: 24px;
+  box-sizing: border-box;
+}
+
+.figma-ai-tw__wgStepRow--noAnim {
+  animation: none;
+}
+
+/* Running row(s): no pointer interactions */
+.figma-ai-tw__wgStepRow--running {
+  pointer-events: none;
+}
+
+.figma-ai-tw__wgStepRow--cpTraceCompact > .figma-ai-tw__wgStepText {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Mixed #0 CP — Drafts V6 (`timelineDots`): Perplexity-style single gradient spine, compact type + icons. */
+.figma-ai-tw__wgStepFailedPrefix {
+  color: #b6bac3;
+  font-weight: 600;
+}
+
+.figma-ai-tw__wgStepRanPrefix {
+  color: #a8b0bc;
+  font-weight: 600;
+}
+
+.figma-ai-tw__wgStepRow--cpTraceTimeline {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+}
+
+.figma-ai-tw__wgStepRow--cpTraceTimeline > .figma-ai-tw__cpTraceTimeline {
+  flex: 1;
+  min-width: 0;
+}
+
+.figma-ai-tw__cpTraceTimeline {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* One continuous spine in the gutter left of row icons (same as last-3 / continuous expanded rail). */
+.figma-ai-tw__thinkingWgMixedCpTraceList[data-cp-trace-style='timelineDots'] {
+  position: relative;
+  isolation: isolate;
+  gap: 0;
+  box-sizing: border-box;
+  padding-left: 24px;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceList[data-cp-trace-style='timelineDots']::before {
+  content: '';
+  position: absolute;
+  left: calc(8px - 0.5px);
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  pointer-events: none;
+  z-index: 0;
+  background: rgba(134, 138, 145, 0.38);
+  border-radius: 1px;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceList[data-cp-trace-style='timelineDots'] .figma-ai-tw__cpTraceTimelineRailLine {
+  display: none;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceList[data-cp-trace-style='timelineDots'] .figma-ai-tw__cpTraceTimelineRail {
+  position: relative;
+  z-index: 1;
+  width: 16px;
+  flex: 0 0 auto;
+  align-self: flex-start;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceList[data-cp-trace-style='timelineDots'] .figma-ai-tw__cpTraceTimelineRailSeg {
+  display: none;
+  min-height: 0;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceList[data-cp-trace-style='timelineDots'] .figma-ai-tw__cpTraceTimeline {
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceList[data-cp-trace-style='timelineDots'] .figma-ai-tw__cpTraceTimelineBody {
+  align-self: flex-start;
+  padding-top: 3px;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceList[data-cp-trace-style='timelineDots'] .figma-ai-tw__cpTraceTimelineIconSlot {
+  width: 16px;
+  height: 16px;
+  margin: 3px 0 0;
+  z-index: 1;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceList[data-cp-trace-style='timelineDots'] .figma-ai-tw__cpTraceTimelineChevron {
+  display: block;
+  color: #868a91;
+  transform: rotate(-90deg);
+  transition: transform 0.14s ease;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceList[data-cp-trace-style='timelineDots']
+  .figma-ai-tw__thinkingWgMixedCpTraceReasoning--expanded
+  .figma-ai-tw__cpTraceTimelineChevron {
+  transform: rotate(0deg);
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceList[data-cp-trace-style='timelineDots'] .figma-ai-tw__wgStepGlyph,
+.figma-ai-tw__thinkingWgMixedCpTraceList[data-cp-trace-style='timelineDots'] .figma-ai-tw__wgReasoningGlyph {
+  width: 16px;
+  height: 16px;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceList[data-cp-trace-style='timelineDots'] > .figma-ai-tw__wgStepRow,
+.figma-ai-tw__thinkingWgMixedCpTraceList[data-cp-trace-style='timelineDots'] > .figma-ai-tw__thinkingWgMixedCpTraceReasoning,
+.figma-ai-tw__thinkingWgMixedCpTraceList[data-cp-trace-style='timelineDots'] > .figma-ai-tw__snippetWrap--aiaCmd {
+  position: relative;
+  z-index: 1;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceList[data-cp-trace-style='timelineDots'] > .figma-ai-tw__wgStepRow {
+  min-height: 18px;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceList[data-cp-trace-style='timelineDots'] .figma-ai-tw__wgStepText {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceList[data-cp-trace-style='timelineDots'] .figma-ai-tw__wgStepTextReasoning {
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceList[data-cp-trace-style='timelineDots'] .figma-ai-tw__wgStepTextCmd {
+  font-size: 11px;
+  line-height: 15px;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceList[data-cp-trace-style='timelineDots'] .figma-ai-tw__thinkingWgMixedCpTraceReasoning {
+  gap: 4px;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceList[data-cp-trace-style='timelineDots'] .figma-ai-tw__thinkingWgMixedCpTraceReasoning__toggle {
+  font-size: 12px;
+  line-height: 16px;
+}
+
+/* Default timeline rail column width; `timelineDots` list overrides to 18px + single gradient spine. */
+.figma-ai-tw__cpTraceTimelineRail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 20px;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.figma-ai-tw__cpTraceTimelineRailSeg {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 4px;
+  width: 100%;
+}
+
+.figma-ai-tw__cpTraceTimelineRailSeg--upFirst .figma-ai-tw__cpTraceTimelineRailLine {
+  visibility: hidden;
+}
+
+.figma-ai-tw__cpTraceTimelineRailSeg--downLast .figma-ai-tw__cpTraceTimelineRailLine {
+  visibility: hidden;
+}
+
+.figma-ai-tw__cpTraceTimelineRailLine {
+  width: 1px;
+  flex: 1 1 auto;
+  min-height: 4px;
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 0;
+}
+
+/* Icon sits in the rail column; no chip fill — line gaps are handled by segment visibility at first/last row */
+.figma-ai-tw__cpTraceTimelineIconSlot {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin: 2px 0;
+  box-sizing: border-box;
+}
+
+.figma-ai-tw__cpTraceTimelineBody {
+  flex: 1;
+  min-width: 0;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+}
+
+.figma-ai-tw__cpTraceTimelineBody > .figma-ai-tw__wgStepText {
+  margin: 0;
+}
+
+/* Drafts V2: first paragraph preview up to 3 lines; expanded row shows full slice below */
+.figma-ai-tw__thinkingWgMixedCpTraceList[data-cp-trace-style='noIconsFailedPrefix']
+  .figma-ai-tw__thinkingWgMixedCpTraceReasoning__titleLine--clamp3 {
+  white-space: normal;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceList[data-cp-trace-style='noIconsFailedPrefix']
+  .figma-ai-tw__thinkingWgMixedCpTraceReasoning__titleLine--clamp3
+  .figma-ai-tw__wgStepTextReasoning {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  white-space: normal;
+  overflow: hidden;
+  word-break: break-word;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceReasoning--expanded
+  .figma-ai-tw__thinkingWgMixedCpTraceReasoning__titleLine--clamp3
+  .figma-ai-tw__wgStepTextReasoning {
+  -webkit-line-clamp: unset;
+  display: block;
+  overflow: visible;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceList[data-cp-trace-style='noIconsFailedPrefix']
+  .figma-ai-tw__thinkingWgMixedCpTraceReasoning__body {
+  padding-left: 0;
+}
+
+/* Drafts V2 + V6: shell commands stay one line */
+.figma-ai-tw__thinkingWgMixedCpTraceList[data-cp-trace-style='noIconsFailedPrefix'] .figma-ai-tw__wgStepTextCmd,
+.figma-ai-tw__thinkingWgMixedCpTraceList[data-cp-trace-style='timelineDots'] .figma-ai-tw__wgStepTextCmd {
+  display: block;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Single outcome icon per row (terminal = ok, cross = fail); no hover swap */
+.figma-ai-tw__wgStepIconCol {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  color: #868a91;
+}
+
+.figma-ai-tw__wgStepGlyph {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+/* THINKING-WG: `icons/AI Message/terminal.svg` + `cross.svg` for toolcall row / feed / summary. */
+.figma-ai-tw__wgToolcallStatusImg {
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.figma-ai-tw__wgMcpRowIcon {
+  display: block;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  color: #868A91;
+}
+
+.figma-ai-tw__wgMcpToolName {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+.figma-ai-tw__wgMcpArgs {
+  color: var(--fa-text-secondary, #73767c);
+}
+
+.figma-ai-tw__wgStepBox--mixedExpand[data-wg-mixed-expand-shell='loadingStrip'] .figma-ai-tw__wgMcpArgs {
+  color: #73767c;
+}
+
+.figma-ai-tw__snippetIcon .figma-ai-tw__wgToolcallStatusImg--snippet {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 16px;
+  max-height: 16px;
+  object-fit: contain;
+}
+
+.figma-ai-tw__wgReasoningGlyph {
+  display: block;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+/* UI/Paragraph secondary — 13 Medium / 18 (9385:19161) */
+.figma-ai-tw__wgStepText {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  color: #73767c;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* Mono command line (matches tool window code tone); mock labels omit shell `$`. */
+.figma-ai-tw__wgStepTextCmd {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+  color: #73767c;
+  vertical-align: baseline;
+}
+
+/* Reasoning rows (Thinking Group): Inter secondary, not shell mono. */
+.figma-ai-tw__wgStepTextReasoning {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  color: #73767c;
+  vertical-align: baseline;
+}
+
+/* Intro / paragraph-style line (Working last-3 preview + expanded mixed rail): Inter 13 / 23, same as `.figma-ai-tw__paragraph`. */
+.figma-ai-tw__wgStepTextBody {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 23px;
+  letter-spacing: -0.011em;
+  color: var(--fa-text-body);
+  vertical-align: baseline;
+}
+
+.figma-ai-tw__snippetReasoningLine {
+  display: block;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  color: #73767c;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* Gradient “loader” on command / reasoning text while that row is executing — same highlight as summary sync, mono base. */
+.figma-ai-tw__wgStepText--pending {
+  color: transparent;
+  background-image: var(--fa-wg-sync-shimmer-highlight), linear-gradient(#73767c, #73767c);
+  background-size: 230% 100%, 100% 100%;
+  background-repeat: no-repeat, no-repeat;
+  background-position: -100% 0, 0 0;
+  background-clip: text;
+  -webkit-background-clip: text;
+  animation: figma-ai-tw-wg-text-shimmer 2.1s ease-in-out infinite alternate;
+}
+
+/* Inter reasoning pending: same highlight sweep, reasoning-toned base (matches summary-sync idle). */
+.figma-ai-tw__wgStepTextReasoning.figma-ai-tw__wgStepText--pending,
+.figma-ai-tw__wgStepTextBody.figma-ai-tw__wgStepText--pending,
+.figma-ai-tw__snippetReasoningLine.figma-ai-tw__wgStepText--pending {
+  background-image: var(--fa-wg-sync-shimmer-highlight), linear-gradient(#73767c, #73767c);
+}
+
+@keyframes figma-ai-tw-wg-text-shimmer {
+  0% {
+    background-position: -100% 0, 0 0;
+  }
+
+  100% {
+    background-position: 100% 0, 0 0;
+  }
+}
+
+/* Summary shimmer: base text color layer + moving highlight layer.
+   Highlight does a full LTR pass (2.1s), then idles ~0.5s fully outside text. */
+@keyframes figma-ai-tw-wg-summary-text-shimmer {
+  0% {
+    background-position: 115% 0, 0 0;
+  }
+
+  /* 2.1 / (2.1 + 0.5) — sweep completes here */
+  80.769% {
+    background-position: -15% 0, 0 0;
+  }
+
+  100% {
+    background-position: -15% 0, 0 0;
+  }
+}
+
+/* THINKING-WG: wrapper does not affect flex layout of `.figma-ai-tw__aiBlock` children. */
+.figma-ai-tw__thinkingWgRoot {
+  display: contents;
+}
+
+/* Terminal icon while the current command row is “running” (one at a time; terminal + gradient text) */
+.figma-ai-tw__wgStepIconCol--running {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #868a91;
+}
+
+/* THINKING-WG #0: ungrouped steps reuse default chat snippet chrome (`snippetWrap` / `snippet`). */
+.figma-ai-tw__thinkingWgFeedList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  align-items: stretch;
+  box-sizing: border-box;
+}
+
+/* Working Group (#0): mixed feed reasoning row — one line (icon + title), no card chrome (see `--thinkingWgMixedReasoningFeed`). */
+.figma-ai-tw__snippetCmd--thinkingWgMixedReasoning {
+  display: flex;
+  flex-direction: row;
+  flex: 1 1 auto;
+  align-items: center;
+  min-width: 0;
+}
+
+.figma-ai-tw__thinkingWgMixedFeedTitle {
+  margin: 0;
+  flex: 1 1 auto;
+  min-width: 0;
+  font-family: var(--ij-font-family, 'Inter', system-ui, sans-serif);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  letter-spacing: -0.011em;
+  color: var(--fa-text-secondary, #73767c);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Mixed Working Group: reasoning beats in feed — no snippet fill/border/outline, no action column; single header row. */
+.figma-ai-tw__thinkingWgFeedList > .figma-ai-tw__snippetWrap--thinkingWgMixedReasoningFeed .figma-ai-tw__snippet {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  overflow: visible;
+}
+
+.figma-ai-tw__thinkingWgFeedList > .figma-ai-tw__snippetWrap--thinkingWgMixedReasoningFeed .figma-ai-tw__snippetHeader {
+  align-items: center;
+}
+
+.figma-ai-tw__thinkingWgFeedList > .figma-ai-tw__snippetWrap--thinkingWgMixedReasoningFeed .figma-ai-tw__snippetLeft {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 2px 0;
+}
+
+/* Mixed feed reasoning row: full-width header control + 16×16 lead (brain/spinner ↔ chevron on hover / when expanded). */
+.figma-ai-tw__thinkingWgMixedReasoningFeedHeaderBtn {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.figma-ai-tw__thinkingWgMixedReasoningFeedHeaderBtn .figma-ai-tw__snippetHeader {
+  width: 100%;
+}
+
+.figma-ai-tw__thinkingWgMixedReasoningFeedHeaderBtn:focus-visible {
+  outline: 2px solid rgba(100, 149, 237, 0.85);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.figma-ai-tw__thinkingWgMixedReasoningFeedLead {
+  position: relative;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+
+.figma-ai-tw__thinkingWgMixedReasoningFeedLead__chevron,
+.figma-ai-tw__thinkingWgMixedReasoningFeedLead__glyph {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.12s ease;
+}
+
+.figma-ai-tw__thinkingWgMixedReasoningFeedLead__chevron {
+  opacity: 0;
+  color: #868a91;
+  transform: rotate(-90deg);
+  transition:
+    opacity 0.12s ease,
+    transform 0.14s ease;
+}
+
+.figma-ai-tw__thinkingWgMixedReasoningFeedLead__chevron svg {
+  display: block;
+  color: #868a91;
+  stroke: #868a91;
+}
+
+.figma-ai-tw__thinkingWgMixedReasoningFeedLead__glyph {
+  opacity: 1;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .figma-ai-tw__snippetWrap--thinkingWgMixedReasoningFeed:not(.figma-ai-tw__snippetWrap--mixedReasoningExpanded)
+    .figma-ai-tw__thinkingWgMixedReasoningFeedHeaderBtn:hover
+    .figma-ai-tw__thinkingWgMixedReasoningFeedLead__glyph {
+    opacity: 0;
+  }
+
+  .figma-ai-tw__snippetWrap--thinkingWgMixedReasoningFeed:not(.figma-ai-tw__snippetWrap--mixedReasoningExpanded)
+    .figma-ai-tw__thinkingWgMixedReasoningFeedHeaderBtn:hover
+    .figma-ai-tw__thinkingWgMixedReasoningFeedLead__chevron {
+    opacity: 1;
+  }
+}
+
+.figma-ai-tw__snippetWrap--mixedReasoningExpanded .figma-ai-tw__thinkingWgMixedReasoningFeedLead__glyph {
+  opacity: 0;
+}
+
+.figma-ai-tw__snippetWrap--mixedReasoningExpanded .figma-ai-tw__thinkingWgMixedReasoningFeedLead__chevron {
+  opacity: 1;
+  transform: rotate(0deg);
+}
+
+.figma-ai-tw__thinkingWgMixedReasoningFeedExpand {
+  padding: 0 0 8px 0;
+}
+
+/* Expanded WG trace: reasoning paragraphs indented under the reasoning row */
+.figma-ai-tw__thinkingWgMixedExpandReasoningBody {
+  padding: 0 0 10px 28px;
+  margin-top: -4px;
+}
+
+/* Reasoning WG (#0–#3): one title row + continuous prose block (replaces 11-step list). */
+.figma-ai-tw__thinkingWgFeedList--reasoning {
+  gap: 0;
+}
+
+/* Reasoning: match compact `#3` gap from intro paragraph to “thinking” headline — strip extra top padding. */
+.figma-ai-tw__thinkingWgFeedList--reasoning > .figma-ai-tw__snippetWrap--thinkingWgReasoningCp:first-child {
+  padding-top: 0;
+}
+
+.figma-ai-tw__thinkingWgListRevealWrap > .figma-ai-tw__thinkingWgListRevealInner > .figma-ai-tw__wgStepBox:has(> .figma-ai-tw__thinkingWgReasoningBlock) {
+  padding-top: 0;
+}
+
+.figma-ai-tw__thinkingWgListRevealWrap .figma-ai-tw__thinkingWgReasoningBlock--list {
+  padding-top: 0;
+}
+
+/* #0 reasoning / mixed CP: peek body height token. Shared by Thinking + Working #0 current-production. */
+.figma-ai-tw__snippetWrap--thinkingWgReasoningCp {
+  --thinking-wg-reasoning-cp-peek-max-h: 200px;
+}
+
+.figma-ai-tw__thinkingWgFeedList > .figma-ai-tw__snippetWrap--thinkingWgReasoningCp .figma-ai-tw__snippet--thinkingWgRunning {
+  pointer-events: auto;
+}
+
+.figma-ai-tw__snippetWrap--thinkingWgReasoningCp .figma-ai-tw__snippet--thinkingWgReasoningCp {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  overflow: visible;
+}
+
+.figma-ai-tw__snippetWrap--thinkingWgReasoningCp .figma-ai-tw__snippetOutline {
+  display: none;
+}
+
+.figma-ai-tw__snippetWrap--thinkingWgReasoningCp .figma-ai-tw__snippetHeader {
+  align-items: center;
+  background: transparent;
+  padding: 0;
+}
+
+.figma-ai-tw__thinkingWgReasoningCpHeaderBtn {
+  display: flex;
+  align-items: flex-start;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  font-style: normal;
+  line-height: 18px;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.figma-ai-tw__thinkingWgReasoningCpHeaderBtn:focus-visible {
+  outline: 2px solid rgba(100, 149, 237, 0.85);
+  outline-offset: 2px;
+}
+
+.figma-ai-tw__thinkingWgReasoningCpHeaderBtn > .figma-ai-tw__snippetLeft--reasoningCp {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+}
+
+/* Must beat `.thinkingWgFeedList .snippetLeft { padding: 8px 8px }` (same specificity, later in file). */
+.figma-ai-tw__thinkingWgFeedList
+  .figma-ai-tw__snippetWrap--thinkingWgReasoningCp
+  .figma-ai-tw__snippetLeft--reasoningCp {
+  min-width: 0;
+  padding: 2px 6px 8px 0;
+}
+
+.figma-ai-tw__snippetLeft--reasoningCp .figma-ai-tw__thinkingWgReasoningHead {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+}
+
+.figma-ai-tw__thinkingWgReasoningHead--cp {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  min-height: 24px;
+  width: 100%;
+}
+
+.figma-ai-tw__thinkingWgReasoningCpLead {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.figma-ai-tw__thinkingWgReasoningCpLead__chevron,
+.figma-ai-tw__thinkingWgReasoningCpLead__brain {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.12s ease;
+}
+
+.figma-ai-tw__thinkingWgReasoningCpLead__chevron {
+  opacity: 1;
+  color: #868a91;
+  /* Match `.wgSummaryChevronSlot`: chevron right when collapsed, down when expanded (`IconChevronDown`). */
+  transform: rotate(-90deg);
+  transition:
+    opacity 0.12s ease,
+    transform 0.14s ease;
+}
+
+/* Mixed #0 CP collapsed-final: lead is chevron only — always visible; rotation follows expand (see wrap `--reasoningCpExpanded`). */
+.figma-ai-tw__thinkingWgReasoningHead--mixedCpFinalLine .figma-ai-tw__thinkingWgReasoningCpLead__chevron,
+.figma-ai-tw__thinkingWgReasoningHead--mixedCpChevronLead .figma-ai-tw__thinkingWgReasoningCpLead__chevron {
+  opacity: 1;
+  color: #868a91;
+}
+
+.figma-ai-tw__thinkingWgReasoningCpLead__brain {
+  opacity: 0;
+  box-sizing: border-box;
+  /* Same muted glyph as list reasoning / chevron — `reasoning.svg` shape via mask, no brand blue. */
+  background: #868a91;
+  -webkit-mask-image: var(--fa-reasoning-mask-url);
+  mask-image: var(--fa-reasoning-mask-url);
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+
+/* Expanded: same affordance as summary row — chevron down always visible, brain hidden. */
+.figma-ai-tw__snippetWrap--thinkingWgReasoningCp.figma-ai-tw__snippetWrap--reasoningCpExpanded
+  .figma-ai-tw__thinkingWgReasoningCpLead__brain {
+  opacity: 0;
+}
+
+.figma-ai-tw__snippetWrap--thinkingWgReasoningCp.figma-ai-tw__snippetWrap--reasoningCpExpanded
+  .figma-ai-tw__thinkingWgReasoningCpLead__chevron {
+  opacity: 1;
+  transform: rotate(0deg);
+}
+
+/* #0 reasoning CP: stream finished and collapsed — no body / scroll peek; one headline row (expand restores body). */
+.figma-ai-tw__snippet--thinkingWgReasoningCpHeadOnly .figma-ai-tw__thinkingWgReasoningHead--cp .figma-ai-tw__thinkingWgReasoningHeadTitle {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Collapsed-final CP row: drop peek body from layout and tighten handoff to post-reveal prose. */
+.figma-ai-tw__snippetWrap--thinkingWgReasoningCp.figma-ai-tw__snippetWrap--reasoningCpHeadOnly
+  .figma-ai-tw__snippetLeft--reasoningCp {
+  padding-bottom: 0;
+}
+
+.figma-ai-tw__snippet--thinkingWgReasoningCpHeadOnly .figma-ai-tw__thinkingWgReasoningCpBodyReveal {
+  display: none;
+}
+
+.figma-ai-tw__aiBlock
+  > .figma-ai-tw__thinkingWgFeedList--reasoning:has(.figma-ai-tw__snippetWrap--reasoningCpHeadOnly)
+  + .figma-ai-tw__thinkingWgPostReveal {
+  margin-top: 0;
+}
+
+/* Non-scrolling shell: top fade scrim (see `::after`) only while the viewport is scrolled — class toggled from JS. */
+.figma-ai-tw__thinkingWgReasoningCpBodyShell--peek {
+  cursor: pointer;
+}
+
+/* Thinking #0 CP — timeline spine on body stack only (height = content block). */
+.figma-ai-tw__snippetWrap--thinkingWgCpTimelineSpine
+  .figma-ai-tw__thinkingWgReasoningCpBodyViewport
+  .figma-ai-tw__thinkingWgReasoningBodyStack {
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  padding-left: 24px;
+}
+
+.figma-ai-tw__snippetWrap--thinkingWgCpTimelineSpine
+  .figma-ai-tw__thinkingWgReasoningCpBodyViewport
+  .figma-ai-tw__thinkingWgReasoningBodyStack::before {
+  content: '';
+  position: absolute;
+  left: calc(8px - 0.5px);
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  pointer-events: none;
+  z-index: 0;
+  background: rgba(134, 138, 145, 0.38);
+  border-radius: 1px;
+}
+
+/* #0 reasoning CP (Thinking + Working): smooth peek ↔ expanded and headline-only ↔ body (grid row). */
+.figma-ai-tw__thinkingWgReasoningCpBodyReveal {
+  display: grid;
+  grid-template-rows: 0fr;
+  min-height: 0;
+}
+
+.figma-ai-tw__thinkingWgReasoningCpBodyReveal--open {
+  grid-template-rows: 1fr;
+}
+
+.figma-ai-tw__thinkingWgReasoningCpBodyReveal:not(.figma-ai-tw__thinkingWgReasoningCpBodyReveal--open)
+  .figma-ai-tw__thinkingWgReasoningCpBodyRevealInner {
+  opacity: var(--fa-expand-reveal-fade);
+}
+
+.figma-ai-tw__thinkingWgReasoningCpBodyReveal--open .figma-ai-tw__thinkingWgReasoningCpBodyRevealInner {
+  opacity: 1;
+}
+
+.figma-ai-tw__thinkingWgReasoningCpBodyRevealInner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.figma-ai-tw__snippetWrap--thinkingWgReasoningCp.figma-ai-tw__snippetWrap--reasoningCpExpanded .figma-ai-tw__thinkingWgReasoningCpBodyShell,
+.figma-ai-tw__snippetWrap--thinkingWgReasoningCp.figma-ai-tw__snippetWrap--reasoningCpExpanded .figma-ai-tw__thinkingWgReasoningCpBodyViewport {
+  max-height: min(85vh, 880px);
+}
+
+.figma-ai-tw__snippetWrap--thinkingWgReasoningCp.figma-ai-tw__snippetWrap--reasoningCpExpanded .figma-ai-tw__thinkingWgReasoningCpBodyViewport {
+  overflow-y: auto;
+}
+
+.figma-ai-tw__snippetWrap--thinkingWgMixedCp {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.figma-ai-tw__snippetWrap--thinkingWgMixedCp .figma-ai-tw__snippet--thinkingWgReasoningCp {
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: clip;
+}
+
+/* Working Group #0 mixed CP — expanded: natural height in feed, clip horizontal spill. */
+.figma-ai-tw__snippetWrap--thinkingWgMixedCp.figma-ai-tw__snippetWrap--reasoningCpExpanded {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.figma-ai-tw__snippetWrap--thinkingWgMixedCp.figma-ai-tw__snippetWrap--reasoningCpExpanded
+  .figma-ai-tw__thinkingWgReasoningCpBodyReveal {
+  display: block;
+}
+
+.figma-ai-tw__snippetWrap--thinkingWgMixedCp.figma-ai-tw__snippetWrap--reasoningCpExpanded
+  .figma-ai-tw__thinkingWgReasoningCpBodyRevealInner {
+  overflow-x: clip;
+  min-height: auto;
+  max-width: 100%;
+}
+
+.figma-ai-tw__snippetWrap--thinkingWgMixedCp.figma-ai-tw__snippetWrap--reasoningCpExpanded
+  .figma-ai-tw__thinkingWgReasoningCpBodyShell,
+.figma-ai-tw__snippetWrap--thinkingWgMixedCp.figma-ai-tw__snippetWrap--reasoningCpExpanded
+  .figma-ai-tw__thinkingWgReasoningCpBodyViewport,
+.figma-ai-tw__snippetWrap--thinkingWgMixedCp.figma-ai-tw__snippetWrap--reasoningCpExpanded
+  .figma-ai-tw__thinkingWgMixedCpTraceMount,
+.figma-ai-tw__snippetWrap--thinkingWgMixedCp.figma-ai-tw__snippetWrap--reasoningCpExpanded
+  .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace {
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.figma-ai-tw__snippetWrap--thinkingWgMixedCp.figma-ai-tw__snippetWrap--reasoningCpExpanded
+  .figma-ai-tw__thinkingWgReasoningCpBodyShell,
+.figma-ai-tw__snippetWrap--thinkingWgMixedCp.figma-ai-tw__snippetWrap--reasoningCpExpanded
+  .figma-ai-tw__thinkingWgReasoningCpBodyViewport {
+  max-height: none;
+  overflow-x: clip;
+  overflow-y: hidden;
+  overscroll-behavior: auto;
+}
+
+/* Expanded WG CP trace: rows stay in the column; hover reserves in-row gutter for action icons. */
+.figma-ai-tw__snippetWrap--thinkingWgMixedCp.figma-ai-tw__snippetWrap--reasoningCpExpanded
+  .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace
+  > .figma-ai-tw__snippetWrap--aiaCmd {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.figma-ai-tw__snippetWrap--thinkingWgMixedCp.figma-ai-tw__snippetWrap--reasoningCpExpanded
+  .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace
+  .figma-ai-tw__snippet--aiaCmd
+  .figma-ai-tw__snippetHeader {
+  overflow: hidden;
+  max-width: 100%;
+}
+
+.figma-ai-tw__snippetWrap--thinkingWgMixedCp.figma-ai-tw__snippetWrap--reasoningCpExpanded
+  .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace
+  .figma-ai-tw__snippetWrap--aiaCmd:hover
+  .figma-ai-tw__snippet--aiaCmdCompleted:not(.figma-ai-tw__snippet--pending)
+  .figma-ai-tw__snippetLeft,
+.figma-ai-tw__snippetWrap--thinkingWgMixedCp.figma-ai-tw__snippetWrap--reasoningCpExpanded
+  .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace
+  .figma-ai-tw__snippetWrap--aiaCmd:focus-within:has(.figma-ai-tw__snippetRight .figma-ai-tw__iconHit:focus-visible)
+  .figma-ai-tw__snippet--aiaCmdCompleted:not(.figma-ai-tw__snippet--pending)
+  .figma-ai-tw__snippetLeft,
+.figma-ai-tw__snippetWrap--thinkingWgMixedCp.figma-ai-tw__snippetWrap--reasoningCpExpanded
+  .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace
+  .figma-ai-tw__snippetWrap--aiaCmd:hover
+  .figma-ai-tw__snippet--aiaCmdRejected
+  .figma-ai-tw__snippetLeft,
+.figma-ai-tw__snippetWrap--thinkingWgMixedCp.figma-ai-tw__snippetWrap--reasoningCpExpanded
+  .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace
+  .figma-ai-tw__snippetWrap--aiaCmd:focus-within:has(.figma-ai-tw__snippetRight .figma-ai-tw__iconHit:focus-visible)
+  .figma-ai-tw__snippet--aiaCmdRejected
+  .figma-ai-tw__snippetLeft,
+.figma-ai-tw__snippetWrap--thinkingWgMixedCp.figma-ai-tw__snippetWrap--reasoningCpExpanded
+  .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace
+  .figma-ai-tw__snippetWrap--aiaCmd:hover
+  .figma-ai-tw__snippet--aiaCmdFailed
+  .figma-ai-tw__snippetLeft,
+.figma-ai-tw__snippetWrap--thinkingWgMixedCp.figma-ai-tw__snippetWrap--reasoningCpExpanded
+  .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace
+  .figma-ai-tw__snippetWrap--aiaCmd:focus-within:has(.figma-ai-tw__snippetRight .figma-ai-tw__iconHit:focus-visible)
+  .figma-ai-tw__snippet--aiaCmdFailed
+  .figma-ai-tw__snippetLeft,
+.figma-ai-tw__snippetWrap--thinkingWgMixedCp.figma-ai-tw__snippetWrap--reasoningCpExpanded
+  .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace
+  .figma-ai-tw__snippet--aiaCmdLogExpanded
+  .figma-ai-tw__snippetLeft {
+  padding-right: 100px;
+}
+
+.figma-ai-tw__snippetWrap--thinkingWgMixedCp.figma-ai-tw__snippetWrap--reasoningCpExpanded
+  .figma-ai-tw__thinkingWgMixedCpTraceReasoning--streamParagraph,
+.figma-ai-tw__snippetWrap--thinkingWgMixedCp.figma-ai-tw__snippetWrap--reasoningCpExpanded
+  .figma-ai-tw__thinkingWgMixedCpTraceReasoning__paragraph {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+/* Working Group full-page CP: flat trace while streaming — no header, natural height (feed owns scroll). */
+.figma-ai-tw__snippetWrap--thinkingWgMixedCpFullPage {
+  width: 100%;
+  min-width: 0;
+}
+
+.figma-ai-tw__thinkingWgMixedCpFullPageTrace {
+  width: 100%;
+  min-width: 0;
+}
+
+/* WG Working Group · Full page only: completed command mono uses Int UI text-muted (#9FA2A8). */
+.figma-ai-tw__snippetWrap--thinkingWgMixedCpFullPage,
+.figma-ai-tw__snippetWrap--thinkingWgMixedCpFullPageCollapsed {
+  --tw-wg-fullpage-cmd-muted: var(--text-muted, var(--fa-text-muted, #9fa2a8));
+  --tw-wg-fullpage-cmd-failed: #63666c;
+}
+
+.figma-ai-tw__snippetWrap--thinkingWgMixedCpFullPage .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace,
+.figma-ai-tw__snippetWrap--thinkingWgMixedCpFullPageCollapsed .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace {
+  --fa-text-secondary: var(--tw-wg-fullpage-cmd-muted);
+}
+
+.figma-ai-tw__snippetWrap--thinkingWgMixedCpFullPage
+  .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace
+  .figma-ai-tw__wgStepTextCmd:not(.figma-ai-tw__wgStepText--pending):not(.figma-ai-tw__wgStepText--summarySyncShimmer),
+.figma-ai-tw__snippetWrap--thinkingWgMixedCpFullPageCollapsed
+  .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace
+  .figma-ai-tw__wgStepTextCmd:not(.figma-ai-tw__wgStepText--pending):not(.figma-ai-tw__wgStepText--summarySyncShimmer) {
+  color: var(--tw-wg-fullpage-cmd-muted);
+}
+
+.figma-ai-tw__snippetWrap--thinkingWgMixedCpFullPage
+  .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace
+  .figma-ai-tw__snippet--aiaCmdCompleted
+  .figma-ai-tw__snippetCmd,
+.figma-ai-tw__snippetWrap--thinkingWgMixedCpFullPage
+  .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace
+  .figma-ai-tw__snippet--aiaCmdCompleted
+  .figma-ai-tw__snippetCmd
+  .m,
+.figma-ai-tw__snippetWrap--thinkingWgMixedCpFullPage
+  .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace
+  .figma-ai-tw__snippet--aiaCmdCompleted
+  .figma-ai-tw__snippetCmd
+  .o,
+.figma-ai-tw__snippetWrap--thinkingWgMixedCpFullPage
+  .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace
+  .figma-ai-tw__snippet--aiaCmdCompleted
+  .figma-ai-tw__snippetCmd
+  .p,
+.figma-ai-tw__snippetWrap--thinkingWgMixedCpFullPageCollapsed
+  .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace
+  .figma-ai-tw__snippet--aiaCmdCompleted
+  .figma-ai-tw__snippetCmd,
+.figma-ai-tw__snippetWrap--thinkingWgMixedCpFullPageCollapsed
+  .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace
+  .figma-ai-tw__snippet--aiaCmdCompleted
+  .figma-ai-tw__snippetCmd
+  .m,
+.figma-ai-tw__snippetWrap--thinkingWgMixedCpFullPageCollapsed
+  .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace
+  .figma-ai-tw__snippet--aiaCmdCompleted
+  .figma-ai-tw__snippetCmd
+  .o,
+.figma-ai-tw__snippetWrap--thinkingWgMixedCpFullPageCollapsed
+  .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace
+  .figma-ai-tw__snippet--aiaCmdCompleted
+  .figma-ai-tw__snippetCmd
+  .p {
+  color: var(--tw-wg-fullpage-cmd-muted);
+}
+
+.figma-ai-tw__snippetWrap--thinkingWgMixedCpFullPage
+  .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace
+  .figma-ai-tw__snippet--aiaCmdMcp.figma-ai-tw__snippet--aiaCmdCompleted
+  .figma-ai-tw__aiaMcpToolName,
+.figma-ai-tw__snippetWrap--thinkingWgMixedCpFullPageCollapsed
+  .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace
+  .figma-ai-tw__snippet--aiaCmdMcp.figma-ai-tw__snippet--aiaCmdCompleted
+  .figma-ai-tw__aiaMcpToolName,
+.figma-ai-tw__snippetWrap--thinkingWgMixedCpFullPage
+  .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace
+  .figma-ai-tw__snippet--aiaCmdMcp.figma-ai-tw__snippet--aiaCmdCompleted
+  .figma-ai-tw__aiaMcpArgsInline,
+.figma-ai-tw__snippetWrap--thinkingWgMixedCpFullPageCollapsed
+  .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace
+  .figma-ai-tw__snippet--aiaCmdMcp.figma-ai-tw__snippet--aiaCmdCompleted
+  .figma-ai-tw__aiaMcpArgsInline {
+  color: var(--tw-wg-fullpage-cmd-muted);
+}
+
+.figma-ai-tw__snippetWrap--thinkingWgMixedCpFullPage
+  .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace
+  .figma-ai-tw__snippet--aiaCmdFailed
+  .figma-ai-tw__aiaCmdStatusCmd,
+.figma-ai-tw__snippetWrap--thinkingWgMixedCpFullPageCollapsed
+  .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace
+  .figma-ai-tw__snippet--aiaCmdFailed
+  .figma-ai-tw__aiaCmdStatusCmd {
+  color: var(--tw-wg-fullpage-cmd-failed);
+}
+
+.figma-ai-tw__snippetWrap--thinkingWgMixedCpFullPage
+  .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace
+  .figma-ai-tw__snippetCmd.figma-ai-tw__snippetCmd--aiaLoading,
+.figma-ai-tw__snippetWrap--thinkingWgMixedCpFullPageCollapsed
+  .figma-ai-tw__thinkingWgMixedCpTraceList--aiaCmdTrace
+  .figma-ai-tw__snippetCmd.figma-ai-tw__snippetCmd--aiaLoading {
+  background-image: var(--fa-wg-sync-shimmer-highlight),
+    linear-gradient(var(--tw-wg-fullpage-cmd-muted), var(--tw-wg-fullpage-cmd-muted));
+}
+
+/* Full-page CP after auto-collapse: expanded body shows full trace without peek cap. */
+.figma-ai-tw__snippetWrap--thinkingWgMixedCpFullPageCollapsed.figma-ai-tw__snippetWrap--reasoningCpExpanded
+  .figma-ai-tw__thinkingWgReasoningCpBodyShell,
+.figma-ai-tw__snippetWrap--thinkingWgMixedCpFullPageCollapsed.figma-ai-tw__snippetWrap--reasoningCpExpanded
+  .figma-ai-tw__thinkingWgReasoningCpBodyViewport {
+  max-height: none;
+  overflow-x: clip;
+  overflow-y: hidden;
+  overscroll-behavior: auto;
+}
+
+.figma-ai-tw__snippetWrap--thinkingWgMixedCpFullPageCollapsed.figma-ai-tw__snippetWrap--reasoningCpExpanded
+  .figma-ai-tw__thinkingWgReasoningCpBodyShell::after {
+  opacity: 0;
+  height: 0;
+}
+
+.figma-ai-tw__snippetWrap--thinkingWgMixedCp.figma-ai-tw__snippetWrap--reasoningCpExpanded .figma-ai-tw__thinkingWgReasoningCpBodyShell::after {
+  opacity: 0;
+  height: 0;
+}
+
+.figma-ai-tw__snippetWrap--thinkingWgReasoningCp.figma-ai-tw__snippetWrap--reasoningCpExpanded .figma-ai-tw__thinkingWgReasoningCpBodyShell::after {
+  opacity: 0;
+  height: 0;
+  transition: opacity 0.14s ease;
+}
+
+.figma-ai-tw__thinkingWgReasoningCpBodyShell {
+  position: relative;
+  box-sizing: border-box;
+  max-height: var(--thinking-wg-reasoning-cp-peek-max-h, 200px);
+  min-height: 0;
+  width: 100%;
+  overflow: hidden;
+  transition: max-height var(--fa-expand-reveal-duration) var(--fa-expand-reveal-ease);
+}
+
+.figma-ai-tw__thinkingWgReasoningCpBodyShell::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 48px;
+  pointer-events: none;
+  z-index: 1;
+  background: linear-gradient(180deg, var(--fa-bg-tool) 0%, rgba(25, 26, 28, 0.55) 38%, rgba(25, 26, 28, 0) 100%);
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+
+.figma-ai-tw__thinkingWgReasoningCpBodyShell--topScrim::after {
+  opacity: 1;
+}
+
+.figma-ai-tw__thinkingWgReasoningCpBodyViewport {
+  box-sizing: border-box;
+  max-height: var(--thinking-wg-reasoning-cp-peek-max-h, 200px);
+  overflow-x: hidden;
+  /* Peek: clip + programmatic pin-to-bottom only — no user scroll (avoids feed scroll trap). */
+  overflow-y: hidden;
+  overscroll-behavior: none;
+  padding: 0 0 10px 0;
+  min-height: 0;
+  position: relative;
+  z-index: 0;
+  background: transparent;
+  transition: max-height var(--fa-expand-reveal-duration) var(--fa-expand-reveal-ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .figma-ai-tw__thinkingWgReasoningCpBodyReveal {
+    transition: none;
+  }
+
+  .figma-ai-tw__thinkingWgReasoningCpBodyShell,
+  .figma-ai-tw__thinkingWgReasoningCpBodyViewport {
+    transition: none;
+  }
+}
+
+.figma-ai-tw__thinkingWgReasoningCpBodyViewport .figma-ai-tw__thinkingWgReasoningBodyStack {
+  max-width: none;
+}
+
+/* Working Group #0 CP: interleaved trace inside reasoning CP viewport (no outer feed card per row). */
+.figma-ai-tw__thinkingWgMixedCpTraceList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceList .figma-ai-tw__wgStepIconCol {
+  color: #868a91;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceList .figma-ai-tw__wgStepText {
+  color: #73767c;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceList .figma-ai-tw__wgStepTextCmd:not(.figma-ai-tw__wgStepText--pending):not(
+    .figma-ai-tw__wgStepText--summarySyncShimmer
+  ),
+.figma-ai-tw__thinkingWgMixedCpTraceList
+  .figma-ai-tw__wgStepTextReasoning:not(.figma-ai-tw__wgStepText--pending):not(.figma-ai-tw__wgStepText--summarySyncShimmer) {
+  color: #73767c;
+}
+
+/* Default #0 CP trace: terminal + MCP tool rows — one line + ellipsis. */
+.figma-ai-tw__thinkingWgMixedCpTraceList:not([data-cp-trace-style])
+  .figma-ai-tw__wgStepRow:has(> .figma-ai-tw__wgStepIconCol)
+  > .figma-ai-tw__wgStepText {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  overflow-wrap: normal;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceList:not([data-cp-trace-style])
+  .figma-ai-tw__wgStepRow:has(> .figma-ai-tw__wgStepIconCol)
+  > .figma-ai-tw__wgStepText
+  .figma-ai-tw__wgStepTextCmd {
+  display: block;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  overflow-wrap: normal;
+}
+
+/* Working Group #0 CP: trace list wrapper — peek viewport caps height; expanded mixed CP scrolls via feed only. */
+.figma-ai-tw__thinkingWgMixedCpTraceMount {
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Mixed #0 CP trace: reasoning = one visible line + ellipsis; expand shows paragraph slice (same indices as feed). */
+.figma-ai-tw__thinkingWgMixedCpTraceReasoning {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* WG #0 CP in progress: reasoning beats — full-width paragraphs, no brain icon column. */
+.figma-ai-tw__thinkingWgMixedCpTraceReasoning--streamParagraph {
+  width: 100%;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceReasoning__paragraph.figma-ai-tw__thinkingWgReasoningBodyStack {
+  gap: 0;
+  max-width: none;
+  width: 100%;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceReasoning__paragraph {
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceReasoning__paragraph .figma-ai-tw__thinkingWgReasoningBodyPara {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  letter-spacing: normal;
+  color: #73767c;
+}
+
+.figma-ai-tw__thinkingWgReasoningBodyPara--streamFlow {
+  font-weight: 400;
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceReasoning__toggle {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  text-align: left;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  font-style: normal;
+  line-height: 18px;
+  color: inherit;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceReasoning__toggle:focus-visible {
+  outline: 2px solid #6b9fff;
+  outline-offset: 2px;
+}
+
+/* Finished WG #0 CP trace rows: chevron when collapsed (right); down when expanded. Brain hidden. */
+.figma-ai-tw__thinkingWgMixedCpTraceReasoning__lead {
+  position: relative;
+  width: 16px;
+  height: 16px;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceReasoning__leadChevron,
+.figma-ai-tw__thinkingWgMixedCpTraceReasoning__leadBrain {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.12s ease;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceReasoning__leadChevron {
+  opacity: 1;
+  color: #868a91;
+  transform: rotate(-90deg);
+  transition:
+    opacity 0.12s ease,
+    transform 0.14s ease;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceReasoning__leadBrain {
+  opacity: 0;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceReasoning--expanded .figma-ai-tw__thinkingWgMixedCpTraceReasoning__leadBrain {
+  opacity: 0;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceReasoning--expanded .figma-ai-tw__thinkingWgMixedCpTraceReasoning__leadChevron {
+  opacity: 1;
+  transform: rotate(0deg);
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceReasoning__titleLine {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Title is a `<p>` wrapping `<span.wgStepTextReasoning>`. Ellipsis must live on the span: the paragraph’s
+   line box does not reliably add “…” when the overflowing box is an inline child. */
+.figma-ai-tw__thinkingWgMixedCpTraceReasoning__titleLine .figma-ai-tw__wgStepTextReasoning {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* `background-clip: text` + transparent fill hides the UA ellipsis character. For this one-line title,
+   keep normal filled text so “…” is visible for the whole life of the row (running shimmer disabled here). */
+.figma-ai-tw__thinkingWgMixedCpTraceReasoning__titleLine .figma-ai-tw__wgStepTextReasoning.figma-ai-tw__wgStepText--pending,
+.figma-ai-tw__thinkingWgMixedCpTraceReasoning__titleLine .figma-ai-tw__wgStepTextReasoning.figma-ai-tw__wgStepText--summarySyncShimmer {
+  color: #73767c;
+  -webkit-text-fill-color: currentcolor;
+  background-image: none;
+  background-size: auto;
+  background-position: 0 0;
+  background-clip: border-box;
+  -webkit-background-clip: border-box;
+  animation: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .figma-ai-tw__thinkingWgMixedCpTraceReasoning__titleLine .figma-ai-tw__wgStepTextReasoning.figma-ai-tw__wgStepText--pending {
+    animation: figma-ai-tw-mixed-cp-trace-reason-title-pulse 1.35s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes figma-ai-tw-mixed-cp-trace-reason-title-pulse {
+  from {
+    opacity: 0.72;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .figma-ai-tw__thinkingWgMixedCpTraceReasoning__titleLine .figma-ai-tw__wgStepTextReasoning.figma-ai-tw__wgStepText--pending {
+    animation: none;
+    opacity: 0.88;
+  }
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceReasoning__body {
+  width: 100%;
+  box-sizing: border-box;
+  /* Body copy aligns with the title row; no extra gutter (was 24px + nested 28px on MixedExpandReasoningBody). */
+  padding: 0;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceReasoning__body .figma-ai-tw__thinkingWgMixedExpandReasoningBody {
+  margin-top: 0;
+  padding: 0 0 10px 0;
+}
+
+.figma-ai-tw__thinkingWgMixedCpTraceReasoning__body .figma-ai-tw__thinkingWgReasoningBodyStack {
+  gap: 10px;
+}
+
+.figma-ai-tw__thinkingWgReasoningBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.figma-ai-tw__thinkingWgReasoningBlock--feed {
+  padding: 8px 8px 10px;
+}
+
+.figma-ai-tw__thinkingWgReasoningBlock--list {
+  padding: 2px 0 6px;
+}
+
+.figma-ai-tw__thinkingWgReasoningHead {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  min-height: 24px;
+}
+
+/* Feed + list (non–current-production): one 16×16 slot — chevron when collapsed; down when expanded. */
+.figma-ai-tw__thinkingWgReasoningHeadLead {
+  position: relative;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+
+.figma-ai-tw__thinkingWgReasoningHeadLead__chevron,
+.figma-ai-tw__thinkingWgReasoningHeadLead__glyph {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.12s ease;
+}
+
+.figma-ai-tw__thinkingWgReasoningHeadLead__chevron {
+  opacity: 1;
+  color: #868a91;
+  transform: rotate(-90deg);
+  transition:
+    opacity 0.12s ease,
+    transform 0.14s ease;
+}
+
+.figma-ai-tw__thinkingWgReasoningHeadLead__chevron svg {
+  display: block;
+  color: #868a91;
+  stroke: #868a91;
+}
+
+.figma-ai-tw__thinkingWgReasoningHeadLead__glyph {
+  opacity: 0;
+}
+
+.figma-ai-tw__thinkingWgReasoningHeadLead__glyph .figma-ai-tw__wgReasoningGlyph {
+  display: block;
+}
+
+.figma-ai-tw__snippetWrap--reasoningCpExpanded .figma-ai-tw__thinkingWgReasoningHeadLead__chevron {
+  transform: rotate(0deg);
+}
+
+.figma-ai-tw__thinkingWgReasoningHeadTitle {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  color: #73767c;
+}
+
+/* Long activity lines: clip so feed row layout stays stable. Shimmer paint comes later (shared with summary resolving). */
+.figma-ai-tw__thinkingWgReasoningHeadTitleBusy {
+  display: block;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+}
+
+/* Reasoning body: paragraph stack matches `.figma-ai-tw__paragraph` line-height; gap matches `aiBlock` rhythm. */
+.figma-ai-tw__thinkingWgReasoningBlock--list .figma-ai-tw__thinkingWgReasoningBodyStack {
+  min-height: 220px;
+}
+
+.figma-ai-tw__thinkingWgReasoningBodyStack {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 14px;
+  max-width: 65ch;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.figma-ai-tw__thinkingWgReasoningBodyPara {
+  margin: 0;
+  padding: 0;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 23px;
+  letter-spacing: -0.011em;
+  color: #73767c;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+.figma-ai-tw__wgStepBox--reasoningExpand .figma-ai-tw__thinkingWgReasoningBodyStack {
+  min-height: 0;
+}
+
+.figma-ai-tw__thinkingWgPreviewReasoning {
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 23px;
+  letter-spacing: -0.011em;
+  color: #73767c;
+  white-space: pre-line;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+.figma-ai-tw__thinkingWgPreviewReasoningAnim {
+  position: relative;
+  min-width: 0;
+}
+
+.figma-ai-tw__thinkingWgPreviewSrLive {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* #3 reasoning preview: one flowing paragraph, max three lines (same clamp as `.thinkingWgPreviewCmd` under preview).
+ * Subtle opacity ease on first mount; tail updates use word-by-word reveal in TS (no layout key remount). */
+.figma-ai-tw__thinkingWgPreviewReasoning.figma-ai-tw__thinkingWgPreviewReasoningClamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  white-space: normal;
+  word-break: break-word;
+  animation: figma-ai-tw-preview-reason-clamp-refresh 0.36s ease-out both;
+}
+
+@keyframes figma-ai-tw-preview-reason-clamp-refresh {
+  from {
+    opacity: 0.58;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .figma-ai-tw__thinkingWgPreviewReasoning.figma-ai-tw__thinkingWgPreviewReasoningClamp {
+    animation: none;
+  }
+}
+
+.figma-ai-tw__snippetWrap--thinkingWgFeed {
+  padding: 0;
+}
+
+.figma-ai-tw__snippetCmd.figma-ai-tw__snippetCmd--thinkingWgTruncate {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.figma-ai-tw__snippetCmdMono {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  color: #73767c;
+}
+
+.figma-ai-tw__snippetCmdMono--failed {
+  color: #73767c;
+}
+
+/* #0 feed (toolcalls + mixed commands): mono + AI Message icons read white on snippet row fill — list direct children only. */
+.figma-ai-tw__thinkingWgFeedList > .figma-ai-tw__snippetWrap--thinkingWgFeed .figma-ai-tw__snippetCmdMono,
+.figma-ai-tw__thinkingWgFeedList > .figma-ai-tw__snippetWrap--thinkingWgFeed .figma-ai-tw__snippetCmdMono--failed {
+  color: #fff;
+}
+
+.figma-ai-tw__thinkingWgFeedList > .figma-ai-tw__snippetWrap--thinkingWgFeed .figma-ai-tw__snippetIcon .figma-ai-tw__wgToolcallStatusImg--snippet {
+  filter: brightness(0) invert(1);
+}
+
+/* Running row: shimmer base layer matches white mono on #0 feed cards. */
+.figma-ai-tw__thinkingWgFeedList
+  > .figma-ai-tw__snippetWrap--thinkingWgFeed
+  .figma-ai-tw__snippetCmdMono.figma-ai-tw__wgStepText--pending {
+  background-image: var(--fa-wg-sync-shimmer-highlight), linear-gradient(#ffffff, #ffffff);
+}
+
+/* #0 feed failed row: cross stays aligned with muted command block icon color. */
+.figma-ai-tw__snippet--thinkingWgFail .figma-ai-tw__snippetIcon {
+  color: #868a91;
+}
+
+.figma-ai-tw__snippet--thinkingWgRunning {
+  pointer-events: none;
+}
+
+/* #0 feed: row stays hoverable so progressive-actions pattern works */
+.figma-ai-tw__thinkingWgFeedList > .figma-ai-tw__snippetWrap--thinkingWgFeed .figma-ai-tw__snippet--thinkingWgRunning {
+  pointer-events: auto;
+}
+
+.figma-ai-tw__thinkingWgFeedList .figma-ai-tw__snippetLeft {
+  align-items: center;
+  padding: 8px 8px;
+}
+
+/* #0 feed: default = expand only; hover/focus-within reveals more + open (touch: always show all). */
+.figma-ai-tw__thinkingWgFeedList .figma-ai-tw__snippetRight {
+  gap: 0;
+  padding: 4px 4px 0 4px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .figma-ai-tw__thinkingWgFeedList .figma-ai-tw__snippetWrap--thinkingWgFeed .figma-ai-tw__snippetRight > .figma-ai-tw__iconHit:nth-child(-n + 2) {
+    box-sizing: border-box;
+    flex: 0 0 0;
+    width: 0;
+    min-width: 0;
+    opacity: 0;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    pointer-events: none;
+    transition:
+      opacity 0.12s ease,
+      flex-basis 0.12s ease,
+      width 0.12s ease;
+  }
+
+  .figma-ai-tw__thinkingWgFeedList .figma-ai-tw__snippetWrap--thinkingWgFeed:hover .figma-ai-tw__snippetRight > .figma-ai-tw__iconHit:nth-child(-n + 2),
+  .figma-ai-tw__thinkingWgFeedList
+    .figma-ai-tw__snippetWrap--thinkingWgFeed:focus-within
+    .figma-ai-tw__snippetRight
+    > .figma-ai-tw__iconHit:nth-child(-n + 2) {
+    flex: 0 0 auto;
+    width: 26px;
+    min-width: 26px;
+    opacity: 1;
+    padding: 0;
+    overflow: visible;
+    pointer-events: auto;
+  }
+
+  .figma-ai-tw__thinkingWgFeedList .figma-ai-tw__snippetWrap--thinkingWgFeed:hover .figma-ai-tw__snippetRight,
+  .figma-ai-tw__thinkingWgFeedList .figma-ai-tw__snippetWrap--thinkingWgFeed:focus-within .figma-ai-tw__snippetRight {
+    gap: 2px;
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .figma-ai-tw__thinkingWgFeedList .figma-ai-tw__snippetRight {
+    gap: 2px;
+  }
+}
+
+/* Summary row: same icon↔label gap and row height as `.figma-ai-tw__wgStepRow` (both THINKING-WG variants). */
+.figma-ai-tw__wgSummaryBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 0;
+  box-sizing: border-box;
+  min-height: 24px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  font-style: normal;
+  line-height: 18px;
+  color: inherit;
+  transition: background 0.12s ease;
+}
+
+.figma-ai-tw__wgSummaryBtn:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.figma-ai-tw__wgSummaryBtn:disabled {
+  cursor: wait;
+  opacity: 0.88;
+}
+
+.figma-ai-tw__wgSummaryBtn:disabled:hover {
+  background: transparent;
+}
+
+/* Summary resolving line + reasoning stream “thinking” title + active reasoning row (mixed list): shared moving highlight. */
+.figma-ai-tw__wgSummaryTextShimmer,
+.figma-ai-tw__thinkingWgReasoningHeadTitleBusy,
+.figma-ai-tw__wgStepTextReasoning.figma-ai-tw__wgStepText--summarySyncShimmer {
+  color: transparent;
+  background-image: var(--fa-wg-sync-shimmer-highlight), linear-gradient(#73767c, #73767c);
+  background-size: 230% 100%, 100% 100%;
+  background-repeat: no-repeat, no-repeat;
+  background-position: 115% 0, 0 0;
+  background-clip: text;
+  -webkit-background-clip: text;
+  animation: figma-ai-tw-wg-summary-text-shimmer 2.6s linear infinite;
+}
+
+/* Mono active row: identical highlight sweep; base stays command/code grey. */
+.figma-ai-tw__wgStepTextCmd.figma-ai-tw__wgStepText--summarySyncShimmer {
+  display: inline-block;
+  min-width: 0;
+  color: transparent;
+  background-image: var(--fa-wg-sync-shimmer-highlight), linear-gradient(#73767c, #73767c);
+  background-size: 230% 100%, 100% 100%;
+  background-repeat: no-repeat, no-repeat;
+  background-position: 115% 0, 0 0;
+  background-clip: text;
+  -webkit-background-clip: text;
+  animation: figma-ai-tw-wg-summary-text-shimmer 2.6s linear infinite;
+}
+
+/* Summary-first resolving: one inline text layer so `background-clip: text` + shimmer always paints (not lost on outer flex span). */
+.figma-ai-tw__wgSummaryTextShimmer {
+  display: inline-block;
+  min-width: 3ch;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+}
+
+.figma-ai-tw__wgStepTextReasoning.figma-ai-tw__wgStepText--summarySyncShimmer {
+  display: inline-block;
+  min-width: 0;
+}
+
+.figma-ai-tw__wgStepTextBody.figma-ai-tw__wgStepText--summarySyncShimmer {
+  display: inline-block;
+  min-width: 0;
+  color: transparent;
+  background-image: var(--fa-wg-sync-shimmer-highlight), linear-gradient(var(--fa-text-body), var(--fa-text-body));
+  background-size: 230% 100%, 100% 100%;
+  background-repeat: no-repeat, no-repeat;
+  background-position: 115% 0, 0 0;
+  background-clip: text;
+  -webkit-background-clip: text;
+  animation: figma-ai-tw-wg-summary-text-shimmer 2.6s linear infinite;
+}
+
+.figma-ai-tw__wgSummaryBtn:disabled.figma-ai-tw__wgSummaryBtn--resolving {
+  opacity: 1;
+}
+
+.figma-ai-tw__wgSummaryBtn:focus-visible {
+  outline: 2px solid var(--fa-brand);
+  outline-offset: 2px;
+}
+
+/* One 16×16 slot: terminal by default; chevron on hover when collapsed; chevron down when expanded */
+.figma-ai-tw__wgSummaryIconCluster {
+  position: relative;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+
+.figma-ai-tw__wgSummaryTerminalSlot,
+.figma-ai-tw__wgSummaryChevronSlot {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.12s ease;
+}
+
+.figma-ai-tw__wgSummaryTerminalSlot {
+  opacity: 1;
+  color: #868a91;
+}
+
+.figma-ai-tw__wgSummaryTerminalSlot svg {
+  display: block;
+}
+
+.figma-ai-tw__wgSummaryChevronSlot {
+  opacity: 0;
+  color: #868a91;
+  transform: rotate(-90deg);
+  transition:
+    opacity 0.12s ease,
+    transform 0.14s ease;
+}
+
+/* Match muted icon tone; avoid inheriting accent / button text on `currentColor` strokes */
+.figma-ai-tw__wgSummaryChevronSlot svg {
+  display: block;
+  color: #868a91;
+  stroke: #868a91;
+}
+
+.figma-ai-tw__wgSummaryBtn:hover:not(.figma-ai-tw__wgSummaryBtn--expanded) .figma-ai-tw__wgSummaryTerminalSlot,
+.figma-ai-tw__wgSummaryBtn:focus-visible:not(.figma-ai-tw__wgSummaryBtn--expanded) .figma-ai-tw__wgSummaryTerminalSlot {
+  opacity: 0;
+}
+
+.figma-ai-tw__wgSummaryBtn:hover:not(.figma-ai-tw__wgSummaryBtn--expanded) .figma-ai-tw__wgSummaryChevronSlot,
+.figma-ai-tw__wgSummaryBtn:focus-visible:not(.figma-ai-tw__wgSummaryBtn--expanded) .figma-ai-tw__wgSummaryChevronSlot {
+  opacity: 1;
+  color: #868a91;
+}
+
+.figma-ai-tw__wgSummaryBtn--expanded .figma-ai-tw__wgSummaryTerminalSlot {
+  opacity: 0;
+}
+
+.figma-ai-tw__wgSummaryBtn--expanded .figma-ai-tw__wgSummaryChevronSlot {
+  opacity: 1;
+  color: #868a91;
+  transform: rotate(0deg);
+}
+
+/* Expanded list under summary: rows can shrink; vertical spacing vs summary/post-reveal comes only from `.figma-ai-tw__aiBlock` gap (14px). */
+.figma-ai-tw__wgStepBox--afterSummary .figma-ai-tw__wgStepRow {
+  min-height: 0;
+}
+
+.figma-ai-tw__wgSummaryText {
+  flex: 1;
+  min-width: 0;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  color: #73767c;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+/* #2 Working mixed: live HUD (reasoning titles + commands) — one line + ellipsis; strip shimmer clip so “…” paints. */
+.figma-ai-tw__wgSummaryText--mixedSummaryLive {
+  flex: 1 1 0%;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+.figma-ai-tw__wgSummaryText--mixedSummaryLive > span {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.figma-ai-tw__wgSummaryText--mixedSummaryLive .figma-ai-tw__wgSummaryTextShimmer {
+  min-width: 0;
+  color: #73767c;
+  -webkit-text-fill-color: currentcolor;
+  background-image: none;
+  background-size: auto;
+  background-position: 0 0;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  animation: none;
+}
+
+/* #2 / #3 toolcalls: summary shimmer shows the active command — match list mono + single-line clip. */
+.figma-ai-tw__wgSummaryText--toolcallsCommandLive {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 12px;
+  line-height: 18px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Summary + preview (#3): stack summary toggle + current-step preview (up to 3 lines + ellipsis; `.figma-ai-tw__thinkingWgPreviewStatic`). */
+.figma-ai-tw__thinkingWgSummaryStack {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  gap: 2px;
+  position: relative;
+}
+
+.figma-ai-tw__thinkingWgSummaryStack > .figma-ai-tw__wgSummaryBtn {
+  position: relative;
+  z-index: 2;
+  /* Allow the summary row to shrink inside the feed flex column so `text-overflow: ellipsis` can engage. */
+  min-width: 0;
+}
+
+/* Reasoning: headline-only stack — single clipped line (#1 resolved, #2 after stream, #3 summaryPreview always). */
+.figma-ai-tw__thinkingWgSummaryStack--reasoningResolved .figma-ai-tw__wgSummaryText {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/*
+ * #3 (summaryPreview): hover/focus-within anywhere on summary + preview shows chevron like `.wgSummaryBtn:hover`;
+ * whole stack is one hit target for opening the expand list (see `onSummaryStackClick` in TSX).
+ */
+.figma-ai-tw__thinkingWgSummaryStack--previewHit {
+  border-radius: 6px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.figma-ai-tw__thinkingWgSummaryStack--previewHit:hover .figma-ai-tw__wgSummaryBtn,
+.figma-ai-tw__thinkingWgSummaryStack--previewHit:hover .figma-ai-tw__wgSummaryBtn:hover,
+.figma-ai-tw__thinkingWgSummaryStack--previewHit:hover .figma-ai-tw__wgSummaryBtn:disabled:hover {
+  background: transparent;
+}
+
+.figma-ai-tw__thinkingWgSummaryStack--previewHit:hover .figma-ai-tw__wgSummaryBtn:not(.figma-ai-tw__wgSummaryBtn--expanded) .figma-ai-tw__wgSummaryTerminalSlot,
+.figma-ai-tw__thinkingWgSummaryStack--previewHit:focus-within .figma-ai-tw__wgSummaryBtn:not(.figma-ai-tw__wgSummaryBtn--expanded) .figma-ai-tw__wgSummaryTerminalSlot {
+  opacity: 0;
+}
+
+.figma-ai-tw__thinkingWgSummaryStack--previewHit:hover .figma-ai-tw__wgSummaryBtn:not(.figma-ai-tw__wgSummaryBtn--expanded) .figma-ai-tw__wgSummaryChevronSlot,
+.figma-ai-tw__thinkingWgSummaryStack--previewHit:focus-within .figma-ai-tw__wgSummaryBtn:not(.figma-ai-tw__wgSummaryBtn--expanded) .figma-ai-tw__wgSummaryChevronSlot {
+  opacity: 1;
+  color: #868a91;
+  transform: rotate(-90deg);
+}
+
+/* #3: read-only current command only — no hint text, no text shimmer (summary row keeps resolving shimmer). */
+.figma-ai-tw__thinkingWgPreviewStatic {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 4px 0 0 24px;
+  pointer-events: none;
+  user-select: none;
+  position: relative;
+  z-index: 0;
+}
+
+.figma-ai-tw__thinkingWgSummaryStack--previewHit .figma-ai-tw__thinkingWgPreviewStatic {
+  pointer-events: auto;
+  cursor: pointer;
+  user-select: none;
+}
+
+.figma-ai-tw__thinkingWgPreviewCmd {
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  color: var(--fa-text-secondary, #73767c);
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.figma-ai-tw__thinkingWgSummaryStack--previewHit .figma-ai-tw__thinkingWgPreviewCmd {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  word-break: break-word;
+}
+
+/* #4 (`summaryPreviewLast3`): viewport height = 1–3 visible rows (grows until full window); strip `translateY(-stride)` when sliding; spine @ icon center (8px), height tracks viewport. */
+.figma-ai-tw__thinkingWgPreviewStatic--last3Stack {
+  padding-left: 0;
+}
+
+.figma-ai-tw__thinkingWgPreviewLast3 {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  --tw-last3-lh: 23px;
+  --tw-last3-gap: 2px;
+  --tw-last3-stride: calc(var(--tw-last3-lh) + var(--tw-last3-gap));
+  /* Default 3 slots; overridden inline by `SummaryPreviewLast3Stack` while fewer than 3 lines exist (rail grows with content). */
+  --tw-last3-visible-slots: 3;
+  --tw-last3-view-h: calc(
+    var(--tw-last3-visible-slots) * var(--tw-last3-lh) + (var(--tw-last3-visible-slots) - 1) * var(--tw-last3-gap)
+  );
+  /* Same horizontal start as `.figma-ai-tw__wgSummaryText` (16px icon + 8px gap). */
+  padding-left: 24px;
+}
+
+/* `#4` + step icons: rail stays centered on the summary icon slot (`16px` slot → `8px` center). */
+.figma-ai-tw__thinkingWgPreviewLast3.figma-ai-tw__thinkingWgPreviewLast3--withLineIcons::before {
+  left: calc(8px - 0.5px);
+}
+
+/* After the first step settles: spine through row glyph centers (`24px` inset + `16px` icon / 2). */
+.figma-ai-tw__thinkingWgPreviewLast3.figma-ai-tw__thinkingWgPreviewLast3--withLineIcons[data-last3-rail-anchor='rows']::before {
+  left: calc(24px + 8px - 0.5px);
+}
+
+/* Early run (no settled steps yet): spine continues from the summary **terminal** column (matches non-icons last-3). */
+.figma-ai-tw__thinkingWgPreviewLast3.figma-ai-tw__thinkingWgPreviewLast3--withLineIcons[data-last3-rail-anchor='summary']::before {
+  left: calc(8px - 0.5px);
+}
+
+.figma-ai-tw__thinkingWgPreviewLast3Line--withIcon {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.figma-ai-tw__thinkingWgPreviewLast3IconCol {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  margin-top: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #868a91;
+}
+
+.figma-ai-tw__thinkingWgPreviewLast3Line--withIcon .figma-ai-tw__thinkingWgPreviewCmd {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+}
+
+.figma-ai-tw__thinkingWgPreviewLast3::before {
+  content: '';
+  position: absolute;
+  left: calc(8px - 0.5px);
+  top: 2px;
+  bottom: 2px;
+  width: 1px;
+  background: rgba(134, 138, 145, 0.38);
+  border-radius: 1px;
+  pointer-events: none;
+}
+
+.figma-ai-tw__thinkingWgPreviewLast3Viewport {
+  position: relative;
+  height: var(--tw-last3-view-h);
+  min-height: var(--tw-last3-view-h);
+  max-height: var(--tw-last3-view-h);
+  overflow: hidden;
+}
+
+/* During slide-up: outgoing row vanishes quickly; incoming (4th row) stays dim until ~final third, then reaches full opacity (matches strip `transform` 0.18s — no resting scrim). */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes figma-ai-tw-last3-row-outgoing {
+    0% {
+      opacity: 1;
+    }
+    16% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes figma-ai-tw-last3-row-incoming {
+    0%,
+    48% {
+      opacity: 0.08;
+    }
+    72% {
+      opacity: 0.42;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  .figma-ai-tw__thinkingWgPreviewLast3Viewport--slideOutgoingFade
+    .figma-ai-tw__thinkingWgPreviewLast3Row:first-child {
+    animation: figma-ai-tw-last3-row-outgoing 0.18s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+  }
+
+  .figma-ai-tw__thinkingWgPreviewLast3Viewport--slideOutgoingFade
+    .figma-ai-tw__thinkingWgPreviewLast3Row:last-child {
+    animation: figma-ai-tw-last3-row-incoming 0.18s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+  }
+}
+
+.figma-ai-tw__thinkingWgPreviewLast3Strip {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tw-last3-gap);
+  transition: transform 0.18s cubic-bezier(0.25, 0.1, 0.25, 1);
+  will-change: transform;
+}
+
+.figma-ai-tw__thinkingWgPreviewLast3Strip--noTransition {
+  transition: none;
+}
+
+.figma-ai-tw__thinkingWgPreviewLast3Row {
+  min-height: var(--tw-last3-lh);
+  line-height: var(--tw-last3-lh);
+  flex-shrink: 0;
+}
+
+.figma-ai-tw__thinkingWgPreviewLast3Row .figma-ai-tw__thinkingWgPreviewCmd--last3Slot {
+  font-weight: 400;
+  line-height: inherit;
+}
+
+.figma-ai-tw__thinkingWgPreviewLast3Row .figma-ai-tw__thinkingWgPreviewCmd--last3Slot .figma-ai-tw__wgStepTextCmd:not(.figma-ai-tw__wgStepText--summarySyncShimmer) {
+  color: var(--fa-text-secondary, #73767c);
+}
+
+/* #4 last-3: reasoning + body lines — same secondary gray as commands; active row uses `summarySyncShimmer`. */
+.figma-ai-tw__thinkingWgPreviewLast3Row .figma-ai-tw__thinkingWgPreviewCmd--last3Slot .figma-ai-tw__wgStepTextBody:not(.figma-ai-tw__wgStepText--summarySyncShimmer) {
+  color: var(--fa-text-secondary, #73767c);
+}
+
+.figma-ai-tw__thinkingWgPreviewLast3Row .figma-ai-tw__thinkingWgPreviewCmd--last3Slot .figma-ai-tw__wgStepTextReasoning:not(.figma-ai-tw__wgStepText--summarySyncShimmer) {
+  color: var(--fa-text-secondary, #73767c);
+}
+
+.figma-ai-tw__thinkingWgSummaryStack--previewHit .figma-ai-tw__thinkingWgPreviewCmd--last3Slot {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  word-break: normal;
+}
+
+/* Active in-progress row: shimmer on the text span — layout stays single-line block (no `-webkit-box` flip). */
+.figma-ai-tw__thinkingWgPreviewLast3Row--activeShimmer .figma-ai-tw__thinkingWgPreviewCmd--last3Slot {
+  display: block;
+}
+
+.figma-ai-tw__thinkingWgPreviewLast3Row--activeShimmer
+  .figma-ai-tw__thinkingWgPreviewCmd--last3Slot
+  .figma-ai-tw__wgStepText--summarySyncShimmer {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: top;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  background-image: var(--fa-wg-sync-shimmer-highlight), linear-gradient(#73767c, #73767c);
+  background-size: 230% 100%, 100% 100%;
+  background-repeat: no-repeat, no-repeat;
+  background-position: 115% 0, 0 0;
+  background-clip: text;
+  -webkit-background-clip: text;
+  animation: figma-ai-tw-wg-summary-text-shimmer 2.6s linear infinite;
+}
+
+.figma-ai-tw__thinkingWgPreviewLast3Row--activeShimmer
+  .figma-ai-tw__thinkingWgPreviewCmd--last3Slot
+  .figma-ai-tw__wgStepTextCmd.figma-ai-tw__wgStepText--summarySyncShimmer {
+  font-weight: 400;
+}
+
+.figma-ai-tw__thinkingWgPreviewLast3Row--activeShimmer
+  .figma-ai-tw__thinkingWgPreviewCmd--last3Slot
+  .figma-ai-tw__wgStepTextBody.figma-ai-tw__wgStepText--summarySyncShimmer {
+  background-image: var(--fa-wg-sync-shimmer-highlight), linear-gradient(#73767c, #73767c);
+}
+
+/* Follow-up narrative: lines mount in sequence (JS timeouts); no keyframe motion on this copy. */
+.figma-ai-tw__thinkingWgPostReveal {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+}
+
+/* #0 reasoning / mixed CP → post-reveal: restore rhythm lost when `--thinkingWgFeed` zeroes snippet padding. */
+.figma-ai-tw__aiBlock > .figma-ai-tw__thinkingWgFeedList--reasoning + .figma-ai-tw__thinkingWgPostReveal {
+  margin-top: 6px;
+}
+
+.figma-ai-tw__thinkingWgPostRevealLine {
+  margin: 0;
+}
+
+/*
+ * Expanded command list: `grid-template-rows` 0fr → 1fr so following prose moves smoothly (both THINKING-WG modes).
+ * Inner scroller clips while the row animates (replaces clip-path-only animation that did not change layout height).
+ */
+.figma-ai-tw__thinkingWgExpandList {
+  display: grid;
+  grid-template-rows: 0fr;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  contain: layout;
+}
+
+.figma-ai-tw__thinkingWgExpandList:not(.figma-ai-tw__thinkingWgExpandList--heightOpen) .figma-ai-tw__thinkingWgExpandListInner {
+  opacity: var(--fa-expand-reveal-fade);
+}
+
+.figma-ai-tw__thinkingWgExpandList--heightOpen .figma-ai-tw__thinkingWgExpandListInner {
+  opacity: 1;
+}
+
+/* Summary-first / preview: match prior in-panel gap (~10px) between toggle and list vs aiBlock 14px sibling gap. */
+.figma-ai-tw__thinkingWgExpandList--tightSummaryGap {
+  margin-top: -8px;
+}
+
+.figma-ai-tw__thinkingWgExpandList--heightOpen {
+  grid-template-rows: 1fr;
+}
+
+.figma-ai-tw__thinkingWgExpandListInner {
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .figma-ai-tw__wgSummaryTextShimmer,
+  .figma-ai-tw__wgStepTextCmd.figma-ai-tw__wgStepText--summarySyncShimmer,
+  .figma-ai-tw__wgStepTextBody.figma-ai-tw__wgStepText--summarySyncShimmer,
+  .figma-ai-tw__thinkingWgReasoningHeadTitleBusy,
+  .figma-ai-tw__wgStepTextReasoning.figma-ai-tw__wgStepText--summarySyncShimmer,
+  .figma-ai-tw__thinkingWgPreviewLast3Row--activeShimmer
+    .figma-ai-tw__thinkingWgPreviewCmd--last3Slot
+    .figma-ai-tw__wgStepText--summarySyncShimmer {
+    animation: none;
+    color: #73767c;
+    background-image: none;
+    -webkit-background-clip: border-box;
+    background-clip: border-box;
+  }
+
+  .figma-ai-tw__thinkingWgReasoningHeadTitleBusy {
+    color: #73767c;
+  }
+
+  .figma-ai-tw__wgStepText--pending {
+    animation: none;
+    color: #73767c;
+    background-image: none;
+    -webkit-background-clip: border-box;
+    background-clip: border-box;
+  }
+
+  .figma-ai-tw__wgStepTextReasoning.figma-ai-tw__wgStepText--pending,
+  .figma-ai-tw__wgStepTextBody.figma-ai-tw__wgStepText--pending,
+  .figma-ai-tw__snippetReasoningLine.figma-ai-tw__wgStepText--pending {
+    color: #73767c;
+  }
+
+  .figma-ai-tw__thinkingWgFeedList > .figma-ai-tw__snippetWrap--thinkingWgFeed .figma-ai-tw__snippetCmdMono.figma-ai-tw__wgStepText--pending {
+    color: #fff;
+  }
+
+  .figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__snippetCmd.figma-ai-tw__snippetCmd--aiaLoading,
+  .figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__snippet--aiaCmdInProgress .figma-ai-tw__snippetCmd.figma-ai-tw__snippetCmd--aiaLoading {
+    animation: none;
+    color: #73767c;
+    background-image: none;
+    -webkit-background-clip: border-box;
+    background-clip: border-box;
+  }
+
+  .figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__snippetCmd.figma-ai-tw__snippetCmd--aiaLoading span,
+  .figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__snippetCmd.figma-ai-tw__snippetCmd--aiaLoading .m.o,
+  .figma-ai-tw__aiaDefaultSnippets .figma-ai-tw__snippetCmd.figma-ai-tw__snippetCmd--aiaLoading .m.p {
+    color: #73767c;
+  }
+
+  .figma-ai-tw__thinkingWgExpandList,
+  .figma-ai-tw__aiaCmdExpandReveal {
+    transition: none;
+  }
+
+  .figma-ai-tw__thinkingWgExpandList--heightOpen,
+  .figma-ai-tw__aiaCmdExpandReveal--open {
+    grid-template-rows: 1fr;
+  }
+
+  .figma-ai-tw__aiaCmdExpandReveal--open .figma-ai-tw__aiaCmdExpandRevealInner,
+  .figma-ai-tw__thinkingWgExpandList--heightOpen .figma-ai-tw__thinkingWgExpandListInner {
+    opacity: 1;
+  }
+}

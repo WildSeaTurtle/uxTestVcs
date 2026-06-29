@@ -1,6 +1,7 @@
 /// <reference types="vitest/config" />
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import svgr from 'vite-plugin-svgr';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
@@ -10,7 +11,7 @@ export default defineConfig({
   base: process.env.VITE_DEPLOY_BASE || '/VCSprototypes/',
   plugins: [react({
     include: /\.[jt]sx?$/
-  })],
+  }), svgr()],
   server: {
     fs: {
       allow: [dirname, path.resolve(dirname, 'vendor/int-ui-kit'), path.resolve(dirname, 'node_modules/@jetbrains/int-ui-kit')]
@@ -18,6 +19,9 @@ export default defineConfig({
   },
   resolve: {
     alias: [{
+      find: '@icons',
+      replacement: path.resolve(dirname, 'src/icons')
+    }, {
       find: '@jetbrains/int-ui-kit/styles.css',
       replacement: path.resolve(dirname, 'vendor/int-ui-kit/dist/esm/styles.css')
     }, {

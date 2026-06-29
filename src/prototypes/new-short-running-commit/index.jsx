@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { MainWindow, CommitWindow, Notification, AIAssistantWindow } from '@jetbrains/int-ui-kit';
+import { MainWindow, CommitWindow, Notification } from '@jetbrains/int-ui-kit';
+import { FigmaAiToolwindow } from '../../shared/FigmaAiToolwindow';
 import './styles.css';
 
 const COMMIT_FILES = [
@@ -183,7 +184,8 @@ export default function CurrentCommitScreen({ screenId }) {
           defaultOpenToolWindows={['commit', 'ai']}
           initialLeftPanelWidth={400}
           leftPanelContent={renderLeftPanel}
-          rightPanelContent={(stripeId, ctx) => stripeId === 'ai' ? <AIAssistantWindow layoutMode={ctx.toolWindowLayoutMode} /> : null}
+          initialRightPanelWidth={550}
+          rightPanelContent={(stripeId) => stripeId === 'ai' ? <FigmaAiToolwindow staticDefaultChat /> : null}
         />
       </div>
       {notificationPos && notifications.length > 0 && (

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { MainWindow, CommitWindow, AIAssistantWindow } from '@jetbrains/int-ui-kit';
+import { MainWindow, CommitWindow } from '@jetbrains/int-ui-kit';
+import { FigmaAiToolwindow } from '../../shared/FigmaAiToolwindow';
 import CommitButtonDemo from './CommitButtonDemo.jsx';
 import AnimatedCommitButton, { CommitedButton } from './AnimatedCommitButton.jsx';
 import './styles.css';
@@ -193,8 +194,9 @@ export default function CommitScreen({ screenId }) {
           height="100%"
           defaultOpenToolWindows={['commit', 'ai']}
           initialLeftPanelWidth={400}
+          initialRightPanelWidth={550}
           leftPanelContent={renderLeftPanel}
-          rightPanelContent={(stripeId, ctx) => stripeId === 'ai' ? <AIAssistantWindow layoutMode={ctx.toolWindowLayoutMode} /> : null}
+          rightPanelContent={(stripeId) => stripeId === 'ai' ? <FigmaAiToolwindow staticDefaultChat /> : null}
           statusBarProps={loading ? { progress: true, progressLabel: 'Commiting', progressValue, breadcrumbs: FIXED_BREADCRUMBS } : { breadcrumbs: FIXED_BREADCRUMBS }}
         />
       </div>

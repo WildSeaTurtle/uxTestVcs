@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { MainWindow, CommitWindow, AIAssistantWindow } from '@jetbrains/int-ui-kit';
+import { MainWindow, CommitWindow } from '@jetbrains/int-ui-kit';
+import { FigmaAiToolwindow } from '../../shared/FigmaAiToolwindow';
 import CommitButtonDemo from './CommitButtonDemo.jsx';
 import AnimatedCommitButton, { CommitedButton } from './AnimatedCommitButton.jsx';
 import './styles.css';
@@ -153,7 +154,8 @@ export default function CommitScreen({ screenId }) {
           defaultOpenToolWindows={['commit', 'ai']}
           initialLeftPanelWidth={400}
           leftPanelContent={renderLeftPanel}
-          rightPanelContent={(stripeId, ctx) => stripeId === 'ai' ? <AIAssistantWindow layoutMode={ctx.toolWindowLayoutMode} /> : null}
+          initialRightPanelWidth={550}
+          rightPanelContent={(stripeId) => stripeId === 'ai' ? <FigmaAiToolwindow staticDefaultChat /> : null}
         />
       </div>
     </section>
