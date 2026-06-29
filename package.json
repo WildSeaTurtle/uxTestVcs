@@ -46,6 +46,7 @@
     "playwright": "^1.60.0",
     "storybook": "^10.4.2",
     "vite": "^8.0.10",
+    "vite-plugin-svgr": "^4.3.0",
     "vitest": "^4.1.8"
   }
 }
