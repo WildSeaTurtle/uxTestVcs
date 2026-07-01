@@ -95,3 +95,12 @@
   padding: 6px 12px;
 }
 
+/* After all files committed: show only the Changes header — no checkbox, no file count */
+.changes-empty .commit-tree .checkbox-container {
+  display: none;
+}
+
+.changes-empty .commit-group-count {
+  display: none;
+}
+

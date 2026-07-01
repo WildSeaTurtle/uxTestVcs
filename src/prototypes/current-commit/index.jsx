@@ -110,7 +110,7 @@ function CurrentCommitPanelContent({ context, onLoadingChange }) {
           ...group,
           children: group.children.filter((file) => !checkedIds.has(file.id)),
         }))
-        .filter((group) => group.children.length > 0)
+        .filter((group) => group.children.length > 0 || group.id === 'changes')
     );
   };
 
@@ -133,7 +133,7 @@ function CurrentCommitPanelContent({ context, onLoadingChange }) {
   return (
     <div
       ref={panelRef}
-      className={`current-commit-panel-wrapper commit-window-custom${noFilesChecked ? '' : ' has-checked-files'}`}
+      className={`current-commit-panel-wrapper commit-window-custom${files.find(g => g.id === 'changes')?.children.length === 0 ? ' changes-empty' : ''}${noFilesChecked ? '' : ' has-checked-files'}`}
     >
       <CommitWindow
         files={files}

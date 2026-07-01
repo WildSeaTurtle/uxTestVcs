@@ -87,7 +87,7 @@ function CommitPanelContent({ context, onLoadingChange }) {
           ...group,
           children: group.children.filter((file) => !checkedIds.has(file.id)),
         }))
-        .filter((group) => group.children.length > 0)
+        .filter((group) => group.children.length > 0 || group.id === 'changes')
     );
   };
 
@@ -114,7 +114,7 @@ function CommitPanelContent({ context, onLoadingChange }) {
   }, [commited]);
 
   return (
-    <div ref={panelRef} className={`commit-panel-wrapper commit-window-custom${loading ? ' is-loading' : ''}${commited ? ' is-commited' : ''}${noFilesChecked ? '' : ' has-checked-files'}`}>
+    <div ref={panelRef} className={`commit-panel-wrapper commit-window-custom${loading ? ' is-loading' : ''}${commited ? ' is-commited' : ''}${files.find(g => g.id === 'changes')?.children.length === 0 ? ' changes-empty' : ''}${noFilesChecked ? '' : ' has-checked-files'}`}>
       <CommitWindow
         files={files}
         commitMessage="Update conflict resolution dialog message for clearer state distinction"

@@ -127,6 +127,15 @@
   z-index: 1;
 }
 
+/* After all files committed: show only the Changes header — no checkbox, no file count */
+.changes-empty .commit-tree .checkbox-container {
+  display: none;
+}
+
+.changes-empty .commit-group-count {
+  display: none;
+}
+
 /* Notification overlay */
 .current-commit-notification-overlay {
   position: fixed;
