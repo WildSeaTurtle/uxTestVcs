@@ -154,7 +154,8 @@ export default function CommitScreen({ screenId }) {
           runConfig="IDEA Community"
           height="100%"
           defaultOpenToolWindows={['commit', 'ai']}
-          initialLeftPanelWidth={400}
+          initialLeftPanelWidth={500}
+          minLeftPanelWidth={500}
           leftPanelContent={renderLeftPanel}
           initialRightPanelWidth={550}
           rightPanelContent={(stripeId) => stripeId === 'ai' ? <FigmaAiToolwindow staticDefaultChat /> : null}
