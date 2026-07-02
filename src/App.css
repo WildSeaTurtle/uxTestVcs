@@ -17,6 +17,7 @@
   height: 100%;
 }
 
+
 .prototype-shell.panel-visible .prototype-content {
   left: var(--screen-switcher-panel-width);
 }
