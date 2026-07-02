@@ -20,32 +20,39 @@ const PROTOTYPES = [
   },
 ];
 
-function getPrototypeIdFromHash() {
-  const hash = window.location.hash.slice(1);
-  return PROTOTYPES.some((p) => p.id === hash) ? hash : PROTOTYPES[0].id;
+function parseHash() {
+  const [prototypeId, screenId] = window.location.hash.slice(1).split('/');
+  const prototype = PROTOTYPES.find((p) => p.id === prototypeId) ?? PROTOTYPES[0];
+  const allScreens = prototype.screenGroups.flatMap((g) => g.screens);
+  const screen = allScreens.find((s) => s.id === screenId) ?? allScreens[0];
+  return { prototypeId: prototype.id, screenId: screen?.id };
 }
 
-function getInitialScreenId(prototypeId) {
-  const prototype = PROTOTYPES.find((p) => p.id === prototypeId);
-  const allScreens = prototype.screenGroups.flatMap((g) => g.screens);
-  return allScreens[0]?.id;
+function setHash(prototypeId, screenId) {
+  window.location.hash = `${prototypeId}/${screenId}`;
 }
 
 export default function App() {
-  const [activePrototypeId, setActivePrototypeId] = useState(getPrototypeIdFromHash);
+  const [{ prototypeId, screenId }, setRoute] = useState(parseHash);
 
   useEffect(() => {
-    const handleHashChange = () => {
-      setActivePrototypeId(getPrototypeIdFromHash());
-    };
+    const handleHashChange = () => setRoute(parseHash());
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
-  const activePrototype = PROTOTYPES.find((p) => p.id === activePrototypeId);
-  const activeScreenId = getInitialScreenId(activePrototypeId);
+  // Normalize hash on first load if it's missing the screenId
+  useEffect(() => {
+    const current = window.location.hash.slice(1);
+    const expected = `${prototypeId}/${screenId}`;
+    if (current !== expected) {
+      history.replaceState(null, '', `#${expected}`);
+    }
+  }, []);
+
+  const activePrototype = PROTOTYPES.find((p) => p.id === prototypeId);
   const allScreens = activePrototype.screenGroups.flatMap((g) => g.screens);
-  const activeScreen = allScreens.find((s) => s.id === activeScreenId) ?? allScreens[0];
+  const activeScreen = allScreens.find((s) => s.id === screenId) ?? allScreens[0];
 
   const PrototypeComponent = activePrototype.component;
 
@@ -54,8 +61,8 @@ export default function App() {
       <main className="prototype-shell">
         <div className="prototype-content">
           <PrototypeComponent
-            key={`${activePrototypeId}::${activeScreenId}`}
-            screenId={activeScreenId}
+            key={`${prototypeId}::${screenId}`}
+            screenId={screenId}
             buttonMode={activeScreen?.buttonMode}
             resolutionMode={activeScreen?.resolutionMode}
             delay={activeScreen?.delay}
