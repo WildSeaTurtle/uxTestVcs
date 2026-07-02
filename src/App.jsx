@@ -1,20 +1,11 @@
 import { useState, useEffect } from 'react';
 import { ThemeProvider } from '@jetbrains/int-ui-kit';
 
-import ResolveConflictsScreen, { SCREEN_GROUPS as RESOLVE_CONFLICTS_GROUPS } from './prototypes/resolve-conflicts/index.jsx';
 import CommitScreen, { SCREEN_GROUPS as COMMIT_GROUPS } from './prototypes/commit/index.jsx';
-import CurrentCommitScreen, { SCREEN_GROUPS as CURRENT_COMMIT_GROUPS } from './prototypes/current-commit/index.jsx';
 import ShortRunningCommitScreen, { SCREEN_GROUPS as SHORT_RUNNING_COMMIT_GROUPS } from './prototypes/short-running-commit/index.jsx';
-import NewShortRunningCommitScreen, { SCREEN_GROUPS as NEW_SHORT_RUNNING_COMMIT_GROUPS } from './prototypes/new-short-running-commit/index.jsx';
 import './App.css';
 
 const PROTOTYPES = [
-  {
-    id: 'resolve-conflicts',
-    label: 'Resolve Conflicts',
-    screenGroups: RESOLVE_CONFLICTS_GROUPS,
-    component: ResolveConflictsScreen,
-  },
   {
     id: 'commit',
     label: 'Commit',
@@ -22,26 +13,12 @@ const PROTOTYPES = [
     component: CommitScreen,
   },
   {
-    id: 'current-commit',
-    label: 'Current Commit',
-    screenGroups: CURRENT_COMMIT_GROUPS,
-    component: CurrentCommitScreen,
-  },
-  {
     id: 'short-running-commit',
     label: 'New Short-running Commit',
     screenGroups: SHORT_RUNNING_COMMIT_GROUPS,
     component: ShortRunningCommitScreen,
   },
-  {
-    id: 'new-short-running-commit',
-    label: 'Current Short-running Commit',
-    screenGroups: NEW_SHORT_RUNNING_COMMIT_GROUPS,
-    component: NewShortRunningCommitScreen,
-  },
 ];
-
-const ACTIVE_SCREEN_STORAGE_KEY = 'vcs-prototypes-active-screen';
 
 function getPrototypeIdFromHash() {
   const hash = window.location.hash.slice(1);
@@ -51,29 +28,11 @@ function getPrototypeIdFromHash() {
 function getInitialScreenId(prototypeId) {
   const prototype = PROTOTYPES.find((p) => p.id === prototypeId);
   const allScreens = prototype.screenGroups.flatMap((g) => g.screens);
-  const stored = window.localStorage.getItem(`${ACTIVE_SCREEN_STORAGE_KEY}-${prototypeId}`);
-  return allScreens.some((s) => s.id === stored) ? stored : allScreens[0]?.id;
+  return allScreens[0]?.id;
 }
 
 export default function App() {
   const [activePrototypeId, setActivePrototypeId] = useState(getPrototypeIdFromHash);
-  const [isPanelVisible, setIsPanelVisible] = useState(false);
-  const [screenIds, setScreenIds] = useState(() => {
-    const result = {};
-    for (const p of PROTOTYPES) {
-      result[p.id] = getInitialScreenId(p.id);
-    }
-    return result;
-  });
-  const [collapsedGroups, setCollapsedGroups] = useState(() => {
-    const collapsed = new Set();
-    for (const p of PROTOTYPES) {
-      for (const g of p.screenGroups) {
-        if (g.collapsible) collapsed.add(`${p.id}::${g.title}`);
-      }
-    }
-    return collapsed;
-  });
 
   useEffect(() => {
     const handleHashChange = () => {
@@ -83,104 +42,16 @@ export default function App() {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.ctrlKey && e.metaKey && e.key === 's') {
-        e.preventDefault();
-        setIsPanelVisible((prev) => !prev);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
   const activePrototype = PROTOTYPES.find((p) => p.id === activePrototypeId);
-  const activeScreenId = screenIds[activePrototypeId];
+  const activeScreenId = getInitialScreenId(activePrototypeId);
   const allScreens = activePrototype.screenGroups.flatMap((g) => g.screens);
   const activeScreen = allScreens.find((s) => s.id === activeScreenId) ?? allScreens[0];
 
-  const handlePrototypeChange = (prototypeId) => {
-    window.location.hash = prototypeId;
-    setActivePrototypeId(prototypeId);
-  };
-
-  const handleScreenChange = (screenId) => {
-    window.localStorage.setItem(`${ACTIVE_SCREEN_STORAGE_KEY}-${activePrototypeId}`, screenId);
-    setScreenIds((prev) => ({ ...prev, [activePrototypeId]: screenId }));
-  };
-
-  const toggleGroup = (key) => {
-    setCollapsedGroups((prev) => {
-      const next = new Set(prev);
-      if (next.has(key)) {
-        next.delete(key);
-      } else {
-        next.add(key);
-      }
-      return next;
-    });
-  };
-
   const PrototypeComponent = activePrototype.component;
-  const visibleGroups = activePrototype.screenGroups.filter((g) => !g.hidden);
-  const visibleScreens = visibleGroups.flatMap((g) => g.screens);
-  const hasMultipleScreens = visibleScreens.length > 1;
 
   return (
     <ThemeProvider defaultTheme="dark">
-      <main className={`prototype-shell${isPanelVisible ? ' panel-visible' : ''}`}>
-        <nav className="screen-switcher" aria-label="Prototype navigation">
-          <div className="prototype-picker">
-            {PROTOTYPES.map((prototype) => (
-              <button
-                key={prototype.id}
-                type="button"
-                className={`prototype-picker-item${prototype.id === activePrototypeId ? ' prototype-picker-item-active' : ''}`}
-                onClick={() => handlePrototypeChange(prototype.id)}
-              >
-                {prototype.label}
-              </button>
-            ))}
-          </div>
-
-          {hasMultipleScreens && (
-            <div className="screen-groups">
-              {visibleGroups.map((group) => {
-                const groupKey = `${activePrototypeId}::${group.title}`;
-                const isCollapsed = collapsedGroups.has(groupKey);
-                return (
-                  <div className="screen-switcher-group" key={group.title}>
-                    {group.collapsible ? (
-                      <button
-                        type="button"
-                        className="screen-switcher-group-title screen-switcher-group-title-collapsible"
-                        onClick={() => toggleGroup(groupKey)}
-                      >
-                        <span className={`screen-switcher-group-arrow${isCollapsed ? '' : ' screen-switcher-group-arrow-expanded'}`}>▶</span>
-                        {group.title}
-                      </button>
-                    ) : (
-                      <div className="screen-switcher-group-title">{group.title}</div>
-                    )}
-                    {!isCollapsed && group.screens.map((screen) => (
-                      <button
-                        key={screen.id}
-                        type="button"
-                        className={`screen-switcher-tab${screen.id === activeScreenId ? ' screen-switcher-tab-active' : ''}`}
-                        role="tab"
-                        aria-selected={screen.id === activeScreenId}
-                        onClick={() => handleScreenChange(screen.id)}
-                      >
-                        {screen.label}
-                      </button>
-                    ))}
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </nav>
-
+      <main className="prototype-shell">
         <div className="prototype-content">
           <PrototypeComponent
             key={`${activePrototypeId}::${activeScreenId}`}
