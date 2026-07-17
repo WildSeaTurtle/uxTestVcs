@@ -35,15 +35,16 @@ const PROTOTYPES = [
 ];
 
 function parseHash() {
-  const [prototypeId, screenId] = window.location.hash.slice(1).split('/');
-  const prototype = PROTOTYPES.find((p) => p.id === prototypeId) ?? PROTOTYPES[0];
-  const allScreens = prototype.screenGroups.flatMap((g) => g.screens);
-  const screen = allScreens.find((s) => s.id === screenId) ?? allScreens[0];
-  return { prototypeId: prototype.id, screenId: screen?.id };
-}
-
-function setHash(prototypeId, screenId) {
-  window.location.hash = `${prototypeId}/${screenId}`;
+  const screenId = window.location.hash.slice(1);
+  for (const prototype of PROTOTYPES) {
+    const screen = prototype.screenGroups.flatMap((g) => g.screens).find((s) => s.id === screenId);
+    if (screen) {
+      return { prototypeId: prototype.id, screenId: screen.id };
+    }
+  }
+  const fallback = PROTOTYPES[0];
+  const firstScreen = fallback.screenGroups.flatMap((g) => g.screens)[0];
+  return { prototypeId: fallback.id, screenId: firstScreen?.id };
 }
 
 export default function App() {
@@ -55,12 +56,11 @@ export default function App() {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
-  // Normalize hash on first load if it's missing the screenId
+  // Normalize hash on first load if it's missing or unknown
   useEffect(() => {
     const current = window.location.hash.slice(1);
-    const expected = `${prototypeId}/${screenId}`;
-    if (current !== expected) {
-      history.replaceState(null, '', `#${expected}`);
+    if (current !== screenId) {
+      history.replaceState(null, '', `#${screenId}`);
     }
   }, []);
 
