@@ -135,7 +135,7 @@ export const SCREEN_GROUPS = [
   {
     title: 'New Short-running Commit',
     screens: [
-      { id: 'commit-n01', label: 'Default' },
+      { id: 'commit-c01', label: 'Default' },
     ],
   },
 ];

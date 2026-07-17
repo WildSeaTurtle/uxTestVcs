@@ -16,13 +16,13 @@ const PROTOTYPES = [
   },
   {
     id: 'short-running-commit',
-    label: 'Current Short-running Commit',
+    label: 'New Short-running Commit',
     screenGroups: SHORT_RUNNING_COMMIT_GROUPS,
     component: ShortRunningCommitScreen,
   },
   {
     id: 'new-short-running-commit',
-    label: 'New Short-running Commit',
+    label: 'Current Short-running Commit',
     screenGroups: NEW_SHORT_RUNNING_COMMIT_GROUPS,
     component: NewShortRunningCommitScreen,
   },

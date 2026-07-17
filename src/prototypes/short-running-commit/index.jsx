@@ -121,7 +121,7 @@ export const SCREEN_GROUPS = [
   {
     title: 'Short-running Commit',
     screens: [
-      { id: 'commit-c01', label: 'Default' },
+      { id: 'commit-n01', label: 'Default' },
       { id: 'src-button-animation', label: 'Commit button animation' },
     ],
   },
