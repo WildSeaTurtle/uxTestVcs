@@ -159,7 +159,7 @@ export const SCREEN_GROUPS = [
   {
     title: 'Current Commit',
     screens: [
-      { id: 'current-commit-default', label: 'Default' },
+      { id: 'commit-c02', label: 'Default' },
     ],
   },
 ];

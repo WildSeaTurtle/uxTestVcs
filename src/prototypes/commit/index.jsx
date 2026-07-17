@@ -137,7 +137,7 @@ export const SCREEN_GROUPS = [
   {
     title: 'Commit tool window',
     screens: [
-      { id: 'commit-default', label: 'Default' },
+      { id: 'commit-n02', label: 'Default' },
       { id: 'commit-button-animation', label: 'Commit button animation' },
     ],
   },
