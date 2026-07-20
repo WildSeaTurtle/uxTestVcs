@@ -37,12 +37,10 @@ export default function AnimatedCommitButton({ onCommitStart, onCommitComplete, 
       onClick={handleClick}
       disabled={loading}
     >
-      {loading && (
-        <Loader size="small" className="commit-btn-animated__spinner" />
-      )}
-      <span className="commit-btn-animated__label">
-        {loading ? 'Commiting...' : 'Commit'}
-      </span>
+      {loading
+        ? <Loader size="small" className="commit-btn-animated__spinner" />
+        : <span className="commit-btn-animated__label">Commit</span>
+      }
     </button>
   );
 }

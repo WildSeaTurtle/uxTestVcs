@@ -16,6 +16,8 @@
   align-items: center;
   justify-content: center;
   height: 28px;
+  width: 73px;
+  box-sizing: border-box;
   padding: 0 12px;
   border: 1px solid transparent;
   border-radius: 4px;
@@ -28,7 +30,7 @@
   cursor: pointer;
   user-select: none;
   white-space: nowrap;
-  transition: background-color 150ms ease, width 200ms ease;
+  transition: background-color 150ms ease;
 }
 
 .commit-btn-animated.button-secondary:not(.commit-btn-animated--loading) {
@@ -68,7 +70,6 @@
   border-color: transparent;
   color: #ffffff;
   padding: 0;
-  width: 28px;
 }
 
 
