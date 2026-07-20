@@ -64,11 +64,11 @@
 /* Commited state */
 .commit-btn-animated--commited {
   cursor: default;
-  background-color: var(--button-secondary-bg);
-  border-color: var(--button-secondary-border);
-  color: var(--text-success);
-  padding-left: 12px;
-  gap: 4px;
+  background-color: var(--control-success-bg);
+  border-color: transparent;
+  color: #ffffff;
+  padding: 0;
+  width: 28px;
 }
 
 
@@ -78,7 +78,6 @@
   height: 16px;
   flex: 0 0 auto;
   display: block;
-  color: var(--icon-green-stroke);
 }
 
 /* Label */
