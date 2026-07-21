@@ -5,6 +5,8 @@ import CommitScreen, { SCREEN_GROUPS as COMMIT_GROUPS } from './prototypes/commi
 import ShortRunningCommitScreen, { SCREEN_GROUPS as SHORT_RUNNING_COMMIT_GROUPS } from './prototypes/short-running-commit/index.jsx';
 import CurrentCommitScreen, { SCREEN_GROUPS as CURRENT_COMMIT_GROUPS } from './prototypes/current-commit/index.jsx';
 import NewShortRunningCommitScreen, { SCREEN_GROUPS as NEW_SHORT_RUNNING_COMMIT_GROUPS } from './prototypes/new-short-running-commit/index.jsx';
+import CommitV2Screen, { SCREEN_GROUPS as COMMIT_V2_GROUPS } from './prototypes/commit-v2/index.jsx';
+import ShortRunningCommitV2Screen, { SCREEN_GROUPS as SHORT_RUNNING_COMMIT_V2_GROUPS } from './prototypes/short-running-commit-v2/index.jsx';
 import './App.css';
 
 const PROTOTYPES = [
@@ -31,6 +33,18 @@ const PROTOTYPES = [
     label: 'Commit',
     screenGroups: COMMIT_GROUPS,
     component: CommitScreen,
+  },
+  {
+    id: 'commit-v2',
+    label: 'Long-running Commit V2',
+    screenGroups: COMMIT_V2_GROUPS,
+    component: CommitV2Screen,
+  },
+  {
+    id: 'short-running-commit-v2',
+    label: 'Short-running Commit V2',
+    screenGroups: SHORT_RUNNING_COMMIT_V2_GROUPS,
+    component: ShortRunningCommitV2Screen,
   },
 ];
 

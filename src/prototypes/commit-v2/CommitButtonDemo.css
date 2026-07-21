@@ -1,0 +1,87 @@
+.commit-button-demo-stage {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: calc(50% - 48px); /* левый край кнопки — горизонтальный центр */
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+/* Base button */
+.commit-btn-v2 {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  padding: 0 12px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background-color: #3574f0;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  transition: background-color 150ms ease, width 200ms ease;
+}
+
+.commit-btn-v2.button-secondary:not(.commit-btn-v2--loading) {
+  background-color: var(--button-secondary-bg) !important;
+  border-color: var(--button-secondary-border) !important;
+  color: var(--text-default) !important;
+}
+
+.commit-btn-v2:hover:not(.commit-btn-v2--loading):not(.button-secondary):not(.commit-btn-v2--commited) {
+  background-color: #4a85f6;
+}
+
+.commit-btn-v2:active:not(.commit-btn-v2--loading):not(.button-secondary):not(.commit-btn-v2--commited) {
+  background-color: #2b5fc4;
+}
+
+
+/* Loading state */
+.commit-btn-v2--loading {
+  cursor: not-allowed;
+  gap: 6px;
+  background-color: transparent !important;
+  border: 1px solid var(--control-border-disabled) !important;
+  color: var(--text-disabled) !important;
+}
+
+/* Spinner */
+.commit-btn-v2__spinner {
+  flex: 0 0 auto;
+  filter: opacity(0.5);
+}
+
+/* Commited state */
+.commit-btn-v2--commited {
+  cursor: default;
+  background-color: var(--control-success-bg);
+  border-color: transparent;
+  color: #ffffff;
+  padding-left: 8px;
+  gap: 4px;
+}
+
+
+/* Icon */
+.commit-btn-v2__icon {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  display: block;
+}
+
+/* Label */
+.commit-btn-v2__label {
+  position: relative;
+  z-index: 1;
+}
